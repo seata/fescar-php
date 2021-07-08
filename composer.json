@@ -1,21 +1,19 @@
 {
     "name": "hyperf/seata-incubator",
-    "type": "library",
+    "description": "A seata library for Hyperf.",
     "license": "MIT",
     "keywords": [
         "php",
-        "hyperf"
+        "swoole",
+        "hyperf",
+        "seata"
     ],
-    "description": "",
-    "autoload": {
-        "psr-4": {
-            "Hyperf\\Seata\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "HyperfTest\\": "tests"
-        }
+    "homepage": "https://hyperf.io",
+    "support": {
+        "docs": "https://hyperf.wiki",
+        "issues": "https://github.com/hyperf/hyperf/issues",
+        "pull-request": "https://github.com/hyperf/hyperf/pulls",
+        "source": "https://github.com/hyperf/hyperf"
     },
     "require": {
         "php": ">=7.3"
@@ -26,8 +24,17 @@
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": ">=7.0",
         "swoole/ide-helper": "dev-master",
-        "swow/swow": "dev-develop",
         "symfony/var-dumper": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hyperf\\Seata\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "HyperfTest\\Seata\\": "tests/"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -35,14 +42,17 @@
         "optimize-autoloader": true,
         "sort-packages": true
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        },
+        "hyperf": {
+            "config": "Hyperf\\Seata\\ConfigProvider"
+        }
+    },
     "scripts": {
         "test": "phpunit -c phpunit.xml --colors=always",
         "analyse": "phpstan analyse --memory-limit 1024M -l 0 ./src",
         "cs-fix": "php-cs-fixer fix $1"
-    },
-    "extra": {
-        "hyperf": {
-            "config": "Hyperf\\Seata\\ConfigProvider"
-        }
     }
 }
