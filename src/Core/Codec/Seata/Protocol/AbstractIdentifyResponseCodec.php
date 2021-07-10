@@ -14,7 +14,7 @@ namespace Hyperf\Seata\Core\Codec\Seata\Protocol;
 use Hyperf\Seata\Core\Protocol\AbstractIdentifyResponse;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractIdentifyResponseCodec extends AbstractResultMessageCodec
 {

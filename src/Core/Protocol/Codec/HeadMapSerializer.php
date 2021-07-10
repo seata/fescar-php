@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Protocol\Codec;
 
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 class HeadMapSerializer
 {

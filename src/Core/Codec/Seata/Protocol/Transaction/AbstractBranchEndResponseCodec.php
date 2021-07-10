@@ -13,7 +13,7 @@ namespace Hyperf\Seata\Core\Codec\Seata\Protocol\Transaction;
 
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractBranchEndResponse;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractBranchEndResponseCodec extends AbstractTransactionResponseCodec
 {

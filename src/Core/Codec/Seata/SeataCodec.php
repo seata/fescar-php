@@ -13,7 +13,7 @@ namespace Hyperf\Seata\Core\Codec\Seata;
 
 use Hyperf\Seata\Core\Codec\CodecInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 class SeataCodec implements CodecInterface
 {

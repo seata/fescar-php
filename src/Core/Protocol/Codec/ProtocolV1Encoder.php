@@ -14,7 +14,7 @@ namespace Hyperf\Seata\Core\Protocol\Codec;
 use Hyperf\Seata\Core\Codec\CodecFactory;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 /**
  * <pre>

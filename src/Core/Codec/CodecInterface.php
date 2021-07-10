@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Codec;
 
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 interface CodecInterface
 {

@@ -20,7 +20,7 @@ use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
