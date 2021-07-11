@@ -13,6 +13,7 @@ namespace Hyperf\Seata\Annotation;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Rm\RMClient;
+use Hyperf\Seata\Tm\TMClient;
 use Psr\Log\LoggerInterface;
 
 class GlobalTransactionScanner
@@ -41,6 +42,11 @@ class GlobalTransactionScanner
     protected $RMClient;
 
     /**
+     * @var \Hyperf\Seata\Tm\TMClient
+     */
+    protected $TMClient;
+
+    /**
      * @var string
      */
     private $applicationId;
@@ -60,11 +66,23 @@ class GlobalTransactionScanner
      */
     private $disableGlobalTransaction;
 
-    public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient)
+    /**
+     * @var string
+     */
+    private $accessKey;
+
+    /**
+     * @var string
+     */
+    private $secretKey;
+
+    public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient, TMClient $TMClient)
     {
         $this->config = $config;
         $this->applicationId = $this->config->get('seata.application_id');
         $this->txServiceGroup = $this->config->get('seata.tx_service_group');
+        $this->accessKey = $this->config->get('seata.access_key');
+        $this->secretKey = $this->config->get('seata.secret_key');
         // @TODO mode
         $this->mode = $this->config->get('seata.mode', self::DEFAULT_MODE);
         // @TODO disableGlobalTransaction
@@ -77,12 +95,14 @@ class GlobalTransactionScanner
         }
         $this->logger = $logger;
         $this->RMClient = $RMClient;
+        $this->TMClient = $TMClient;
     }
 
     public function initClients()
     {
         $this->dumpInfo('Initializing Global Transaction Clients ... ');
         // @todo Init TM
+        $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
         // Init RM
         $this->RMClient->init($this->applicationId, $this->txServiceGroup);
         $this->dumpInfo(sprintf('Resource Manager is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));
