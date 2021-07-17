@@ -11,12 +11,14 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Tm;
 
+use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Model\TransactionManager;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractTransactionRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalCommitRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalCommitResponse;
+use Hyperf\Seata\Core\Protocol\Transaction\GlobalReportRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
@@ -29,7 +31,7 @@ class DefaultTransationManager implements TransactionManager
      */
     protected $tmRpcClient;
 
-    public function begin(string $applicationId, string $transactionServiceGroup, string $name, int $timeout): string
+    public function begin(?string $applicationId, ?string $transactionServiceGroup, string $name, int $timeout): string
     {
         $request = new GlobalBeginRequest();
         $request->setTransactionName($name);
@@ -64,6 +66,14 @@ class DefaultTransationManager implements TransactionManager
         /** @var GlobalStatusResponse $response */
         $response = $this->sendRequest($request);
         return $response->getGlobalStatus();
+    }
+
+    public function globalReport(string $xid, GlobalStatus $globalStatus): GlobalStatus
+    {
+        $globalReport = new GlobalReportRequest();
+        $globalReport->setXid($xid);
+        $globalReport->setGlobalStatus($globalStatus);
+        return $this->sendRequest($globalReport)->getGlobalStatus();
     }
 
     protected function sendRequest(AbstractTransactionRequest $request)

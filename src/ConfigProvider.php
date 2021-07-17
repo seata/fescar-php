@@ -16,6 +16,8 @@ use Hyperf\Seata\Annotation\GlobalTransactionScannerFactory;
 use Hyperf\Seata\Core\Model\ResourceManager;
 use Hyperf\Seata\Listener\InitListener;
 use Hyperf\Seata\Rm\DefaultResourceManager;
+use Hyperf\Seata\Tm\Api\CheckTimerTask\SwooleCheckTimerTask;
+use Hyperf\Seata\Tm\Api\CheckTimerTask\CheckTimerTaskInterface;
 
 class ConfigProvider
 {
@@ -28,6 +30,7 @@ class ConfigProvider
             'dependencies' => [
                 ResourceManager::class => DefaultResourceManager::class,
                 GlobalTransactionScanner::class => GlobalTransactionScannerFactory::class,
+                CheckTimerTaskInterface::class => SwooleCheckTimerTask::class,
             ],
         ];
     }

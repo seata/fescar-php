@@ -104,6 +104,11 @@ class MessageType
     public const TYPE_BRANCH_STATUS_REPORT_RESULT = 14;
 
     /**
+     * The constant TYPE_GLOBAL_REPORT.
+     */
+    public const TYPE_GLOBAL_REPORT = 17;
+
+    /**
      * The constant TYPE_SEATA_MERGE.
      */
     public const TYPE_SEATA_MERGE = 59;
@@ -132,4 +137,5 @@ class MessageType
      * The constant TYPE_REG_RM_RESULT.
      */
     public const TYPE_REG_RM_RESULT = 104;
+
 }

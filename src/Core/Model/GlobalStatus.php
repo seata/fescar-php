@@ -108,4 +108,24 @@ class GlobalStatus
      */
     // Not managed in session MAP any more
     public const Finished = 15;
+
+    private $status;
+
+    /**
+     * GlobalStatus constructor.
+     */
+    public function __construct(int $status)
+    {
+        $this->status = $status;
+    }
+
+    public function setStatus(int $status)
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
 }

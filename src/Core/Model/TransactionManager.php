@@ -30,7 +30,7 @@ interface TransactionManager
      *                              out
      * @return string XID of the global transaction
      */
-    public function begin(string $applicationId, string $transactionServiceGroup, string $name, int $timeout): string;
+    public function begin(?string $applicationId, ?string $transactionServiceGroup, string $name, int $timeout): string;
 
     /**
      * Global commit.
@@ -60,5 +60,16 @@ interface TransactionManager
      *                              out
      * @return int the value of GlobalStatus, current status of the global transaction
      */
-    public function getStatus(string $xid): int;
+    public function getStatus(string $xid): GlobalStatus;
+
+    /**
+     * Global report.
+     *
+     * @param xid XID of the global transaction.
+     * @param globalStatus Status of the global transaction.
+     * @return Status of the global transaction.
+     * @throws TransactionException Any exception that fails this will be wrapped with TransactionException and thrown
+     * out.
+     */
+    public function globalReport(string $xid, GlobalStatus $globalStatus) :GlobalStatus;
 }
