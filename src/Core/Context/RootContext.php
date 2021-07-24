@@ -74,7 +74,7 @@ class RootContext extends Context
     }
 
     /**
-     * Assert not in global transaction.
+     * Assert not in global Transaction.
      */
     public static function assertNotInGlobalTransaction(): void
     {

@@ -58,7 +58,7 @@ class SwooleCheckTimerTask implements CheckTimerTaskInterface
             }
 
             if (++static::$count > self::RETRY_MAX_TIMES) {
-                $this->logger->error(sprintf('transaction [%s] retry fetch status times exceed the limit [%s times]', $this->tx->getXid(), self::RETRY_MAX_TIMES));
+                $this->logger->error(sprintf('Transaction [%s] retry fetch status times exceed the limit [%s times]', $this->tx->getXid(), self::RETRY_MAX_TIMES));
                 return;
             }
 
@@ -82,7 +82,7 @@ class SwooleCheckTimerTask implements CheckTimerTaskInterface
     {
         /** @var GlobalStatus $status */
         $status = $this->tx->getStatus();
-        $this->logger->info(sprintf('transaction [%s] current status is [%s]', $this->tx->getXid(), $status));
+        $this->logger->info(sprintf('Transaction [%s] current status is [%s]', $this->tx->getXid(), $status));
         if ($status->getStatus() == $this->required->getStatus() || $status->getStatus() == GlobalStatus::Finished) {
             return true;
         }

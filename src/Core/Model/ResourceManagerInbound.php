@@ -14,10 +14,10 @@ namespace Hyperf\Seata\Core\Model;
 interface ResourceManagerInbound
 {
     /**
-     * Commit a branch transaction.
+     * Commit a branch Transaction.
      *
      * @param $branchType      the branch type
-     * @param $xid             transaction id
+     * @param $xid             Transaction id
      * @param $branchId        branch id
      * @param $resourceId      resource id
      * @param $applicationData application data bind with this branch
@@ -34,10 +34,10 @@ interface ResourceManagerInbound
     ): int;
 
     /**
-     * Rollback a branch transaction.
+     * Rollback a branch Transaction.
      *
      * @param $branchType      the branch type
-     * @param $xid             transaction id
+     * @param $xid             Transaction id
      * @param $branchId        branch id
      * @param $resourceId      resource id
      * @param $applicationData application data bind with this branch

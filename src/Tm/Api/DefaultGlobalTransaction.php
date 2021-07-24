@@ -85,27 +85,27 @@ class DefaultGlobalTransaction implements GlobalTransaction
 
         if ($this->role->getRole() === GlobalTransactionRole::Launcher) {
             $this->assertXIDNotNull();
-            $this->logger->debug(sprintf('Ignore Begin(): just involved in global transaction [%s]', $this->xid));
+            $this->logger->debug(sprintf('Ignore Begin(): just involved in global Transaction [%s]', $this->xid));
             return;
         }
 
         $this->assertXIDNull();
         $currentXid = RootContext::getXID();
         if ($currentXid != null) {
-            throw new IllegalStateException('Global transaction already exists,' .
-                " can't begin a new global transaction, currentXid = " . $currentXid);
+            throw new IllegalStateException('Global Transaction already exists,' .
+                " can't begin a new global Transaction, currentXid = " . $currentXid);
         }
         $xid = $this->transactionManager->begin(null, null, $name, $timeout);
         $this->status = new GlobalStatus(GlobalStatus::Begin);
         RootContext::bind($xid);
-        $this->logger->info(sprintf('Begin new global transaction [%s]', $xid));
+        $this->logger->info(sprintf('Begin new global Transaction [%s]', $xid));
     }
 
     public function commit()
     {
         if ($this->role->getRole() == GlobalTransactionRole::Participant) {
             // Participant has no responsibility of committing
-            $this->logger->debug(sprintf('Ignore Commit(): just involved in global transaction [%s]', $this->xid));
+            $this->logger->debug(sprintf('Ignore Commit(): just involved in global Transaction [%s]', $this->xid));
             return;
         }
 
@@ -137,7 +137,7 @@ class DefaultGlobalTransaction implements GlobalTransaction
     {
         if ($this->role->getRole() == GlobalTransactionRole::Participant) {
             // Participant has no responsibility of rollback
-            $this->logger->debug(sprintf('Ignore Rollback(): just involved in global transaction [%s]', $this->xid));
+            $this->logger->debug(sprintf('Ignore Rollback(): just involved in global Transaction [%s]', $this->xid));
             return;
         }
 
@@ -169,7 +169,7 @@ class DefaultGlobalTransaction implements GlobalTransaction
     {
         $xid = RootContext::getXID();
         if (! empty($xid)) {
-            $this->logger->info(sprintf('Suspending current transaction, xid = %s', $xid));
+            $this->logger->info(sprintf('Suspending current Transaction, xid = %s', $xid));
             RootContext::unbind();
             return new SuspendedResourcesHolder($xid);
         }
@@ -184,7 +184,7 @@ class DefaultGlobalTransaction implements GlobalTransaction
 
         $xid = $suspendedResourcesHolder->getXid();
         RootContext::bind($xid);
-        $this->logger->debug(sprintf('Resumimg the transaction,xid = %s', $xid));
+        $this->logger->debug(sprintf('Resumimg the Transaction,xid = %s', $xid));
     }
 
     public function getStatus(): GlobalStatus

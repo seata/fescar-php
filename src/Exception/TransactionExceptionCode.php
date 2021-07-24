@@ -14,82 +14,82 @@ namespace Hyperf\Seata\Exception;
 class TransactionExceptionCode
 {
     /**
-     * Unknown transaction exception code.
+     * Unknown Transaction exception code.
      */
     public const Unknown = 0;
 
     /**
-     * Lock key conflict transaction exception code.
+     * Lock key conflict Transaction exception code.
      */
     public const LockKeyConflict = 1;
 
     /**
-     * Io transaction exception code.
+     * Io Transaction exception code.
      */
     public const IO = 2;
 
     /**
-     * Branch rollback failed retriable transaction exception code.
+     * Branch rollback failed retriable Transaction exception code.
      */
     public const BranchRollbackFailed_Retriable = 3;
 
     /**
-     * Branch rollback failed unretriable transaction exception code.
+     * Branch rollback failed unretriable Transaction exception code.
      */
     public const BranchRollbackFailed_Unretriable = 4;
 
     /**
-     * Branch register failed transaction exception code.
+     * Branch register failed Transaction exception code.
      */
     public const BranchRegisterFailed = 5;
 
     /**
-     * Branch report failed transaction exception code.
+     * Branch report failed Transaction exception code.
      */
     public const BranchReportFailed = 6;
 
     /**
-     * Lockable check failed transaction exception code.
+     * Lockable check failed Transaction exception code.
      */
     public const LockableCheckFailed = 7;
 
     /**
-     * Branch transaction not exist transaction exception code.
+     * Branch Transaction not exist Transaction exception code.
      */
     public const BranchTransactionNotExist = 8;
 
     /**
-     * Global transaction not exist transaction exception code.
+     * Global Transaction not exist Transaction exception code.
      */
     public const GlobalTransactionNotExist = 9;
 
     /**
-     * Global transaction not active transaction exception code.
+     * Global Transaction not active Transaction exception code.
      */
     public const GlobalTransactionNotActive = 10;
 
     /**
-     * Global transaction status invalid transaction exception code.
+     * Global Transaction status invalid Transaction exception code.
      */
     public const GlobalTransactionStatusInvalid = 11;
 
     /**
-     * Failed to send branch commit request transaction exception code.
+     * Failed to send branch commit request Transaction exception code.
      */
     public const FailedToSendBranchCommitRequest = 12;
 
     /**
-     * Failed to send branch rollback request transaction exception code.
+     * Failed to send branch rollback request Transaction exception code.
      */
     public const FailedToSendBranchRollbackRequest = 13;
 
     /**
-     * Failed to add branch transaction exception code.
+     * Failed to add branch Transaction exception code.
      */
     public const FailedToAddBranch = 14;
 
     /**
-     *  Failed to lock global transaction exception code.
+     *  Failed to lock global Transaction exception code.
      */
     public const FailedLockGlobalTranscation = 15;
 

@@ -70,7 +70,7 @@ class GlobalStatus
     /**
      * PHASE 2: Final Status: will NOT change any more.
      */
-    // Finally: global transaction is successfully committed.
+    // Finally: global Transaction is successfully committed.
     public const Committed = 9;
 
     /**
@@ -82,7 +82,7 @@ class GlobalStatus
     /**
      * The Rollbacked.
      */
-    // Finally: global transaction is successfully rollbacked.
+    // Finally: global Transaction is successfully rollbacked.
     public const Rollbacked = 11;
 
     /**
@@ -94,7 +94,7 @@ class GlobalStatus
     /**
      * The Timeout rollbacked.
      */
-    // Finally: global transaction is successfully rollbacked since timeout.
+    // Finally: global Transaction is successfully rollbacked since timeout.
     public const TimeoutRollbacked = 13;
 
     /**

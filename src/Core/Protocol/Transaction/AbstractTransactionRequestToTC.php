@@ -25,7 +25,7 @@ abstract class AbstractTransactionRequestToTC extends AbstractTransactionRequest
     /**
      * Sets tc inbound handler.
      */
-    public function setTCInboundHandler(TCInboundHandler $handler): void
+    public function setTCInboundHandler(TCInboundHandler $handler): public
     {
         $this->handler = $handler;
     }

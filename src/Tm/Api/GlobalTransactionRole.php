@@ -14,12 +14,12 @@ namespace Hyperf\Seata\Tm\Api;
 class GlobalTransactionRole
 {
     /**
-     * The one begins the current global transaction.
+     * The one begins the current global Transaction.
      */
     const Launcher = 1;
 
     /**
-     * The one just joins into a existing global transaction.
+     * The one just joins into a existing global Transaction.
      */
     const Participant = 2;
 

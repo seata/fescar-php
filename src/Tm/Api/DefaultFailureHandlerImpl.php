@@ -56,26 +56,26 @@ class DefaultFailureHandlerImpl implements FailureHandler
 
     public function onBeginFailure(GlobalTransaction $tx, Throwable $cause)
     {
-        $this->logger->warning('Failed to begin transaction. ');
+        $this->logger->warning('Failed to begin Transaction. ');
     }
 
     public function onCommitFailure(GlobalTransaction $tx, Throwable $cause)
     {
-        $this->logger->warning('Failed to commit transaction[' . $tx->getXid() . ']');
+        $this->logger->warning('Failed to commit Transaction[' . $tx->getXid() . ']');
         $globalStatus = new GlobalStatus(GlobalStatus::Committed);
         make(CheckTimerTaskInterface::class)->setTx($tx)->setRequired($globalStatus)->run();
     }
 
     public function onRollbackFailure(GlobalTransaction $tx, Throwable $originalException)
     {
-        $this->logger->warning('Failed to rollback transaction[' . $tx->getXid() . ']');
+        $this->logger->warning('Failed to rollback Transaction[' . $tx->getXid() . ']');
         $globalStatus = new GlobalStatus(GlobalStatus::Rollbacked);
         make(CheckTimerTaskInterface::class)->setTx($tx)->setRequired($globalStatus)->run();
     }
 
     public function onRollbackRetrying(GlobalTransaction $tx, Throwable $originalException)
     {
-        $this->logger->warning('Retrying to rollback transaction[' . $tx->getXid() . ']');
+        $this->logger->warning('Retrying to rollback Transaction[' . $tx->getXid() . ']');
         $globalStatus = new GlobalStatus(GlobalStatus::RollbackRetrying);
         make(CheckTimerTaskInterface::class)->setTx($tx)->setRequired($globalStatus)->run();
     }

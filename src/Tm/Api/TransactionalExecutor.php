@@ -4,6 +4,7 @@
 namespace Hyperf\Seata\Tm\Api;
 
 
+use Hyperf\Seata\Tm\Api\Transaction\TransactionInfo;
 use Throwable;
 
 interface TransactionalExecutor
@@ -17,8 +18,8 @@ interface TransactionalExecutor
     public function execute();
 
     /**
-     * transaction conf or other attr
-     * @return transaction info
+     * Transaction conf or other attr
+     * @return TransactionInfo Transaction info
      */
-    public function getTransactionInfo(): TransactionInfo;
+    public function getTransactionInfo(): ?TransactionInfo;
 }

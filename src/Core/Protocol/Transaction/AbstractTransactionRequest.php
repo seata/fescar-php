@@ -17,10 +17,10 @@ use Hyperf\Seata\Core\Rpc\RpcContext;
 abstract class AbstractTransactionRequest extends AbstractMessage
 {
     /**
-     * Handle abstract transaction response.
+     * Handle abstract Transaction response.
      *
      * @param $rpcContext the rpc context
-     * @return the abstract transaction response
+     * @return the abstract Transaction response
      */
     abstract public function handle(RpcContext $rpcContext): AbstractTransactionResponse;
 }

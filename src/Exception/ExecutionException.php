@@ -24,7 +24,7 @@ class ExecutionException extends Exception
     protected $transaction;
 
     /**
-     * TransactionalExecutor code
+     * TransactionalExecutor code.
      * @var int
      */
     protected $code;
@@ -36,28 +36,22 @@ class ExecutionException extends Exception
 
     /**
      * ExecutionException constructor.
-     * @param GlobalTransaction $transaction
      * @param TransactionalExecutorCode $code
      * @param Throwable $originalException
      */
-    public function __construct(GlobalTransaction $transaction, int $code, Throwable $originalException)
+    public function __construct(GlobalTransaction $transaction, int $code, ?Throwable $cause = null, ?Throwable $originalException = null, string $message = '')
     {
+        parent::__construct($message, $code, $cause);
         $this->transaction = $transaction;
         $this->code = $code;
         $this->originalException = $originalException;
     }
 
-    /**
-     * @return GlobalTransaction
-     */
     public function getTransaction(): GlobalTransaction
     {
         return $this->transaction;
     }
 
-    /**
-     * @param GlobalTransaction $transaction
-     */
     public function setTransaction(GlobalTransaction $transaction): void
     {
         $this->transaction = $transaction;
@@ -79,23 +73,13 @@ class ExecutionException extends Exception
         $this->code = $code;
     }
 
-    /**
-     * @return Throwable
-     */
     public function getOriginalException(): Throwable
     {
         return $this->originalException;
     }
 
-    /**
-     * @param Throwable $originalException
-     */
     public function setOriginalException(Throwable $originalException): void
     {
         $this->originalException = $originalException;
     }
-
-
-
-
 }

@@ -33,7 +33,7 @@ class Constants
      */
     public const DBKEYS_SPLIT_CHAR = ',';
 
-    /** the start time of transaction */
+    /** the start time of Transaction */
     public const START_TIME = 'start-time';
 
     /**
@@ -82,7 +82,7 @@ class Constants
     public const TCC_METHOD_ARGUMENTS = 'arguments';
 
     /**
-     * transaction context.
+     * Transaction context.
      */
     public const TCC_ACTIVITY_CONTEXT = 'activityContext';
 

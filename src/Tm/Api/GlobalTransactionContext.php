@@ -20,7 +20,7 @@ class GlobalTransactionContext
     /**
      * Try to create a new GlobalTransaction.
      *
-     * @return DefaultGlobalTransaction the new global transaction
+     * @return DefaultGlobalTransaction the new global Transaction
      */
     public static function createNew(): DefaultGlobalTransaction
     {
@@ -30,9 +30,9 @@ class GlobalTransactionContext
     /**
      * Get GlobalTransaction instance bind on current thread.
      *
-     * @return null|DefaultGlobalTransaction if no transaction context there
+     * @return null|DefaultGlobalTransaction if no Transaction context there
      */
-    public function getCurrent(): ?DefaultGlobalTransaction
+    public static function getCurrent(): ?DefaultGlobalTransaction
     {
         $xid = RootContext::getXID();
         if (empty($xid)) {
@@ -59,8 +59,8 @@ class GlobalTransactionContext
      * Reload GlobalTransaction instance according to the given XID.
      *
      * @param string $xid the xid
-     * @throws TransactionException the transaction exception
-     * @return ReloadDefaultGlobalTransaction reloaded transaction instance
+     * @throws TransactionException the Transaction exception
+     * @return ReloadDefaultGlobalTransaction reloaded Transaction instance
      */
     public function reload(string $xid)
     {
