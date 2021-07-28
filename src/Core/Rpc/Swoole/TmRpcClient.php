@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 use Hyperf\Seata\Core\Protocol\RegisterTMRequest;
+use Hyperf\Seata\Core\Rpc\TransactionRole;
 
 class TmRpcClient extends AbstractRpcRemotingClient
 {
@@ -26,6 +27,11 @@ class TmRpcClient extends AbstractRpcRemotingClient
     protected $accessKey = null;
 
     protected $secretKey = null;
+
+    public function __construct($transactionRole = TransactionRole::TMROLE)
+    {
+        parent::__construct($transactionRole);
+    }
 
     public function destroy(): void
     {

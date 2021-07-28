@@ -16,7 +16,7 @@ trait Hex
         return pack('H*', $this->readHex($length));
     }
 
-    public function putHex(string $value, int $offset = 0)
+    public function putHex(int $value, int $offset = 0)
     {
         return $this->pack("C", intval($value) & 0xff, $offset);
     }

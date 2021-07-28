@@ -16,7 +16,7 @@ use InvalidArgumentException;
 
 class FileRegistryService implements RegistryService
 {
-    private const POSTFIX_GROUPLIST = '.grouplist';
+    private const POSTFIX_GROUPLIST = '.group_list';
 
     private const ENDPOINT_SPLIT_CHAR = ';';
 
@@ -50,12 +50,12 @@ class FileRegistryService implements RegistryService
 
     public function lookup(string $key): array
     {
-        return [new Address('127.0.0.1', 8090)];
-        $clusterName = $this->config->get(self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . self::PREFIX_SERVICE_MAPPING . $key);
+//        return [new Address('127.0.0.1', 8091)];
+        $clusterName = $this->config->get('seata.' . self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . self::PREFIX_SERVICE_MAPPING . $key);
         if ($clusterName === null) {
             return [];
         }
-        $endpointStr = $this->config->get(self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . $clusterName . self::POSTFIX_GROUPLIST);
+        $endpointStr = $this->config->get('seata.' . self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . $clusterName . self::POSTFIX_GROUPLIST);
         if (! $endpointStr) {
             throw new InvalidArgumentException($clusterName . self::POSTFIX_GROUPLIST . ' is required');
         }

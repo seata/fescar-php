@@ -75,7 +75,7 @@ class RpcMessage
         return $this;
     }
 
-    public function getCodec(): string
+    public function getCodec(): int
     {
         return $this->codec;
     }
@@ -90,7 +90,7 @@ class RpcMessage
         return $this;
     }
 
-    public function getCompressor(): string
+    public function getCompressor(): int
     {
         return $this->compressor;
     }

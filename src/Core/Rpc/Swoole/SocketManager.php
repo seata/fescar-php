@@ -84,8 +84,15 @@ class SocketManager
         $this->runSendCoroutine();
     }
 
-    public function acquireChannel(string $address)
+    public function acquireChannel(Address $address)
     {
+        if (! $this->socket) {
+            $socket = new Socket(AF_INET, SOCK_STREAM, 0);
+            $socket->connect($address->getHost(), $address->getPort(), 100);
+            // $socket->listen(128);
+            $this->socket = $socket;
+        }
+        return $this->socket;
     }
 
     protected function runSendCoroutine()
