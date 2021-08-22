@@ -17,6 +17,7 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmUndoLogProcessor;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Utils\ApplicationContext;
 
@@ -71,6 +72,10 @@ class RmRpcClient extends AbstractRpcRemotingClient
         parent::registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
         // 2.registry rm client handle branch commit processor
         $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
+        // 3.registry rm handler undo log processor
+        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
+        parent::registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
     }
 
     public function getResourceManager(): ResourceManager
