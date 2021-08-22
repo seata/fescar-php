@@ -26,4 +26,14 @@ abstract class AbstractTransactionRequestToRM extends AbstractTransactionRequest
         $this->handler = $handler;
         return $this;
     }
+
+    /**
+     * Sets rm inbound message handler.
+     *
+     * @return $this
+     */
+    public function setRMInboundMessageHandler(RMInboundHandler $handler)
+    {
+        $this->handler = $handler;
+    }
 }

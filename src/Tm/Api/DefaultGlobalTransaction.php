@@ -19,6 +19,7 @@ use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Model\TransactionManager;
 use Hyperf\Seata\Exception\IllegalStateException;
 use Hyperf\Seata\Exception\TransactionException;
+use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
 
 class DefaultGlobalTransaction implements GlobalTransaction
@@ -61,13 +62,14 @@ class DefaultGlobalTransaction implements GlobalTransaction
 
     private $rollbackRetryCount;
 
-    public function __construct(?string $xid, GlobalStatus $status, GlobalTransactionRole $role)
+    public function __construct(?string $xid = null, GlobalStatus $status, GlobalTransactionRole $role)
     {
         $container = ApplicationContext::getContainer();
         $this->logger = $container->get(StdoutLoggerInterface::class);
         $this->config = $container->get(ConfigInterface::class);
         $this->commitRetryCount = $this->config->get('stata.commit_retry_count', DefaultValues::DEFAULT_TM_COMMIT_RETRY_COUNT);
         $this->rollbackRetryCount = $this->config->get('stata.rollback_retry_count', DefaultValues::DEFAULT_TM_ROLLBACK_RETRY_COUNT);
+        $this->transactionManager = TransactionManagerHolder::get();
         $this->xid = $xid;
         $this->status = $status;
         $this->role = $role;

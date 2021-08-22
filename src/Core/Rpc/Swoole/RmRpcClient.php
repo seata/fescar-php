@@ -13,8 +13,12 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
+use Hyperf\Utils\ApplicationContext;
 
 class RmRpcClient extends AbstractRpcRemotingClient
 {
@@ -45,6 +49,8 @@ class RmRpcClient extends AbstractRpcRemotingClient
         parent::init();
 
         $this->registerService();
+
+//        $this->initRegisterProcessor();
     }
 
     /**
@@ -57,9 +63,24 @@ class RmRpcClient extends AbstractRpcRemotingClient
         return $this->sendMsgWithResponse($request);
     }
 
+    public function initRegisterProcessor()
+    {
+        $container = ApplicationContext::getContainer();
+        // 1.registry rm client handle branch commit processor
+        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
+        // 2.registry rm client handle branch commit processor
+        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
+    }
+
     public function getResourceManager(): ResourceManager
     {
         return $this->resourceManager;
+    }
+
+    public function getTransactionMessageHandler(): \Hyperf\Seata\Core\Rpc\TransactionMessageHandler
+    {
+        return $this->transactionMessageHandler;
     }
 
     /**

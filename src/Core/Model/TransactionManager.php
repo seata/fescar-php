@@ -40,7 +40,7 @@ interface TransactionManager
      *                              out
      * @return int the value of GlobalStatus, status of the global Transaction after committing
      */
-    public function commit(string $xid): int;
+    public function commit(string $xid): GlobalStatus;
 
     /**
      * Global rollback.
@@ -50,7 +50,7 @@ interface TransactionManager
      *                              out
      * @return int the value of GlobalStatus, status of the global Transaction after rollbacking
      */
-    public function rollback(string $xid): int;
+    public function rollback(string $xid): GlobalStatus;
 
     /**
      * Get current status of the give Transaction.

@@ -31,7 +31,7 @@ class RootContext extends Context
      */
     private static $logger;
 
-    public static function getXID(): string
+    public static function getXID(): ?string
     {
         return static::get(static::KEY_XID);
     }
@@ -54,13 +54,13 @@ class RootContext extends Context
     {
         static::debug('Local Transaction Global Lock support enabled');
         // Just put something not null
-        statis::set(static::KEY_GLOBAL_LOCK_FLAG, static::KEY_GLOBAL_LOCK_FLAG);
+        static::set(static::KEY_GLOBAL_LOCK_FLAG, static::KEY_GLOBAL_LOCK_FLAG);
     }
 
     public static function unbindGlobalLockFlag(): void
     {
         static::debug('Unbind global lock flag');
-        statis::set(static::KEY_GLOBAL_LOCK_FLAG, null);
+        static::set(static::KEY_GLOBAL_LOCK_FLAG, null);
     }
 
     public static function inGlobalTransaction(): bool

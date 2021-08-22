@@ -25,12 +25,12 @@ abstract class AbstractTransactionRequestToTC extends AbstractTransactionRequest
     /**
      * Sets tc inbound handler.
      */
-    public function setTCInboundHandler(TCInboundHandler $handler): public
+    public function setTCInboundHandler(TCInboundHandler $handler)
     {
         $this->handler = $handler;
     }
 
-    public function handle(RpcContext $rpcContext): AbstractTransactionResponse
+    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         return $this->handler->handle($this, $rpcContext);
     }

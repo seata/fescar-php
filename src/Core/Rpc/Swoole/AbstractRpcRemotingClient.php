@@ -15,9 +15,11 @@ use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
 
 abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
@@ -39,6 +41,11 @@ abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
     protected const SCHEDULE_INTERVAL_MILLS = 5;
 
     protected const MERGE_THREAD_PREFIX = 'rpcMergeMessageSend';
+
+    /**
+     * @var TransactionMessageHandler
+     */
+    protected $transactionMessageHandler;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -109,5 +116,10 @@ abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
             throw new SeataException(SeataErrorCode::NoAvailableService);
         }
         return $address;
+    }
+
+
+    public function setTransactionMessageHandler(TransactionMessageHandler $transactionMessageHandler) {
+        $this->transactionMessageHandler = $transactionMessageHandler;
     }
 }

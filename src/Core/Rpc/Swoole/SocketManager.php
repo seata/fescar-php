@@ -140,6 +140,7 @@ class SocketManager
             $socket = $this->getSocket();
             while (true) {
                 $content = $socket->recvAll();
+                var_dump($content);
                 if ($content === false) {
                     var_dump('Recv false');
                     break;

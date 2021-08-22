@@ -18,6 +18,8 @@ use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
+use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;
@@ -44,6 +46,11 @@ abstract class AbstractRpcRemoting implements Disposable
      * @var ProtocolV1Decoder
      */
     protected $protocolDecoder;
+
+    /**
+     * @var array <MessageType, RemotingProcessor>
+     */
+    protected $processorTable = [];
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -113,5 +120,10 @@ abstract class AbstractRpcRemoting implements Disposable
             $this->protocolDecoder->decode(ByteBuffer::allocateSocket($channel));
         }
         return $result;
+    }
+
+    protected function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
+    {
+        $this->processorTable[$messageType] = $processor;
     }
 }

@@ -42,13 +42,13 @@ class TmRpcClient extends AbstractRpcRemotingClient
     {
         parent::init();
 
-        $this->registerProcessor();
+        $this->initRegisterProcessor();
     }
 
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
-    private function registerProcessor()
+    private function initRegisterProcessor()
     {
         // @todo registerProcessor
         $request = new RegisterTMRequest($this->applicationId, $this->transactionServiceGroup);

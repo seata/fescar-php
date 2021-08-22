@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol\Transaction;
 
+use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractGlobalEndResponse;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;
@@ -41,6 +42,6 @@ class AbstractGlobalEndResponseCodec extends AbstractTransactionResponseCodec
             throw new \InvalidArgumentException('Invalid message');
         }
 
-        $message->setGlobalStatus((int) $buffer->readUByte());
+        $message->setGlobalStatus(new GlobalStatus((int) $buffer->readUByte()));
     }
 }
