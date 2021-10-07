@@ -76,8 +76,7 @@ class SwooleSocketByteBuffer extends ByteBuffer
 
     public function unpack(string $format, int $offset = 0)
     {
-        $data = unpack($format, $this->recv($this->getFormatLength($format)))[1];
-        return $data;
+        return unpack($format, $this->recv($this->getFormatLength($format)))[1];
     }
 
     protected function recv(int $length)

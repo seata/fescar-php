@@ -148,6 +148,6 @@ abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMI
 
     private function handleUndoLogDeleteRequest(UndoLogDeleteRequest $request)
     {
-        // TODO
+
     }
 }

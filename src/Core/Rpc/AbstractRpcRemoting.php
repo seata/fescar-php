@@ -16,6 +16,8 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Protocol\MergeMessage;
+use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
@@ -48,9 +50,19 @@ abstract class AbstractRpcRemoting implements Disposable
     protected $protocolDecoder;
 
     /**
+     * @var array ConcurrentHashMap<Integer, MessageFuture>
+     */
+    protected $features = [];
+
+    /**
      * @var array <MessageType, RemotingProcessor>
      */
     protected $processorTable = [];
+
+    /**
+     * @var array Map<Integer, MergeMessage>
+     */
+    protected $mergeMsgMap = [];
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -113,6 +125,10 @@ abstract class AbstractRpcRemoting implements Disposable
             // $this->logger->debug(sprintf("offer message: %s", $rpcMessage->getBody()));
         }
 
+        if ($rpcMessage->getBody() instanceof MergeMessage) {
+            $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
+        }
+
         $data = $this->protocolEncoder->encode($rpcMessage);
 
         $result = $channel->sendAll($data, $timeout);
@@ -126,4 +142,22 @@ abstract class AbstractRpcRemoting implements Disposable
     {
         $this->processorTable[$messageType] = $processor;
     }
+
+    /**
+     * @return array
+     */
+    public function getFeatures(): array
+    {
+        return $this->features;
+    }
+
+    /**
+     * @param array $features
+     */
+    public function setFeatures(array $features): void
+    {
+        $this->features = $features;
+    }
+
+
 }
