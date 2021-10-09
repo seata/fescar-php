@@ -12,8 +12,7 @@ abstract class AbstractTransactionRequest extends AbstractMessage
      * Handle abstract transaction response.
      *
      * @param $rpcContext the rpc context
-     * @return the abstract transaction response
+     * @return null|AbstractTransactionResponse the abstract transaction response
      */
-    abstract public function handle(RpcContext $rpcContext): AbstractTransactionResponse;
-
+    abstract public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse;
 }

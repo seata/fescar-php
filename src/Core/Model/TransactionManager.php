@@ -23,7 +23,7 @@ interface TransactionManager
      * @throws TransactionException Any exception that fails this will be wrapped with TransactionException and thrown
      * out.
      */
-    public function begin(string $applicationId, string $transactionServiceGroup, string $name, int $timeout): string;
+    public function begin(?string $applicationId, ?string $transactionServiceGroup, string $name, int $timeout): string;
 
     /**
      * Global commit.
@@ -33,7 +33,7 @@ interface TransactionManager
      * @throws TransactionException Any exception that fails this will be wrapped with TransactionException and thrown
      * out.
      */
-    public function commit(string $xid): int;
+    public function commit(string $xid): GlobalStatus;
 
     /**
      * Global rollback.
@@ -43,7 +43,7 @@ interface TransactionManager
      * @throws TransactionException Any exception that fails this will be wrapped with TransactionException and thrown
      * out.
      */
-    public function rollback(string $xid): int;
+    public function rollback(string $xid): GlobalStatus;
 
     /**
      * Get current status of the give transaction.

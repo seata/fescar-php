@@ -6,8 +6,17 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManager;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
+use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
+use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\Client\RmUndoLogProcessor;
+use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
+use Hyperf\Utils\ApplicationContext;
 
 class RmRpcClient extends AbstractRpcRemotingClient
 {
@@ -34,6 +43,7 @@ class RmRpcClient extends AbstractRpcRemotingClient
         parent::init();
 
         $this->registerService();
+//        $this->initRegisterProcessor();
     }
 
     /**
@@ -46,9 +56,37 @@ class RmRpcClient extends AbstractRpcRemotingClient
         return $this->sendMsgWithResponse($request);
     }
 
+    public function initRegisterProcessor()
+    {
+        // 1.registry rm client handle branch commit processor
+        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
+        // 2.registry rm client handle branch commit processor
+        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
+        // 3.registry rm handler undo log processor
+        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
+        parent::registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
+        // 4.registry TC response processor
+        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(),$this->getTransactionMessageHandler());
+        parent::registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
+        parent::registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
+        parent::registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
+        parent::registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
+        // 5.registry heartbeat message processor
+        $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
+        parent::registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor, null);
+    }
+
     public function getResourceManager(): ResourceManager
     {
         return $this->resourceManager;
+    }
+
+    public function getTransactionMessageHandler(): TransactionMessageHandler
+    {
+        return $this->transactionMessageHandler;
     }
 
     /**

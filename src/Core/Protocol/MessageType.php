@@ -106,4 +106,14 @@ class MessageType
      */
     public const TYPE_REG_RM_RESULT = 104;
 
+    /**
+     * The constant TYPE_RM_DELETE_UNDOLOG.
+     */
+    public const TYPE_RM_DELETE_UNDOLOG = 111;
+
+    /**
+     * the constant TYPE_HEARTBEAT_MSG
+     */
+    public const TYPE_HEARTBEAT_MSG = 120;
+
 }

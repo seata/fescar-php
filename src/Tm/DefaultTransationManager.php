@@ -4,6 +4,7 @@ namespace Hyperf\Seata\Tm;
 
 
 use Hyperf\Seata\Core\Model\Give;
+use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Model\ID;
 use Hyperf\Seata\Core\Model\Timeout;
 use Hyperf\Seata\Core\Model\TransactionManager;
@@ -17,16 +18,24 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
+use Hyperf\Seata\Core\Rpc\Swoole\TmRpcClient;
+use Hyperf\Utils\ApplicationContext;
 
 class DefaultTransationManager implements TransactionManager
 {
 
     /**
-     * @var
+     * @var TmRpcClient
      */
     protected $tmRpcClient;
 
-    public function begin(string $applicationId, string $transactionServiceGroup, string $name, int $timeout): string
+    public function __construct(TmRpcClient $tmRpcClient)
+    {
+        $this->tmRpcClient = $tmRpcClient;
+    }
+
+
+    public function begin(?string $applicationId, ?string $transactionServiceGroup, string $name, int $timeout): string
     {
         $request = new GlobalBeginRequest();
         $request->setTransactionName($name);
@@ -36,7 +45,7 @@ class DefaultTransationManager implements TransactionManager
         return $response->getXid();
     }
 
-    public function commit(string $xid): int
+    public function commit(string $xid): GlobalStatus
     {
         $request = new GlobalCommitRequest();
         $request->setXid($xid);
@@ -45,7 +54,7 @@ class DefaultTransationManager implements TransactionManager
         return $response->getGlobalStatus();
     }
 
-    public function rollback(string $xid): int
+    public function rollback(string $xid): GlobalStatus
     {
         $request = new GlobalRollbackRequest();
         $request->setXid($xid);

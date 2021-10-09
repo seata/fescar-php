@@ -23,7 +23,7 @@ abstract class AbstractTransactionRequestToTC extends AbstractTransactionRequest
         $this->handler = $handler;
     }
 
-    public function handle(RpcContext $rpcContext): AbstractTransactionResponse
+    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         return $this->handler->handle($this, $rpcContext);
     }

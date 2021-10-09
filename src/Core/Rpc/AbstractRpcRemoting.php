@@ -10,8 +10,12 @@ use Hyperf\Seata\Core\Protocol\Codec\Packer;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
 use Hyperf\Seata\Core\Protocol\MessageFuture;
+use Hyperf\Seata\Core\Protocol\MergeMessage;
+use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
+use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Buffer\ByteBuffer;
@@ -41,6 +45,21 @@ abstract class AbstractRpcRemoting implements Disposable
      * @var ProtocolV1Decoder
      */
     protected $protocolDecoder;
+
+    /**
+     * @var array ConcurrentHashMap<Integer, MessageFuture>
+     */
+    protected $features = [];
+
+    /**
+     * @var array <MessageType, RemotingProcessor>
+     */
+    protected $processorTable = [];
+
+    /**
+     * @var array Map<Integer, MergeMessage>
+     */
+    protected $mergeMsgMap = [];
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -95,6 +114,10 @@ abstract class AbstractRpcRemoting implements Disposable
             // $this->logger->debug(sprintf("offer message: %s", $rpcMessage->getBody()));
         }
 
+        if ($rpcMessage->getBody() instanceof MergeMessage) {
+            $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
+        }
+
         $data = $this->protocolEncoder->encode($rpcMessage);
 
         $result = $channel->sendAll($data, $timeout);
@@ -109,5 +132,27 @@ abstract class AbstractRpcRemoting implements Disposable
         return 1;
         return random_int(1000, 9999);
     }
+
+    protected function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
+    {
+        $this->processorTable[$messageType] = $processor;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFeatures(): array
+    {
+        return $this->features;
+    }
+
+    /**
+     * @param array $features
+     */
+    public function setFeatures(array $features): void
+    {
+        $this->features = $features;
+    }
+
 
 }

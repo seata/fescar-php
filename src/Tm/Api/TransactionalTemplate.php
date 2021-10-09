@@ -42,7 +42,6 @@ class TransactionalTemplate
 
         // 1.1 Get current transaction, if not null, the tx role is 'GlobalTransactionRole.Participant'.
         $tx = GlobalTransactionContext::getCurrent();
-
         // 1.2 Handle the transaction propagation.
         $propagation = $txInfo->getPropagation();
         $suspendedResourcesHolder = null;
@@ -100,7 +99,6 @@ class TransactionalTemplate
             // set current tx config to holder
             /** @var GlobalLockConfig $previousConfig */
             $previousConfig = $this->replaceGlobalLockConfig($txInfo);
-
             try {
                 // 2. If the tx role is 'GlobalTransactionRole.Launcher', send the request of beginTransaction to TC,
                 //    else do nothing. Of course, the hooks will still be triggered.
@@ -110,7 +108,7 @@ class TransactionalTemplate
                 try {
                     // Do Your Business
                     $rs = $business->execute();
-                } catch (\Throwable $throwable) {
+                } catch (Throwable $throwable) {
                     // 3. The needed business exception to rollback.
                     $this->completeTransactionAfterThrowing($txInfo, $tx, $throwable);
                     throw $throwable;
@@ -122,7 +120,7 @@ class TransactionalTemplate
                 return $rs;
             } finally {
                 // 5. clear
-                $this->resumeGlobalLockConfig($previousConfig);
+                ! empty($previousConfig) && $this->resumeGlobalLockConfig($previousConfig);
                 $this->triggerAfterCompletion();
                 $this->cleanUp();
             }

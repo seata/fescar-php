@@ -32,6 +32,7 @@ class RMClient
     public function init(string $applicationId, string $transactionServiceGroup): void {
         $this->rmRpcClient->setApplicationId($applicationId);
         $this->rmRpcClient->setTransactionServiceGroup($transactionServiceGroup);
+//        $this->rmRpcClient->setTransactionMessageHandler(DefaultRMHandler::get());
         $this->rmRpcClient->init();
     }
 

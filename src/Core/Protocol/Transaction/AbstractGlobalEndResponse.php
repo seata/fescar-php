@@ -2,17 +2,18 @@
 
 namespace Hyperf\Seata\Core\Protocol\Transaction;
 
+use Hyperf\Seata\Core\Model\GlobalStatus;
 
 abstract class AbstractGlobalEndResponse extends AbstractTransactionResponse
 {
 
     /**
-     * @var int
+     * @var GlobalStatus
      * @see \Hyperf\Seata\Core\Model\GlobalStatus
      */
     protected $globalStatus;
 
-    public function getGlobalStatus(): int
+    public function getGlobalStatus(): GlobalStatus
     {
         return $this->globalStatus;
     }
@@ -20,7 +21,7 @@ abstract class AbstractGlobalEndResponse extends AbstractTransactionResponse
     /**
      * @return $this
      */
-    public function setGlobalStatus(int $globalStatus)
+    public function setGlobalStatus(GlobalStatus $globalStatus)
     {
         $this->globalStatus = $globalStatus;
         return $this;

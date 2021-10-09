@@ -3,6 +3,7 @@
 namespace Hyperf\Seata\Utils\Buffer;
 
 
+use BadMethodCallException;
 use Hyperf\Seata\Exception\NotSupportYetException;
 use Swoole\Coroutine\Socket;
 
@@ -71,13 +72,12 @@ class SwooleSocketByteBuffer extends ByteBuffer
 
     public function pack(string $format, $value, int $offset): ByteBuffer
     {
-        throw new \BadMethodCallException('It is a reayonly byte buffer object');
+        throw new BadMethodCallException('It is a reayonly byte buffer object');
     }
 
     public function unpack(string $format, int $offset = 0)
     {
-        $data = unpack($format, $this->recv($this->getFormatLength($format)))[1];
-        return $data;
+        return unpack($format, $this->recv($this->getFormatLength($format)))[1];
     }
 
     protected function recv(int $length)

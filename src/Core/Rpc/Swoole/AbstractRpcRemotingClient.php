@@ -3,17 +3,25 @@
 namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 
+use Exception;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
 
 abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
 {
+
+    /**
+     * @var TransactionMessageHandler
+     */
+    protected $transactionMessageHandler;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -87,7 +95,7 @@ abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
             $addressList = $this->registryFactory->getInstance()->lookup($transactionServiceGroup);
             // @todo 通过负载均衡器选择一个地址
             $address = $addressList[0];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             if ($this->logger) {
                 $this->logger->error($exception->getMessage());
             }
@@ -98,4 +106,7 @@ abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
         return $address;
     }
 
+    public function setTransactionMessageHandler(TransactionMessageHandler $transactionMessageHandler) {
+        $this->transactionMessageHandler = $transactionMessageHandler;
+    }
 }

@@ -15,7 +15,7 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
     protected $xid;
 
     /**
-     * @var string
+     * @var int
      */
     protected $branchId;
 
@@ -34,7 +34,7 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
      */
     protected $applicationData;
 
-    public function handle(RpcContext $rpcContext): AbstractTransactionResponse
+    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         return $this->handler->handle($this);
     }
@@ -53,7 +53,7 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
         return $this;
     }
 
-    public function getBranchId(): string
+    public function getBranchId(): int
     {
         return $this->branchId;
     }
@@ -61,7 +61,7 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
     /**
      * @return $this
      */
-    public function setBranchId(string $branchId)
+    public function setBranchId(int $branchId)
     {
         $this->branchId = $branchId;
         return $this;
