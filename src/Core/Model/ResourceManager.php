@@ -10,28 +10,28 @@ interface ResourceManager extends ResourceManagerInbound, ResourceManagerOutboun
     /**
      * Register a Resource to be managed by Resource Manager.
      *
-     * @param resource The resource to be managed.
+     * @param Resource The resource to be managed.
      */
     public function registerResource(Resource $resource): void;
 
     /**
      * Unregister a Resource from the Resource Manager.
      *
-     * @param resource The resource to be removed.
+     * @param Resource The resource to be removed.
      */
     public function unregisterResource(Resource $resource): void;
 
     /**
      * Get all resources managed by this manager.
      *
-     * @return resourceId -> Resource Map
+     * @return <resourceId, \Hyperf\Seata\Core\Model\Resource>
      */
-    public function getManagedResources();
+    public function getManagedResources(): array;
 
     /**
      * Get the BranchType.
      *
-     * @return The BranchType of ResourceManager.
+     * @return int The BranchType of ResourceManager.
      */
     public function getBranchType(): int;
 

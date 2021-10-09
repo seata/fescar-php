@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\Rm\DataSource\UndoLog;
+namespace Hyperf\Seata\Rm\DataSource\Undo;
 
 use Hyperf\Seata\Rm\DataSource\Sql\Struct\TableMeta;
 use Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords;
@@ -9,29 +9,16 @@ class SQLUndoLog
 {
 
     /**
-     * @var int
      * @see \Hyperf\Seata\Rm\DataSource\Sql\SQLType
      */
-    private $sqlType;
+    private int $sqlType;
 
-    /**
-     * @var string
-     */
-    private $tableName = '';
+    private string $tableName = '';
 
-    /**
-     * @var TableRecords
-     */
-    private $beforeImage;
+    private TableRecords $beforeImage;
 
-    /**
-     * @var TableRecords
-     */
-    private $afterImage;
+    private TableRecords $afterImage;
 
-    /**
-     * Sets table meta.
-     */
     public function setTableMeta(TableMeta $tableMeta): void
     {
         if ($this->beforeImage !== null) {
@@ -47,11 +34,7 @@ class SQLUndoLog
         return $this->sqlType;
     }
 
-    /**
-     * @param int $sqlType
-     * @return SQLUndoLog
-     */
-    public function setSqlType($sqlType)
+    public function setSqlType(int $sqlType): static
     {
         $this->sqlType = $sqlType;
         return $this;
@@ -62,41 +45,29 @@ class SQLUndoLog
         return $this->tableName;
     }
 
-    /**
-     * @param string $tableName
-     * @return SQLUndoLog
-     */
-    public function setTableName($tableName)
+    public function setTableName(string $tableName): static
     {
         $this->tableName = $tableName;
         return $this;
     }
 
-    public function getBeforeImage(): \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords
+    public function getBeforeImage(): TableRecords
     {
         return $this->beforeImage;
     }
 
-    /**
-     * @param \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords $beforeImage
-     * @return SQLUndoLog
-     */
-    public function setBeforeImage($beforeImage)
+    public function setBeforeImage(TableRecords $beforeImage): static
     {
         $this->beforeImage = $beforeImage;
         return $this;
     }
 
-    public function getAfterImage(): \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords
+    public function getAfterImage(): TableRecords
     {
         return $this->afterImage;
     }
 
-    /**
-     * @param \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords $afterImage
-     * @return SQLUndoLog
-     */
-    public function setAfterImage($afterImage)
+    public function setAfterImage(TableRecords $afterImage): static
     {
         $this->afterImage = $afterImage;
         return $this;

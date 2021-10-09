@@ -6,10 +6,7 @@ namespace Hyperf\Seata\Core\Protocol;
 class RegisterRMRequest extends AbstractIdentifyRequest
 {
 
-    /**
-     * @var string
-     */
-    private $resourceIds = '';
+    private string $resourceIds = '';
 
     public function getTypeCode(): int
     {
@@ -21,11 +18,7 @@ class RegisterRMRequest extends AbstractIdentifyRequest
         return $this->resourceIds;
     }
 
-    /**
-     * @param string $resourceIds
-     * @return RegisterRMRequest
-     */
-    public function setResourceIds($resourceIds)
+    public function setResourceIds(string $resourceIds): static
     {
         $this->resourceIds = $resourceIds;
         return $this;

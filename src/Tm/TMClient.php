@@ -5,12 +5,12 @@ namespace Hyperf\Seata\Tm;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\TmRpcClient;
+use Hyperf\Seata\Core\Rpc\Swoole\TmClient;
 
 class TMClient
 {
     /**
-     * @var TmRpcClient
+     * @var TmClient
      */
     protected $tmRpcClient;
 
@@ -21,10 +21,11 @@ class TMClient
 
     /**
      * TMClient constructor.
-     * @param TmRpcClient $tmRpcClient
+     *
+     * @param TmClient $tmRpcClient
      * @param ConfigInterface $config
      */
-    public function __construct(TmRpcClient $tmRpcClient, ConfigInterface $config)
+    public function __construct(TmClient $tmRpcClient, ConfigInterface $config)
     {
         $this->tmRpcClient = $tmRpcClient;
         $this->config = $config;

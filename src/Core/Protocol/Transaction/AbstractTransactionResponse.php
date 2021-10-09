@@ -9,20 +9,14 @@ use Hyperf\Seata\Exception\TransactionExceptionCode;
 abstract class AbstractTransactionResponse extends AbstractResultMessage
 {
 
-    /**
-     * @var int
-     */
-    protected $transactionExceptionCode = TransactionExceptionCode::Unknown;
+    protected int $transactionExceptionCode = TransactionExceptionCode::Unknown;
 
     public function getTransactionExceptionCode(): int
     {
         return $this->transactionExceptionCode;
     }
 
-    /**
-     * @return $this
-     */
-    public function setTransactionExceptionCode(int $transactionExceptionCode)
+    public function setTransactionExceptionCode(int $transactionExceptionCode): static
     {
         $this->transactionExceptionCode = $transactionExceptionCode;
         return $this;

@@ -14,7 +14,7 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 use Hyperf\Seata\Core\Protocol\RegisterTMRequest;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 
-class TmRpcClient extends AbstractRpcRemotingClient
+class TmClient extends AbstractRemotingClient
 {
     protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
 

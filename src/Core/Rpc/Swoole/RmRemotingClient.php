@@ -5,8 +5,6 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManager;
-use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
@@ -18,32 +16,31 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Utils\ApplicationContext;
 
-class RmRpcClient extends AbstractRpcRemotingClient
+class RmRemotingClient extends AbstractRemotingClient
 {
 
-    /**
-     * @var \Hyperf\Seata\Core\Model\ResourceManager
-     */
-    protected $resourceManager;
-    protected $customerKeys = '';
+    protected ResourceManager $resourceManager;
+    protected string $customerKeys = '';
+    protected bool $initialized = false;
     protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
     protected const MAX_QUEUE_SIZE = 20000;
-    protected $applicationId = '';
-    protected $transactionServiceGroup = '';
+    protected string $applicationId = '';
+    protected string $transactionServiceGroup = '';
 
-    protected $instances = [];
+    protected SwooleClientPoolManager $clientConnectionManager;
 
     public function __construct($transactionRole = TransactionRole::RMROLE)
     {
         parent::__construct($transactionRole);
+        $this->clientConnectionManager = ApplicationContext::getContainer()->get(SwooleClientConnectionManager::class);
     }
 
     public function init()
     {
         parent::init();
 
-        $this->registerService();
-//        $this->initRegisterProcessor();
+        // $this->registerService();
+        $this->initRegisterProcessor();
     }
 
     /**
@@ -54,6 +51,14 @@ class RmRpcClient extends AbstractRpcRemotingClient
         $request = new RegisterRMRequest($this->applicationId, $this->transactionServiceGroup);
         $request->setResourceIds($this->getMergedResourceKeys());
         return $this->sendMsgWithResponse($request);
+    }
+
+    public function registerResource(string $resourceGroupId, string $resourceId): void
+    {
+        if ($this->transactionServiceGroup !== '') {
+            if ($this->clientConnectionManager->reconnect($this->transactionServiceGroup)) {
+            }
+        }
     }
 
     public function initRegisterProcessor()

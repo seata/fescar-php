@@ -3,62 +3,49 @@
 namespace Hyperf\Seata\Rm\DataSource;
 
 
+use Hyperf\Seata\Exception\ShouldNeverHappenException;
+use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
+
 class ConnectionContext
 {
 
-    private $xid = '';
-    /**
-     * @var int
-     */
-    private $branchId;
-    private $globalLockRequire = false;
-    //table and primary key should not be duplicated
-    private $lockKeysBuffer = [];
-    private $sqlUndoItemsBuffer = [];
+    private ?string $xid;
+    private ?int $branchId;
+    private bool $globalLockRequire = false;
+    private bool $autoCommitChanged = false;
+    // Table and primary key should not be duplicated
+    private array $lockKeysBuffer = [];
+    private array $sqlUndoItemsBuffer = [];
 
-    /**
-     * Append lock key.
-     *
-     * @param $lockKey the lock key
-     */
+    // todo savepoint
+
     public function appendLockKey(string $lockKey)
     {
         $this->lockKeysBuffer[$lockKey] = $lockKey;
     }
 
-    /**
-     * Append undo item.
-     *
-     * @param sqlUndoLog the sql undo log
-     */
     public function appendUndoItem(SQLUndoLog $sqlUndoLog)
     {
         $this->sqlUndoItemsBuffer[] = $sqlUndoLog;
     }
 
-    public function getXid(): string
+    public function getXid(): ?string
     {
         return $this->xid;
     }
 
-    /**
-     * @return $this
-     */
-    public function setXid(string $xid)
+    public function setXid(string $xid): static
     {
         $this->xid = $xid;
         return $this;
     }
 
-    public function getBranchId(): int
+    public function getBranchId(): ?int
     {
         return $this->branchId;
     }
 
-    /**
-     * @return $this
-     */
-    public function setBranchId(int $branchId)
+    public function setBranchId(int $branchId): static
     {
         $this->branchId = $branchId;
         return $this;
@@ -69,13 +56,69 @@ class ConnectionContext
         return $this->globalLockRequire;
     }
 
-    /**
-     * @return $this
-     */
-    public function setGlobalLockRequire(bool $globalLockRequire)
+    public function setGlobalLockRequire(bool $globalLockRequire): static
     {
         $this->globalLockRequire = $globalLockRequire;
         return $this;
+    }
+
+    public function inGlobalTransaction(): bool
+    {
+        return (bool)$this->xid;
+    }
+
+    public function bind(string $xid): void
+    {
+        if (! $this->inGlobalTransaction()) {
+            $this->setXid($xid);
+        } elseif ($xid !== $this->getXid()) {
+            throw new ShouldNeverHappenException();
+        }
+    }
+
+    public function hasUndoLog(): bool
+    {
+        return ! empty($this->sqlUndoItemsBuffer);
+    }
+
+    public function hasLockKey(): bool
+    {
+        return ! empty($this->lockKeysBuffer);
+    }
+
+    public function isAutoCommitChanged(): bool
+    {
+        return $this->autoCommitChanged;
+    }
+
+    public function setAutoCommitChanged(bool $autoCommitChanged): static
+    {
+        $this->autoCommitChanged = $autoCommitChanged;
+        return $this;
+    }
+
+    public function reset(): void
+    {
+        $this->xid = null;
+        $this->branchId = null;
+        $this->globalLockRequire = false;
+        $this->lockKeysBuffer = [];
+        $this->sqlUndoItemsBuffer = [];
+        $this->autoCommitChanged = false;
+    }
+
+    public function buildLockKeys(): ?string
+    {
+        if (empty($this->lockKeysBuffer)) {
+            return null;
+        } else {
+            return implode(';', $this->lockKeysBuffer);
+        }
+    }
+
+    public function getUndoItms(): array
+    {
+        return $this->sqlUndoItemsBuffer;
     }
 
 }

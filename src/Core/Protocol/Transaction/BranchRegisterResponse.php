@@ -8,10 +8,7 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 class BranchRegisterResponse extends AbstractTransactionResponse
 {
 
-    /**
-     * @var string
-     */
-    protected $branchId;
+    protected string $branchId;
 
     public function getTypeCode(): int
     {
@@ -23,10 +20,7 @@ class BranchRegisterResponse extends AbstractTransactionResponse
         return $this->branchId;
     }
 
-    /**
-     * @return $this
-     */
-    public function setBranchId(string $branchId)
+    public function setBranchId(string $branchId): static
     {
         $this->branchId = $branchId;
         return $this;

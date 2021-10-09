@@ -15,7 +15,7 @@ use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
 
-abstract class AbstractRpcRemotingClient extends AbstractRpcRemoting
+abstract class AbstractRemotingClient extends AbstractRpcRemoting
 {
 
     /**

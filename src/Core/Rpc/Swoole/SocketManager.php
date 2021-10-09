@@ -3,7 +3,7 @@
 namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 
-use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Utils\ApplicationContext;

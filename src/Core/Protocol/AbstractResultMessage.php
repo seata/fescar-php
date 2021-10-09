@@ -6,25 +6,16 @@ namespace Hyperf\Seata\Core\Protocol;
 abstract class AbstractResultMessage extends AbstractMessage
 {
 
-    /**
-     * @var int
-     */
-    private $resultCode = 0;
+    private int $resultCode = 0;
 
-    /**
-     * @var string
-     */
-    private $message = '';
+    private string $message = '';
 
     public function getResultCode(): int
     {
         return $this->resultCode;
     }
 
-    /**
-     * @return $this
-     */
-    public function setResultCode(int $resultCode)
+    public function setResultCode(int $resultCode): static
     {
         $this->resultCode = $resultCode;
         return $this;
@@ -35,10 +26,7 @@ abstract class AbstractResultMessage extends AbstractMessage
         return $this->message;
     }
 
-    /**
-     * @return $this
-     */
-    public function setMessage(string $message)
+    public function setMessage(string $message): static
     {
         $this->message = $message;
         return $this;

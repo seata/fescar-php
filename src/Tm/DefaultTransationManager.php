@@ -18,18 +18,18 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
-use Hyperf\Seata\Core\Rpc\Swoole\TmRpcClient;
+use Hyperf\Seata\Core\Rpc\Swoole\TmClient;
 use Hyperf\Utils\ApplicationContext;
 
 class DefaultTransationManager implements TransactionManager
 {
 
     /**
-     * @var TmRpcClient
+     * @var TmClient
      */
     protected $tmRpcClient;
 
-    public function __construct(TmRpcClient $tmRpcClient)
+    public function __construct(TmClient $tmRpcClient)
     {
         $this->tmRpcClient = $tmRpcClient;
     }

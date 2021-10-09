@@ -2,10 +2,12 @@
 
 namespace Hyperf\Seata\Rm;
 
+use Hyperf\Contract\ContainerInterface;
 use Hyperf\Database\Connection;
 use Hyperf\Seata\Core\Model\Resource;
 use Hyperf\Seata\Core\Model\ResourceManager;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Rm\DataSource\DataSourceManager;
 use Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy;
 
 class DefaultResourceManager implements ResourceManager
@@ -14,36 +16,47 @@ class DefaultResourceManager implements ResourceManager
     /**
      * All resource managers
      *
-     * @var array <BranchType, ResourceManager>
+     * @var \Hyperf\Seata\Core\Model\ResourceManager[]
      */
-    protected $resources = [];
+    protected array $resourceManagers = [];
+    protected ContainerInterface $container;
 
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
         $this->initResourceManagers();
+        $this->container = $container;
     }
 
     protected function initResourceManagers(): void
     {
-        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
-            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
-        });
+//        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
+//            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
+//        });
+        $this->resourceManagers = [
+            $this->container->get(DataSourceManager::class),
+        ];
     }
 
 
     public function registerResource(Resource $resource): void
     {
-        $this->resources[$resource->getBranchType()] = $resource;
+        $this->getResourceManager($resource->getBranchType())->registerResource($resource);
     }
 
     public function unregisterResource(Resource $resource): void
     {
-        unset($this->resources[$resource->getBranchType()]);
+        $this->getResourceManager($resource->getBranchType())->unregisterResource($resource);
     }
 
     public function getManagedResources(): array
     {
-        return $this->resources;
+        $resources = [];
+        $resourceManagers = $this->resourceManagers;
+        foreach ($resourceManagers as $resourceManager) {
+            $managedResources = $resourceManager->getManagedResources();
+            $resources = array_merge($resources, $managedResources);
+        }
+        return $resources;
     }
 
     /**

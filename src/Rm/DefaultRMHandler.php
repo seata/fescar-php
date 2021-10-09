@@ -13,12 +13,14 @@ class DefaultRMHandler extends AbstractRMHandler
     /**
      * @var array <BranchType, AbstractRMHandler>
      */
-    protected static $allRMHandlers = [];
-
+    protected $allRMHandlers = [];
 
 
     protected function initRMHandlers()
     {
+        $this->allRMHandlers = [
+            RM
+        ];
     }
 
     public static function get(): DefaultRMHandler

@@ -4,7 +4,7 @@ namespace Hyperf\Seata\Core\Protocol;
 
 
 use Hyperf\Seata\Core\Codec\CodecType;
-use Hyperf\Seata\Core\Codec\CompressorType;
+use Hyperf\Seata\Core\Compressor\CompressorType;
 
 class ProtocolConstants
 {

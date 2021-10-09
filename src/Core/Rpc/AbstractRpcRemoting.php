@@ -7,8 +7,8 @@ use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Packer;
-use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Decoder;
-use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
+use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
@@ -138,17 +138,11 @@ abstract class AbstractRpcRemoting implements Disposable
         $this->processorTable[$messageType] = $processor;
     }
 
-    /**
-     * @return array
-     */
     public function getFeatures(): array
     {
         return $this->features;
     }
 
-    /**
-     * @param array $features
-     */
     public function setFeatures(array $features): void
     {
         $this->features = $features;

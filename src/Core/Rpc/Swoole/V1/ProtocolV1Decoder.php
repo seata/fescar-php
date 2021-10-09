@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\Core\Protocol\Codec;
+namespace Hyperf\Seata\Core\Rpc\Swoole\V1;
 
 use Hyperf\Seata\Core\Codec\CodecFactory;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
