@@ -1,20 +1,13 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Protocol\Codec;
 
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
+
+use Hyperf\Utils\Buffer\ByteBuffer;
 
 class HeadMapSerializer
 {
+
     /**
      * @return int Length of heap map
      */
@@ -55,11 +48,11 @@ class HeadMapSerializer
         $length = $buffer->readUShort();
         if ($length < 0) {
             return null;
-        }
-        if (intval($length) === 0) {
+        } elseif (intval($length) === 0) {
             return '';
+        } else {
+            return $buffer->readString($length);
         }
-        return $buffer->readString($length);
     }
 
     protected static function writeString(Strings $string): array
@@ -74,4 +67,5 @@ class HeadMapSerializer
         }
         return [$content, strlen($content)];
     }
+
 }

@@ -1,14 +1,5 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource\UndoLog;
 
 use Hyperf\Seata\Rm\DataSource\Sql\Struct\TableMeta;
@@ -16,6 +7,7 @@ use Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords;
 
 class SQLUndoLog
 {
+
     /**
      * @var int
      * @see \Hyperf\Seata\Rm\DataSource\Sql\SQLType
@@ -80,7 +72,7 @@ class SQLUndoLog
         return $this;
     }
 
-    public function getBeforeImage(): TableRecords
+    public function getBeforeImage(): \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords
     {
         return $this->beforeImage;
     }
@@ -95,7 +87,7 @@ class SQLUndoLog
         return $this;
     }
 
-    public function getAfterImage(): TableRecords
+    public function getAfterImage(): \Hyperf\Seata\Rm\DataSource\Sql\Struct\TableRecords
     {
         return $this->afterImage;
     }
@@ -109,4 +101,5 @@ class SQLUndoLog
         $this->afterImage = $afterImage;
         return $this;
     }
+
 }

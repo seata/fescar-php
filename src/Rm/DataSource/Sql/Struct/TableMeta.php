@@ -1,20 +1,13 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource\Sql\Struct;
+
 
 use Hyperf\Seata\Exception\NotSupportYetException;
 
 class TableMeta
 {
+
     /**
      * @var string
      */
@@ -121,4 +114,5 @@ class TableMeta
         $this->allIndexes = $allIndexes;
         return $this;
     }
+
 }

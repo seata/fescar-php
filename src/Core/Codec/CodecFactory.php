@@ -1,20 +1,13 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Codec;
+
 
 use Hyperf\Seata\Core\Codec\Seata\SeataCodec;
 
 class CodecFactory
 {
+
     /**
      * @var array
      */
@@ -27,6 +20,9 @@ class CodecFactory
      */
     protected $container;
 
+    /**
+     * @param \Psr\Container\ContainerInterface $container
+     */
     public function __construct(\Psr\Container\ContainerInterface $container)
     {
         $this->container = $container;
@@ -40,4 +36,5 @@ class CodecFactory
         $class = $this->codecs[$codec];
         return $this->container->get($class);
     }
+
 }

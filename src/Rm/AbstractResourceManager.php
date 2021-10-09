@@ -1,18 +1,11 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm;
+
 
 use Hyperf\Seata\Core\Model\Resource;
 use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\the;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchRegisterRequest;
 use Hyperf\Seata\Exception\TransactionException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
@@ -20,6 +13,7 @@ use RuntimeException;
 
 abstract class AbstractResourceManager implements ResourceManager
 {
+
     /**
      * @var \Hyperf\Seata\Core\Rpc\Swoole\RmRpcClient
      */
@@ -27,10 +21,12 @@ abstract class AbstractResourceManager implements ResourceManager
 
     public function registerResource(Resource $resource): void
     {
+
     }
 
     public function unregisterResource(Resource $resource): void
     {
+
     }
 
     public function branchRegister(
@@ -68,10 +64,13 @@ abstract class AbstractResourceManager implements ResourceManager
         int $status,
         string $applicationData
     ): void {
+
     }
 
     public function lockQuery(int $branchType, string $resourceId, string $xid, string $lockKeys): bool
     {
         return false;
     }
+
+
 }

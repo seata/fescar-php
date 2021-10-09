@@ -1,27 +1,20 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Rpc\Swoole;
 
+
+use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\ChannelPool;
 use Hyperf\Utils\Coroutine;
 use RuntimeException;
+use Swoole\Coroutine\Channel;
 use Swoole\Coroutine\Socket;
 
 class SocketManager
 {
-    protected const WAIT_CLOSE = 2;
-
-    protected const WAIT_CLOSE_FORCE = 3;
 
     /**
      * @var array
@@ -60,9 +53,9 @@ class SocketManager
     protected $socket;
 
     protected $recvChannelMap = [];
-
     protected $waitStatus = false;
-
+    protected const WAIT_CLOSE = 2;
+    protected const WAIT_CLOSE_FORCE = 3;
     protected $sendYield = false;
 
     public function __construct(ChannelPool $channelPool)
@@ -82,17 +75,6 @@ class SocketManager
         $this->mainCoroutineId = Coroutine::id();
         $this->runRecvCoroutine();
         $this->runSendCoroutine();
-    }
-
-    public function acquireChannel(Address $address)
-    {
-        if (! $this->socket) {
-            $socket = new Socket(AF_INET, SOCK_STREAM, 0);
-            $socket->connect($address->getHost(), $address->getPort(), 100);
-            // $socket->listen(128);
-            $this->socket = $socket;
-        }
-        return $this->socket;
     }
 
     protected function runSendCoroutine()
@@ -135,7 +117,7 @@ class SocketManager
 
     protected function runRecvCoroutine(string $address)
     {
-        Coroutine::create(function () {
+        Coroutine::create(function () use ($address) {
             $this->recvCoroutineId = Coroutine::id();
             $socket = $this->getSocket();
             while (true) {
@@ -163,7 +145,13 @@ class SocketManager
                     break;
                 }
             }
+
         });
+    }
+
+    public function acquireChannel(string $address)
+    {
+
     }
 
     protected function closeRecv()
@@ -187,4 +175,5 @@ class SocketManager
         }
         return $shouldKill;
     }
+
 }

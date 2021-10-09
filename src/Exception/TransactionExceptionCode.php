@@ -1,100 +1,108 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Exception;
+
 
 class TransactionExceptionCode
 {
-    /**
-     * Unknown Transaction exception code.
-     */
-    public const Unknown = 0;
 
     /**
-     * Lock key conflict Transaction exception code.
+     * Unknown transaction exception code.
      */
-    public const LockKeyConflict = 1;
+    //
+    const Unknown = 0;
 
     /**
-     * Io Transaction exception code.
+     * Lock key conflict transaction exception code.
      */
-    public const IO = 2;
+    //
+    const LockKeyConflict = 1;
 
     /**
-     * Branch rollback failed retriable Transaction exception code.
+     * Io transaction exception code.
      */
-    public const BranchRollbackFailed_Retriable = 3;
+    //
+    const IO = 2;
 
     /**
-     * Branch rollback failed unretriable Transaction exception code.
+     * Branch rollback failed retriable transaction exception code.
      */
-    public const BranchRollbackFailed_Unretriable = 4;
+    //
+    const BranchRollbackFailed_Retriable = 3;
 
     /**
-     * Branch register failed Transaction exception code.
+     * Branch rollback failed unretriable transaction exception code.
      */
-    public const BranchRegisterFailed = 5;
+    //
+    const BranchRollbackFailed_Unretriable = 4;
 
     /**
-     * Branch report failed Transaction exception code.
+     * Branch register failed transaction exception code.
      */
-    public const BranchReportFailed = 6;
+    //
+    const BranchRegisterFailed = 5;
 
     /**
-     * Lockable check failed Transaction exception code.
+     * Branch report failed transaction exception code.
      */
-    public const LockableCheckFailed = 7;
+    //
+    const BranchReportFailed = 6;
 
     /**
-     * Branch Transaction not exist Transaction exception code.
+     * Lockable check failed transaction exception code.
      */
-    public const BranchTransactionNotExist = 8;
+    //
+    const LockableCheckFailed = 7;
 
     /**
-     * Global Transaction not exist Transaction exception code.
+     * Branch transaction not exist transaction exception code.
      */
-    public const GlobalTransactionNotExist = 9;
+    //
+    const BranchTransactionNotExist = 8;
 
     /**
-     * Global Transaction not active Transaction exception code.
+     * Global transaction not exist transaction exception code.
      */
-    public const GlobalTransactionNotActive = 10;
+    //
+    const GlobalTransactionNotExist = 9;
 
     /**
-     * Global Transaction status invalid Transaction exception code.
+     * Global transaction not active transaction exception code.
      */
-    public const GlobalTransactionStatusInvalid = 11;
+    //
+    const GlobalTransactionNotActive = 10;
 
     /**
-     * Failed to send branch commit request Transaction exception code.
+     * Global transaction status invalid transaction exception code.
      */
-    public const FailedToSendBranchCommitRequest = 12;
+    //
+    const GlobalTransactionStatusInvalid = 11;
 
     /**
-     * Failed to send branch rollback request Transaction exception code.
+     * Failed to send branch commit request transaction exception code.
      */
-    public const FailedToSendBranchRollbackRequest = 13;
+    //
+    const FailedToSendBranchCommitRequest = 12;
 
     /**
-     * Failed to add branch Transaction exception code.
+     * Failed to send branch rollback request transaction exception code.
      */
-    public const FailedToAddBranch = 14;
+    //
+    const FailedToSendBranchRollbackRequest = 13;
 
     /**
-     *  Failed to lock global Transaction exception code.
+     * Failed to add branch transaction exception code.
      */
-    public const FailedLockGlobalTranscation = 15;
+    //
+    const FailedToAddBranch = 14;
+    /**
+     *  Failed to lock global transaction exception code.
+     */
+    const FailedLockGlobalTranscation = 15;
 
     /**
-     * FailedWriteSession.
+     * FailedWriteSession
      */
-    public const FailedWriteSession = 16;
+    const FailedWriteSession = 16;
+
 }

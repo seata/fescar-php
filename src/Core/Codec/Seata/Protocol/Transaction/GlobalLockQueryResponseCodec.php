@@ -1,19 +1,11 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol\Transaction;
+
 
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalLockQueryResponse;
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
+use Hyperf\Utils\Buffer\ByteBuffer;
 
 class GlobalLockQueryResponseCodec extends AbstractTransactionResponseCodec
 {
@@ -43,4 +35,5 @@ class GlobalLockQueryResponseCodec extends AbstractTransactionResponseCodec
 
         $message->setLockable($buffer->readUShort() === 1);
     }
+
 }

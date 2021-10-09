@@ -1,36 +1,25 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Rpc\Swoole;
+
 
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 
 class RmRpcClient extends AbstractRpcRemotingClient
 {
-    protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
-
-    protected const MAX_QUEUE_SIZE = 20000;
 
     /**
      * @var \Hyperf\Seata\Core\Model\ResourceManager
      */
     protected $resourceManager;
-
     protected $customerKeys = '';
-
+    protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
+    protected const MAX_QUEUE_SIZE = 20000;
     protected $applicationId = '';
-
     protected $transactionServiceGroup = '';
 
     protected $instances = [];
@@ -115,6 +104,7 @@ class RmRpcClient extends AbstractRpcRemotingClient
 
     public function destroy(): void
     {
+
     }
 
     protected function getMergedResourceKeys(): string

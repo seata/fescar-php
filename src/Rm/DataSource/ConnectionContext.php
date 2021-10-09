@@ -1,30 +1,19 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource;
+
 
 class ConnectionContext
 {
-    private $xid = '';
 
+    private $xid = '';
     /**
      * @var int
      */
     private $branchId;
-
     private $globalLockRequire = false;
-
     //table and primary key should not be duplicated
     private $lockKeysBuffer = [];
-
     private $sqlUndoItemsBuffer = [];
 
     /**
@@ -88,4 +77,5 @@ class ConnectionContext
         $this->globalLockRequire = $globalLockRequire;
         return $this;
     }
+
 }

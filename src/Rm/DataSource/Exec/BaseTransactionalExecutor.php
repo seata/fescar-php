@@ -1,20 +1,13 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource\Exec;
+
 
 use Hyperf\Seata\Core\Context\RootContext;
 
 abstract class BaseTransactionalExecutor implements Executor
 {
+
     /**
      * @var StatementProxy
      */
@@ -36,5 +29,6 @@ abstract class BaseTransactionalExecutor implements Executor
         return $this->doExecute($args);
     }
 
-    abstract protected function doExecute(...$args);
+    protected abstract function doExecute(...$args);
+
 }

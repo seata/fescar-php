@@ -1,29 +1,26 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Rpc;
+
 
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Core\Protocol\Codec\Packer;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Protocol\Codec\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
+use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Utils\Buffer\SwooleSocketByteBuffer;
+use Swoole\Coroutine\Socket;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
@@ -58,7 +55,6 @@ abstract class AbstractRpcRemoting implements Disposable
 
     /**
      * Send async request with response object.
-     * @param mixed $channel
      */
     protected function sendAsyncRequestWithResponse(
         $channel,
@@ -79,15 +75,8 @@ abstract class AbstractRpcRemoting implements Disposable
         return $this->sendAsyncRequest($connection, $message, 0, false);
     }
 
-    protected function getNextMessageId()
-    {
-        return 1;
-        return random_int(1000, 9999);
-    }
-
     /**
-     * @param mixed $channel
-     * @return false|int
+     * @return int|false
      */
     private function sendAsyncRequest(
         $channel,
@@ -114,4 +103,11 @@ abstract class AbstractRpcRemoting implements Disposable
         }
         return $result;
     }
+
+    protected function getNextMessageId()
+    {
+        return 1;
+        return random_int(1000, 9999);
+    }
+
 }

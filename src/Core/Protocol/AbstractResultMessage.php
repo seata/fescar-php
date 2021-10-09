@@ -1,18 +1,11 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Protocol;
+
 
 abstract class AbstractResultMessage extends AbstractMessage
 {
+
     /**
      * @var int
      */
@@ -50,4 +43,7 @@ abstract class AbstractResultMessage extends AbstractMessage
         $this->message = $message;
         return $this;
     }
+
+
+
 }

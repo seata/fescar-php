@@ -9,14 +9,16 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace Hyperf\Seata\Core\Protocol\Codec;
 
 class Packer
 {
+
     public static function packHex($data)
     {
         $result = '';
-        foreach ((array) $data as $item) {
+        foreach ((array)$data as $item) {
             $result .= static::packUInt8(intval($item) & 0xff);
         }
         return $result;
@@ -75,16 +77,17 @@ class Packer
             $v = pack('H' . strlen(base_convert($v, 2, 16)), base_convert($v, 2, 16));
         }
         return join('', $arr);
+
     }
 
     public static function str2bin(string $string)
     {
         $arr = preg_split('/(?<!^)(?!$)/u', $string);
-        foreach ($arr as &$v) {
+        foreach($arr as &$v){
             $temp = unpack('H*', $v);
             $v = base_convert($temp[1], 16, 2);
             unset($temp);
         }
-        return join(' ', $arr);
+        return join(' ',$arr);
     }
 }

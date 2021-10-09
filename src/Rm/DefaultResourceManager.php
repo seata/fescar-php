@@ -1,14 +1,5 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm;
 
 use Hyperf\Database\Connection;
@@ -19,8 +10,9 @@ use Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy;
 
 class DefaultResourceManager implements ResourceManager
 {
+
     /**
-     * All resource managers.
+     * All resource managers
      *
      * @var array <BranchType, ResourceManager>
      */
@@ -30,6 +22,14 @@ class DefaultResourceManager implements ResourceManager
     {
         $this->initResourceManagers();
     }
+
+    protected function initResourceManagers(): void
+    {
+        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
+            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
+        });
+    }
+
 
     public function registerResource(Resource $resource): void
     {
@@ -47,7 +47,7 @@ class DefaultResourceManager implements ResourceManager
     }
 
     /**
-     * Get ResourceManager by branch Type.
+     * Get ResourceManager by branch Type
      */
     public function getResourceManager(int $branchType): ResourceManager
     {
@@ -109,12 +109,5 @@ class DefaultResourceManager implements ResourceManager
     public function lockQuery(int $branchType, string $resourceId, string $xid, string $lockKeys): bool
     {
         return $this->getResourceManager($branchType)->lockQuery($branchType, $resourceId, $xid, $lockKeys);
-    }
-
-    protected function initResourceManagers(): void
-    {
-        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
-            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
-        });
     }
 }

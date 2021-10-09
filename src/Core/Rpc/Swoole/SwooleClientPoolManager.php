@@ -1,24 +1,18 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Rpc\Swoole;
+
 
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Pool\Pool;
+use Hyperf\Pool\SimplePool\Connection;
 use Hyperf\Pool\SimplePool\PoolFactory;
 use Hyperf\Seata\Core\Rpc\Address;
 use Swoole\Coroutine\Socket;
 
 class SwooleClientPoolManager
 {
+
     /**
      * @var \Hyperf\Pool\SimplePool\PoolFactory
      */
@@ -44,4 +38,5 @@ class SwooleClientPoolManager
             return $socket;
         });
     }
+
 }

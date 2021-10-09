@@ -1,15 +1,7 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Context;
+
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Utils\ApplicationContext;
@@ -19,12 +11,13 @@ use RuntimeException;
 
 class RootContext extends Context
 {
+
     /**
      * The constant KEY_XID.
      */
-    public const KEY_XID = 'TX_XID';
+    public const KEY_XID = "TX_XID";
 
-    public const KEY_GLOBAL_LOCK_FLAG = 'TX_LOCK';
+    public const KEY_GLOBAL_LOCK_FLAG = "TX_LOCK";
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -52,14 +45,14 @@ class RootContext extends Context
 
     public static function bindGlobalLockFlag(): void
     {
-        static::debug('Local Transaction Global Lock support enabled');
+        static::debug("Local Transaction Global Lock support enabled");
         // Just put something not null
         statis::set(static::KEY_GLOBAL_LOCK_FLAG, static::KEY_GLOBAL_LOCK_FLAG);
     }
 
     public static function unbindGlobalLockFlag(): void
     {
-        static::debug('Unbind global lock flag');
+        static::debug("Unbind global lock flag");
         statis::set(static::KEY_GLOBAL_LOCK_FLAG, null);
     }
 
@@ -74,7 +67,7 @@ class RootContext extends Context
     }
 
     /**
-     * Assert not in global Transaction.
+     * Assert not in global transaction.
      */
     public static function assertNotInGlobalTransaction(): void
     {
@@ -95,4 +88,5 @@ class RootContext extends Context
             static::$logger->debug(sprintf(...$content));
         }
     }
+
 }

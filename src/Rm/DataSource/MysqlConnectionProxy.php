@@ -1,16 +1,9 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource;
 
+
+use Hyperf\Database\ConnectionInterface;
 use Hyperf\Database\MySqlConnection;
 use Hyperf\Seata\Core\Model\BranchType;
 use Hyperf\Seata\Core\Model\Resource;
@@ -19,7 +12,6 @@ use Hyperf\Utils\ApplicationContext;
 
 class MysqlConnectionProxy extends MySqlConnection implements Resource
 {
-    private const DEFAULT_RESOURCE_GROUP_ID = 'DEFAULT';
 
     /**
      * @var string
@@ -30,6 +22,8 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource
      * @var string
      */
     protected $resourceGroupId = '';
+
+    private const DEFAULT_RESOURCE_GROUP_ID = 'DEFAULT';
 
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
     {
@@ -70,6 +64,7 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource
         $host = $config['host'] ?? null;
         $port = (int) ($config['port'] ?? 3306);
         $database = $config['database'] ?? null;
-        return sprintf('%s:%s://%s:%d/%s', $driver, $engine, $host, $port, $database);
+        $resourceId = sprintf('%s:%s://%s:%d/%s', $driver, $engine, $host, $port, $database);
+        return $resourceId;
     }
 }

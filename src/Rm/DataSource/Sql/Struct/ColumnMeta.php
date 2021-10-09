@@ -1,103 +1,79 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Rm\DataSource\Sql\Struct;
+
 
 class ColumnMeta
 {
+
     /**
      * @var string
      */
     private $tableCat = '';
-
     /**
      * @var string
      */
     private $tableSchemaName = '';
-
     /**
      * @var string
      */
     private $tableName = '';
-
     /**
      * @var string
      */
     private $columnName = '';
-
     /**
      * @var int
      */
     private $dataType;
-
     /**
      * @var string
      */
     private $dataTypeName = '';
-
     /**
      * @var int
      */
     private $columnSize;
-
     /**
      * @var int
      */
     private $decimalDigits;
-
     /**
      * @var int
      */
     private $numPrecRadix;
-
     /**
      * @var int
      */
     private $nullAble;
-
     /**
      * @var string
      */
     private $remarks = '';
-
     /**
      * @var string
      */
     private $columnDef = '';
-
     /**
      * @var int
      */
     private $sqlDataType;
-
     /**
      * @var int
      */
     private $sqlDatetimeSub;
-
     /**
      * @var int
      */
     private $charOctetLength;
-
     /**
      * @var int
      */
     private $ordinalPosition;
-
     /**
      * @var string
      */
     private $isNullAble = '';
-
     /**
      * @var string
      */
@@ -372,4 +348,5 @@ class ColumnMeta
         $this->isAutoincrement = $isAutoincrement;
         return $this;
     }
+
 }

@@ -1,19 +1,11 @@
 <?php
 
-declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol\Transaction;
+
 
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractBranchEndResponse;
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
+use Hyperf\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractBranchEndResponseCodec extends AbstractTransactionResponseCodec
 {
@@ -52,4 +44,6 @@ abstract class AbstractBranchEndResponseCodec extends AbstractTransactionRespons
         $message->setBranchId($buffer->readULong());
         $message->setBranchStatus($buffer->readUByte());
     }
+
+
 }
