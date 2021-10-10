@@ -8,6 +8,7 @@ use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
@@ -15,7 +16,7 @@ use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
 
-abstract class AbstractRemotingClient extends AbstractRpcRemoting
+abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
 
     /**
@@ -33,11 +34,6 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting
      */
     protected $registryFactory;
 
-    /**
-     * @var \Hyperf\Seata\Core\Rpc\Swoole\SocketManager
-     */
-    protected $socketManager;
-
     protected const MSG_ID_PREFIX = "msgId:";
     protected const FUTURES_PREFIX = "futures:";
     protected const SINGLE_LOG_POSTFIX = ";";
@@ -50,10 +46,10 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting
     protected const MERGE_THREAD_PREFIX = "rpcMergeMessageSend";
 
     /**
-     * @var int
      * @see \Hyperf\Seata\Core\Rpc\TransactionRole
      */
-    protected $transactionRole;
+    protected int $transactionRole;
+    protected SwooleClientConnectionManager $connectionManager;
 
     public function __construct(int $transactionRole)
     {
@@ -61,7 +57,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting
         $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
-        $this->socketManager = $container->get(SocketManager::class);
+        $this->connectionManager = $container->get(SwooleClientConnectionManager::class);
     }
 
     public function init() {

@@ -7,7 +7,7 @@ use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Packer;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 class RegisterRMRequestCodec extends AbstractIdentifyRequestCodec
 {

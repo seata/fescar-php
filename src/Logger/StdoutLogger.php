@@ -4,8 +4,6 @@ namespace Hyperf\Seata\Logger;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Seata\Logger\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -95,7 +93,7 @@ class StdoutLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $config = $this->config->get(StdoutLoggerInterface::class, ['log_level' => []]);
+        $config = $this->config->get(LoggerInterface::class, ['log_level' => []]);
         if (! in_array($level, $config['log_level'], true)) {
             return;
         }
@@ -117,7 +115,6 @@ class StdoutLogger implements LoggerInterface
 
     protected function getMessage(string $message, string $level = LogLevel::INFO, array $tags = [])
     {
-        $tag = null;
         switch ($level) {
             case LogLevel::EMERGENCY:
             case LogLevel::ALERT:

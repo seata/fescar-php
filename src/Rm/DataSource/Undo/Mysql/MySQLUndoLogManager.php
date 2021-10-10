@@ -3,11 +3,14 @@
 namespace Hyperf\Seata\Rm\DataSource\Undo\Mysql;
 
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Core\Compressor\CompressorType;
+use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
 use Hyperf\Seata\Rm\DataSource\Undo\AbstractUndoLogManager;
 use Hyperf\Seata\Rm\DataSource\Undo\stirng;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogParser;
+use Hyperf\Seata\Rm\DataSource\Undo\UndoLogParserFactory;
 
 // todo
 class MySQLUndoLogManager extends AbstractUndoLogManager

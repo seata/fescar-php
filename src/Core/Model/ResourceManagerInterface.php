@@ -4,7 +4,7 @@
 namespace Hyperf\Seata\Core\Model;
 
 
-interface ResourceManager extends ResourceManagerInbound, ResourceManagerOutbound
+interface ResourceManagerInterface extends ResourceManagerInbound, ResourceManagerOutbound
 {
 
     /**

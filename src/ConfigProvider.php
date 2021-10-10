@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace Hyperf\Seata;
 
 
-use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Seata\Annotation\GlobalTransactionScanner;
 use Hyperf\Seata\Annotation\GlobalTransactionScannerFactory;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Listener\InitListener;
 use Hyperf\Seata\Logger\LoggerInterface;
+use Hyperf\Seata\Logger\StdoutLogger;
 use Hyperf\Seata\Rm\DefaultResourceManager;
 
 class ConfigProvider
@@ -29,7 +29,7 @@ class ConfigProvider
                 InitListener::class,
             ],
             'dependencies' => [
-                ResourceManager::class => DefaultResourceManager::class,
+                ResourceManagerInterface::class => DefaultResourceManager::class,
                 GlobalTransactionScanner::class => GlobalTransactionScannerFactory::class,
                 LoggerInterface::class => StdoutLogger::class,
             ],

@@ -11,35 +11,27 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Processor\Client;
 
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchCommitRequest;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
+use Hyperf\Seata\Logger\LoggerFactory;
+use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Utils\ApplicationContext;
 use Throwable;
 
 class RmBranchCommitProcessor implements RemotingProcessorInterface
 {
-    /**
-     * @var StdoutLoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var TransactionMessageHandler
-     */
-    private $handler;
+    private TransactionMessageHandler $handler;
 
-    /**
-     * @var RemotingClientInterface
-     */
-    private $remotingClient;
+    private RemotingClientInterface $remotingClient;
 
     public function __construct(TransactionMessageHandler $handler, RemotingClientInterface $remotingClient)
     {
-        $this->logger = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+        $this->logger = ApplicationContext::getContainer()->get(LoggerFactory::class)->create(static::class);
         $this->handler = $handler;
         $this->remotingClient = $remotingClient;
     }

@@ -9,7 +9,6 @@ use Hyperf\Pool\SimplePool\PoolFactory;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
-use Hyperf\Utils\Str;
 use JetBrains\PhpStorm\Pure;
 use Swoole\Coroutine\Socket;
 

@@ -48,12 +48,12 @@ class FileRegistryService implements RegistryService
 
     public function lookup(string $key): array
     {
-        return [new Address('127.0.0.1', 8090)];
-        $clusterName = $this->config->get(self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . self::PREFIX_SERVICE_MAPPING . $key);
+        $file = 'seata.';
+        $clusterName = $this->config->get($file . self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . self::PREFIX_SERVICE_MAPPING . $key);
         if (null === $clusterName) {
             return [];
         }
-        $endpointStr = $this->config->get(self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . $clusterName . self::POSTFIX_GROUPLIST);
+        $endpointStr = $this->config->get($file . self::PREFIX_SERVICE_ROOT . self::CONFIG_SPLIT_CHAR . $clusterName . self::POSTFIX_GROUPLIST);
         if (! $endpointStr) {
             throw new InvalidArgumentException($clusterName . self::POSTFIX_GROUPLIST . ' is required');
         }

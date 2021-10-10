@@ -3,6 +3,7 @@
 namespace Hyperf\Seata\Rm\DataSource;
 
 
+use Hyperf\Database\Connection;
 use Hyperf\Seata\Core\Context\RootContext;
 use Hyperf\Seata\Core\Model\Application;
 use Hyperf\Seata\Core\Model\Branch;
@@ -14,12 +15,14 @@ use Hyperf\Seata\Core\Model\TransactionException;
 use Hyperf\Seata\Core\Protocol\ResultCode;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalLockQueryRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalLockQueryResponse;
+use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
 use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Exception\TimeoutException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Seata\Rm\AbstractResourceManager;
+use Hyperf\Utils\ApplicationContext;
 
 class DataSourceManager extends AbstractResourceManager
 {
@@ -27,9 +30,14 @@ class DataSourceManager extends AbstractResourceManager
     protected LoggerInterface $logger;
     protected array $dataSourceCache = [];
 
-    public function __construct(LoggerFactory $loggerFactory)
+    public function __construct(RmRemotingClient $rmRemotingClient)
     {
-        $this->logger = $loggerFactory->create(static::class);
+        parent::__construct($rmRemotingClient);
+        $container = ApplicationContext::getContainer();
+        $this->logger = $container->get(LoggerFactory::class)->create(static::class);
+        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
+            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
+        });
     }
 
     public function lockQuery(int $branchType, string $resourceId, string $xid, string $lockKeys): bool

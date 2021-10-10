@@ -67,6 +67,11 @@ class ConnectionContext
         return (bool)$this->xid;
     }
 
+    public function isBranchRegistered(): bool
+    {
+        return (bool)$this->branchId;
+    }
+
     public function bind(string $xid): void
     {
         if (! $this->inGlobalTransaction()) {

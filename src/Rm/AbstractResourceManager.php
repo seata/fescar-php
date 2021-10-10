@@ -5,7 +5,7 @@ namespace Hyperf\Seata\Rm;
 
 use Exception;
 use Hyperf\Seata\Core\Model\Resource;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Model\the;
 use Hyperf\Seata\Core\Protocol\ResultCode;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchRegisterRequest;
@@ -18,7 +18,7 @@ use Hyperf\Seata\Exception\TransactionException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
 use RuntimeException;
 
-abstract class AbstractResourceManager implements ResourceManager
+abstract class AbstractResourceManager implements ResourceManagerInterface
 {
 
     protected RmRemotingClient $rmRemotingClient;

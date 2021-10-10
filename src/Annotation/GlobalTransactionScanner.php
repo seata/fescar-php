@@ -4,7 +4,7 @@ namespace Hyperf\Seata\Annotation;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
 use Hyperf\Seata\Rm\RMClient;
 use Hyperf\Utils\ApplicationContext;

@@ -5,7 +5,7 @@ namespace Hyperf\Seata\Core\Codec\Seata\Protocol;
 
 use Hyperf\Seata\Core\Codec\Seata\MessageSeataCodecInterface;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractMessageCodec implements MessageSeataCodecInterface
 {

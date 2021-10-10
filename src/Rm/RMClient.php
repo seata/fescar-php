@@ -4,45 +4,30 @@ namespace Hyperf\Seata\Rm;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Common\Constants;
-use Hyperf\Seata\Core\Model\ResourceManager;
-use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
 
 class RMClient
 {
 
-    /**
-     * @var \Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient
-     */
-    protected $rmRpcClient;
+    protected RmRemotingClient $rmRpcClient;
+    protected ConfigInterface $config;
+    protected DefaultRMHandler $defaultRMHandler;
+    protected ResourceManagerInterface $resourceManager;
 
-    /**
-     * @var \Hyperf\Contract\ConfigInterface
-     */
-    protected $config;
-    /**
-     * @var \Hyperf\Seata\Rm\DefaultRMHandler
-     */
-    protected $RMHandler;
-
-    /**
-     * @var \Hyperf\Seata\Core\Model\ResourceManager
-     */
-    protected $resourceManager;
-
-    public function __construct(ResourceManager $resourceManager, RmRemotingClient $rmRpcClient, ConfigInterface $config, DefaultRMHandler $RMHandler)
+    public function __construct(ResourceManagerInterface $resourceManager, RmRemotingClient $rmRpcClient, ConfigInterface $config, DefaultRMHandler $defaultRMHandler)
     {
         $this->rmRpcClient = $rmRpcClient;
         $this->config = $config;
-        $this->RMHandler = $RMHandler;
+        $this->defaultRMHandler = $defaultRMHandler;
         $this->resourceManager = $resourceManager;
     }
 
     public function init(string $applicationId, string $transactionServiceGroup): void {
         $this->rmRpcClient->setApplicationId($applicationId);
         $this->rmRpcClient->setTransactionServiceGroup($transactionServiceGroup);
-        $this->rmRpcClient->setTransactionMessageHandler(DefaultRMHandler::get());
+        $this->rmRpcClient->setResourceManager($this->resourceManager);
+        $this->rmRpcClient->setTransactionMessageHandler($this->defaultRMHandler);
         $this->rmRpcClient->init();
     }
 

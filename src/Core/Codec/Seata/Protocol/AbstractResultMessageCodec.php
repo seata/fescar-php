@@ -7,7 +7,7 @@ use Hyperf\Seata\Core\Codec\Seata\the;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractResultMessageCodec extends AbstractMessageCodec
 {

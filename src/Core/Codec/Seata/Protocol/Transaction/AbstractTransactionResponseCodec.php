@@ -6,7 +6,7 @@ namespace Hyperf\Seata\Core\Codec\Seata\Protocol\Transaction;
 use Hyperf\Seata\Core\Codec\Seata\Protocol\AbstractResultMessageCodec;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractTransactionResponse;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 abstract class AbstractTransactionResponseCodec extends AbstractResultMessageCodec
 {

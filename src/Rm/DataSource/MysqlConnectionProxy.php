@@ -5,10 +5,12 @@ namespace Hyperf\Seata\Rm\DataSource;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\MySqlConnection;
+use Hyperf\Seata\Core\Model\BranchStatus;
 use Hyperf\Seata\Core\Model\BranchType;
 use Hyperf\Seata\Core\Model\Resource;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Exception\LockConflictException;
+use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Exception\TransactionException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
 use Hyperf\Seata\Logger\LoggerFactory;
@@ -32,6 +34,7 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource, Connecti
     protected DefaultResourceManager $defaultResourceManager;
     protected UndoLogManager $undoLogManager;
     public bool $reportSuccessEnable;
+    protected int $reportRetryCount;
 
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
     {
@@ -40,11 +43,13 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource, Connecti
         $this->resourceId = $this->generateResourceId($config);
         $this->context = new ConnectionContext();
         $contaienr = ApplicationContext::getContainer();
-        $contaienr->get(ResourceManager::class)->registerResource($this);
+        $contaienr->get(ResourceManagerInterface::class)->registerResource($this);
         $this->logger = $contaienr->get(LoggerFactory::class)->create(static::class);
         $this->defaultResourceManager = $contaienr->get(DefaultResourceManager::class);
         $this->undoLogManager = $contaienr->get(UndoLogManagerFactory::class)->getUndoLogManager('mysql');
-        $this->reportSuccessEnable = $contaienr->get(ConfigInterface::class)->get('seata.client.rm.report_success_enable', false);
+        $config = $contaienr->get(ConfigInterface::class);
+        $this->reportSuccessEnable = $config->get('seata.client.rm.report_success_enable', false);
+        $this->reportRetryCount = $config->get('seata.client.rm.report_retry_count', 5);
     }
 
     public function getResourceGroupId(): string
@@ -129,6 +134,9 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource, Connecti
         return $lockable;
     }
 
+    /**
+     * @throws LockConflictException|\RuntimeException
+     */
     private function recognizeLockKeyConflictException(TransactionException $exception, string $lockKeys = null): void
     {
         if ($exception->getCode() === TransactionExceptionCode::LockKeyConflict) {
@@ -164,6 +172,9 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource, Connecti
         }
     }
 
+    /**
+     * @throws \Throwable
+     */
     protected function processGlobalTransactionCommit()
     {
         try {
@@ -201,5 +212,34 @@ class MysqlConnectionProxy extends MySqlConnection implements Resource, Connecti
             $this->context->setBranchId($branchId);
         }
     }
+
+    public function rollBack($toLevel = null): void
+    {
+        parent::rollBack($toLevel);
+        if ($this->context->inGlobalTransaction() && $this->context->isBranchRegistered()) {
+            $this->report(false);
+        }
+        $this->context->reset();
+    }
+
+    private function report(bool $commitDone): void
+    {
+        if ($this->context->isBranchRegistered()) {
+            $retry = $this->reportRetryCount;
+            while ($retry > 0) {
+                try {
+                    $this->defaultResourceManager->branchReport(BranchType::AT, $this->context->getXid(), $this->context->getBranchId(), $commitDone ? BranchStatus::PhaseOne_Done : BranchStatus::PhaseOne_Failed, '');
+                    return;
+                } catch (\Throwable $exception) {
+                    $this->logger->error(sprintf('Failed to report [%d/%s] commit donw [%s] Retry Countdwon: %d', $this->context->getBranchId(), $this->context->getXid(), $commitDone ? 'true' : 'false', $retry));
+                    --$retry;
+                    if ($retry === 0) {
+                        throw new RuntimeException(sprintf('Failed to report branch status %s', $commitDone ? 'true' : 'fasle'), 0, $exception);
+                    }
+                }
+            }
+        }
+    }
+
 
 }

@@ -3,9 +3,10 @@
 namespace Hyperf\Seata\Core\Rpc\Swoole\V1;
 
 use Hyperf\Seata\Core\Codec\CodecFactory;
+use Hyperf\Seata\Core\Protocol\Codec\HeadMapSerializer;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 /**
  * <pre>

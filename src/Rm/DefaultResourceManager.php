@@ -3,40 +3,35 @@
 namespace Hyperf\Seata\Rm;
 
 use Hyperf\Contract\ContainerInterface;
-use Hyperf\Database\Connection;
 use Hyperf\Seata\Core\Model\Resource;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Seata\Rm\DataSource\DataSourceManager;
-use Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy;
 
-class DefaultResourceManager implements ResourceManager
+class DefaultResourceManager implements ResourceManagerInterface
 {
 
     /**
      * All resource managers
      *
-     * @var \Hyperf\Seata\Core\Model\ResourceManager[]
+     * @var \Hyperf\Seata\Core\Model\ResourceManagerInterface[]
      */
     protected array $resourceManagers = [];
     protected ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
     {
-        $this->initResourceManagers();
         $this->container = $container;
+        $this->initResourceManagers();
     }
 
     protected function initResourceManagers(): void
     {
-//        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
-//            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
-//        });
+        $at = $this->container->get(DataSourceManager::class);
         $this->resourceManagers = [
-            $this->container->get(DataSourceManager::class),
+            $at->getBranchType() => $at,
         ];
     }
-
 
     public function registerResource(Resource $resource): void
     {
@@ -62,10 +57,10 @@ class DefaultResourceManager implements ResourceManager
     /**
      * Get ResourceManager by branch Type
      */
-    public function getResourceManager(int $branchType): ResourceManager
+    public function getResourceManager(int $branchType): ResourceManagerInterface
     {
-        if (isset($this->resourceManagers[$branchType])) {
-            throw new SeataException('No ResourceManager for BranchType:' + $branchType);
+        if (! isset($this->resourceManagers[$branchType])) {
+            throw new SeataException('No ResourceManager for BranchType:' . $branchType);
         }
         return $this->resourceManagers[$branchType];
     }

@@ -7,20 +7,20 @@ use Hyperf\DbConnection\Db;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Seata\Annotation\GlobalTransactionScanner;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Rm\DataSource\DataSourceProxy;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Contract\ConfigInterface;
 
 class InitListener implements ListenerInterface
 {
 
-    /**
-     * @var GlobalTransactionScanner
-     */
-    protected $globalTransactionScanner;
+    protected GlobalTransactionScanner $globalTransactionScanner;
+    protected DataSourceProxy $dataSourceProxy;
 
-    public function __construct(GlobalTransactionScanner $globalTransactionScanner)
+    public function __construct(GlobalTransactionScanner $globalTransactionScanner, DataSourceProxy $dataSourceProxy)
     {
         $this->globalTransactionScanner = $globalTransactionScanner;
+        $this->dataSourceProxy = $dataSourceProxy;
     }
 
     public function listen(): array

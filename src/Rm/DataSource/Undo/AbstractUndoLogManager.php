@@ -27,15 +27,15 @@ abstract class AbstractUndoLogManager implements UndoLogManager
 
     public function __construct(LoggerFactory $loggerFactory, ConfigInterface $config, UndoLogParserFactory $undoLogParserFactory)
     {
-        $this->logger = $loggerFactory->create(static::classs);
+        $this->logger = $loggerFactory->create(static::class);
         $this->config = $config;
-        $this->selectUndoLogSql = sprintf('SELECT * FROM %s WHERE branch_id  = ? AND xid = ? FOR UPDATE', $this->undoLogTableName);
-        $this->deleteUndoLogSql = sprintf('DELETE FROM %s WHERE branch_id  = ? AND xid = ?', $this->undoLogTableName);
         $this->undoLogTableName = $config->get('seata.client.undo.log_table', 'undo_log');
         $this->rollbackInfoCompressEnable = $config->get('seata.client.undo.compress.enable', true);
         $this->rollbackInfoCompressType = $config->get('seata.client.undo.compress.type', true);
         $this->rollbackInfoCompressThreshold = $config->get('seata.client.undo.compress.threshold', true);
         $this->undoLogParser = $undoLogParserFactory->getDefaultParser();
+        $this->selectUndoLogSql = sprintf('SELECT * FROM %s WHERE branch_id  = ? AND xid = ? FOR UPDATE', $this->undoLogTableName);
+        $this->deleteUndoLogSql = sprintf('DELETE FROM %s WHERE branch_id  = ? AND xid = ?', $this->undoLogTableName);
     }
 
     public function deleteUndoLog(string $xid, int $branchId, ConnectionProxyInterface $connection): void

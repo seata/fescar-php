@@ -4,8 +4,12 @@
 namespace Hyperf\Seata\Rm;
 
 
-use Hyperf\Seata\Common\EnhancedServiceLoader;
-use Hyperf\Seata\Core\Model\ResourceManager;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ContainerInterface;
+use Hyperf\Seata\Core\Model\BranchType;
+use Hyperf\Seata\Core\Model\ResourceManagerInterface;
+use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Logger\LoggerFactory;
 
 class DefaultRMHandler extends AbstractRMHandler
 {
@@ -13,24 +17,28 @@ class DefaultRMHandler extends AbstractRMHandler
     /**
      * @var array <BranchType, AbstractRMHandler>
      */
-    protected $allRMHandlers = [];
+    protected array $allRMHandlers = [];
 
+    public function __construct(LoggerFactory $loggerFactory, ConfigInterface $config, ContainerInterface $container)
+    {
+        parent::__construct($loggerFactory, $config);
+        $this->initRMHandlers($container);
+    }
 
-    protected function initRMHandlers()
+    protected function initRMHandlers(ContainerInterface $container)
     {
         $this->allRMHandlers = [
-            RM
+            BranchType::AT => $container->get(RMHandlerAT::class),
         ];
     }
 
-    public static function get(): DefaultRMHandler
+    protected function getResourceManager(): ResourceManagerInterface
     {
-        return SingletonHolder::$INSTANCE;
+        throw new SeataException('DefaultRMHandler is not a real AbstractRMHandler');
     }
 
-    protected function getResourceManager(): ResourceManager
+    public function getBranchType(): int
     {
-        // TODO: Implement getResourceManager() method.
+        throw new SeataException('DefaultRMHandler is not a real AbstractRMHandler');
     }
-
 }

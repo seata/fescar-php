@@ -6,31 +6,21 @@ namespace Hyperf\Seata\Core\Protocol\Transaction;
 abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
 {
 
-    /**
-     * @var string
-     */
-    protected $xid = '';
+    protected string $xid = '';
+
+    protected int $branchId;
 
     /**
-     * @var string
-     */
-    protected $branchId;
-
-    /**
-     * @var int
      * @see \Hyperf\Seata\Core\Model\BranchStatus
      */
-    protected $branchStatus;
+    protected int $branchStatus;
 
     public function getXid(): string
     {
         return $this->xid;
     }
 
-    /**
-     * @return $this
-     */
-    public function setXid(string $xid)
+    public function setXid(string $xid): static
     {
         $this->xid = $xid;
         return $this;
@@ -41,10 +31,7 @@ abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
         return $this->branchId;
     }
 
-    /**
-     * @return $this
-     */
-    public function setBranchId(string $branchId)
+    public function setBranchId(int $branchId): static
     {
         $this->branchId = $branchId;
         return $this;
@@ -55,10 +42,7 @@ abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
         return $this->branchStatus;
     }
 
-    /**
-     * @return $this
-     */
-    public function setBranchStatus(int $branchStatus)
+    public function setBranchStatus(int $branchStatus): static
     {
         $this->branchStatus = $branchStatus;
         return $this;

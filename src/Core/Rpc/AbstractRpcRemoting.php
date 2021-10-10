@@ -6,21 +6,16 @@ namespace Hyperf\Seata\Core\Rpc;
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Seata\Core\Protocol\Codec\Packer;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
-use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
-use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
-use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
+use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
+use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Utils\Buffer\SwooleSocketByteBuffer;
-use Swoole\Coroutine\Socket;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
@@ -86,23 +81,17 @@ abstract class AbstractRpcRemoting implements Disposable
         return $this->sendAsyncRequest($channel, $message, $timeout, true);
     }
 
-    /**
-     * Send async request without response object.
-     */
-    protected function sendAsyncRequestWithoutResponse(ConnectionInterface $connection, AbstractMessage $message)
+    protected function sendAsyncRequestWithoutResponse(ConnectionInterface $connection, AbstractMessage $message): bool|int
     {
         return $this->sendAsyncRequest($connection, $message, 0, false);
     }
 
-    /**
-     * @return int|false
-     */
-    private function sendAsyncRequest(
+    public function sendAsyncRequest(
         $channel,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false
-    ) {
+    ): bool|int {
         $rpcMessage = new RpcMessage();
         $rpcMessage->setId($this->getNextMessageId());
         $rpcMessage->setMessageType(ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY);
@@ -110,16 +99,13 @@ abstract class AbstractRpcRemoting implements Disposable
         $rpcMessage->setCompressor(ProtocolConstants::CONFIGURED_COMPRESSOR);
         $rpcMessage->setBody($message);
 
-        if ($this->logger) {
-            // $this->logger->debug(sprintf("offer message: %s", $rpcMessage->getBody()));
-        }
-
         if ($rpcMessage->getBody() instanceof MergeMessage) {
             $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
         }
 
         $data = $this->protocolEncoder->encode($rpcMessage);
 
+        /** @var \Swoole\Coroutine\Socket $channel */
         $result = $channel->sendAll($data, $timeout);
         if ($withResponse) {
             $this->protocolDecoder->decode(ByteBuffer::allocateSocket($channel));
@@ -133,7 +119,7 @@ abstract class AbstractRpcRemoting implements Disposable
         return random_int(1000, 9999);
     }
 
-    protected function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
+    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor, ?callable $executor = null)
     {
         $this->processorTable[$messageType] = $processor;
     }

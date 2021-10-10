@@ -17,25 +17,15 @@ use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 
 interface RemotingClientInterface
 {
-    /**
-     * client send sync request.
-     *
-     * @param channel client channel
-     * @param msg     transaction message {@link io.seata.core.protocol}
-     * @param mixed $channel
-     * @throws TimeoutException TimeoutException
-     * @return server result message
-     */
-    public function sendSyncRequest($channel, object $msg);
 
-    /**
-     * client send async request.
-     *
-     * @param channel client channel
-     * @param msg     transaction message {@link io.seata.core.protocol}
-     * @param mixed $channel
-     */
-    public function sendAsyncRequest($channel, object $msg);
+    public function sendSyncRequest($channel, object $message);
+
+    public function sendAsyncRequest(
+        $channel,
+        AbstractMessage $message,
+        int $timeout = 100,
+        bool $withResponse = false
+    );
 
     /**
      * client send async response.
@@ -44,7 +34,7 @@ interface RemotingClientInterface
      * @param rpcMessage    rpc message from server request
      * @param msg           transaction message {@link io.seata.core.protocol}
      */
-    public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $msg);
+    public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $message);
 
     /**
      * On register msg success.

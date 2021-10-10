@@ -3,15 +3,14 @@
 namespace Hyperf\Seata\Discovery\Registry;
 
 
+use Psr\Container\ContainerInterface;
+
 class RegistryFactory
 {
 
-    /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $container;
+    protected ContainerInterface $container;
 
-    public function __construct(\Psr\Container\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }

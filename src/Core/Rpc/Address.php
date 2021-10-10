@@ -3,18 +3,14 @@
 namespace Hyperf\Seata\Core\Rpc;
 
 
+use JetBrains\PhpStorm\Pure;
+
 class Address
 {
 
-    /**
-     * @var string
-     */
-    protected $host = '';
+    protected string $host = '';
 
-    /**
-     * @var int|null
-     */
-    protected $port;
+    protected ?int $port;
 
     public function __construct(string $host, ?int $port)
     {
@@ -22,6 +18,7 @@ class Address
         $this->port = $port;
     }
 
+    #[Pure]
     public function __toString()
     {
         return $this->getHost() . ':' . $this->getPort();
@@ -32,10 +29,7 @@ class Address
         return $this->host;
     }
 
-    /**
-     * @return $this
-     */
-    public function setHost(string $host)
+    public function setHost(string $host): static
     {
         $this->host = $host;
         return $this;
@@ -46,10 +40,7 @@ class Address
         return $this->port;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPort(?int $port)
+    public function setPort(?int $port): static
     {
         $this->port = $port;
         return $this;
