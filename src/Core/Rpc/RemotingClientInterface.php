@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc;
 
+use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
@@ -18,10 +19,10 @@ use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 interface RemotingClientInterface
 {
 
-    public function sendSyncRequest($channel, object $message);
+    public function sendSyncRequest(ConnectionInterface $connection, object $message);
 
     public function sendAsyncRequest(
-        $channel,
+        ConnectionInterface $connection,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false
@@ -58,12 +59,5 @@ interface RemotingClientInterface
      */
     public function onRegisterMsgFail(string $serverAddress, $channel, object $response, AbstractMessage $requestMessage);
 
-    /**
-     * register processor.
-     *
-     * @param messageType {@link io.seata.core.protocol.MessageType}
-     * @param processor   {@link RemotingProcessor}
-     * @param executor    thread pool
-     */
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor, callable $executor);
+    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor);
 }

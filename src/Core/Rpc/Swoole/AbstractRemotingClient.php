@@ -72,8 +72,9 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function sendMsgWithResponse(AbstractMessage $message, int $timeout = 100)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
-        $channel = $this->socketManager->acquireChannel($validAddress);
-        $result = $this->sendAsyncRequestWithResponse($channel, $message, $timeout);
+        $connection = $this->connectionManager->acquireConnection($validAddress);
+        $result = $this->sendAsyncRequestWithResponse($connection, $message, $timeout);
+        $connection->release();
         if ($result instanceof GlobalBeginResponse && ! $result->getResultCode()) {
             if ($this->logger) {
                 $this->logger->error('begin response error,release socket');

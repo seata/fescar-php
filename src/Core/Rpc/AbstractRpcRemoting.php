@@ -6,6 +6,7 @@ namespace Hyperf\Seata\Core\Rpc;
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
@@ -71,27 +72,27 @@ abstract class AbstractRpcRemoting implements Disposable
      * Send async request with response object.
      */
     protected function sendAsyncRequestWithResponse(
-        $channel,
+        ConnectionInterface $connection,
         AbstractMessage $message,
         int $timeout
     ) {
         if ($timeout <= 0) {
             throw new SeataException('timeout should more than 0ms');
         }
-        return $this->sendAsyncRequest($channel, $message, $timeout, true);
+        return $this->sendAsyncRequest($connection, $message, $timeout, true);
     }
 
-    protected function sendAsyncRequestWithoutResponse(ConnectionInterface $connection, AbstractMessage $message): bool|int
+    protected function sendAsyncRequestWithoutResponse(ConnectionInterface $connection, AbstractMessage $message): int|AbstractResultMessage
     {
         return $this->sendAsyncRequest($connection, $message, 0, false);
     }
 
     public function sendAsyncRequest(
-        $channel,
+        ConnectionInterface $connection,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false
-    ): bool|int {
+    ): int|RpcMessage {
         $rpcMessage = new RpcMessage();
         $rpcMessage->setId($this->getNextMessageId());
         $rpcMessage->setMessageType(ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY);
@@ -105,12 +106,13 @@ abstract class AbstractRpcRemoting implements Disposable
 
         $data = $this->protocolEncoder->encode($rpcMessage);
 
-        /** @var \Swoole\Coroutine\Socket $channel */
-        $result = $channel->sendAll($data, $timeout);
+        /** @var \Swoole\Coroutine\Socket $socket */
+        $socket = $connection->getConnection();
+        $result = $socket->sendAll($data, $timeout);
         if ($withResponse) {
-            $this->protocolDecoder->decode(ByteBuffer::allocateSocket($channel));
+            return $this->protocolDecoder->decode(ByteBuffer::allocateSocket($socket));
         }
-        return $result;
+        return (int)$result;
     }
 
     protected function getNextMessageId()
@@ -119,7 +121,7 @@ abstract class AbstractRpcRemoting implements Disposable
         return random_int(1000, 9999);
     }
 
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor, ?callable $executor = null)
+    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
     {
         $this->processorTable[$messageType] = $processor;
     }

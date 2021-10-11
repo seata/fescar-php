@@ -4,6 +4,7 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 
 use Exception;
+use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
@@ -38,7 +39,6 @@ class RmRemotingClient extends AbstractRemotingClient
     protected const MAX_QUEUE_SIZE = 20000;
     protected string $applicationId = '';
     protected string $transactionServiceGroup = '';
-
     protected SwooleClientConnectionManager $clientConnectionManager;
 
     public function __construct($transactionRole = TransactionRole::RMROLE)
@@ -50,16 +50,16 @@ class RmRemotingClient extends AbstractRemotingClient
 
     public function init()
     {
-        // $this->registerService();
         $this->initRegisterProcessor();
         $this->initialized = true;
         parent::init();
         if ($this->resourceManager && ! empty($this->resourceManager->getManagedResources()) && $this->transactionServiceGroup) {
             $this->clientConnectionManager->reconnect($this->transactionServiceGroup);
         }
+        $this->registerService();
     }
 
-    public function registerService(): GlobalBeginResponse
+    public function registerService(): RpcMessage
     {
         $request = new RegisterRMRequest($this->applicationId, $this->transactionServiceGroup);
         $request->setResourceIds($this->getMergedResourceKeys());
@@ -69,8 +69,7 @@ class RmRemotingClient extends AbstractRemotingClient
     public function registerResource(string $resourceGroupId, string $resourceId): void
     {
         if ($this->transactionServiceGroup !== '') {
-            if ($this->clientConnectionManager->reconnect($this->transactionServiceGroup)) {
-            }
+            $this->clientConnectionManager->reconnect($this->transactionServiceGroup);
         }
     }
 
@@ -86,7 +85,7 @@ class RmRemotingClient extends AbstractRemotingClient
         $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
         $this->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
         // 4.registry TC response processor
-        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(),$this->getTransactionMessageHandler());
+        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(), $this->getTransactionMessageHandler());
         $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
         $this->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
         $this->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
@@ -161,7 +160,7 @@ class RmRemotingClient extends AbstractRemotingClient
         return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
     }
 
-    public function sendSyncRequest($channel, object $message): GlobalBeginResponse
+    public function sendSyncRequest(ConnectionInterface $connection, object $message): GlobalBeginResponse
     {
         return $this->sendMsgWithResponse($message);
     }
