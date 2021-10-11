@@ -1,5 +1,5 @@
 {
-    "name": "hyperf/seata-incubator",
+    "name": "hyperf/seata",
     "description": "A seata library for Hyperf.",
     "license": "MIT",
     "keywords": [
@@ -16,7 +16,8 @@
         "source": "https://github.com/hyperf/hyperf"
     },
     "require": {
-        "php": ">=7.3"
+        "php": ">=8.0",
+        "hyperf/utils": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -44,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1-dev"
+            "dev-master": "0.1.x-dev"
         },
         "hyperf": {
             "config": "Hyperf\\Seata\\ConfigProvider"
