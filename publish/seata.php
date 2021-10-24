@@ -24,17 +24,20 @@ return [
             'my_test_tx_group' => 'default',
         ],
         'default' => [
-            'group_list' => '127.0.0.1:8091',
+            'grouplist' => '127.0.0.1:8091',
         ],
     ],
     'store' => [
         // store mode: file、db
         'mod' => 'db',
         'file' => [
+
         ],
         'db' => [
+
         ],
     ],
     'server' => [
-    ],
+
+    ]
 ];

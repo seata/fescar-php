@@ -212,7 +212,7 @@ class TransactionalTemplate
             try {
                 $hook->beforeRollback();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute beforeRollback in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute beforeRollback in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -223,7 +223,7 @@ class TransactionalTemplate
             try {
                 $hook->afterRollback();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute afterRollback in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute afterRollback in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -245,7 +245,7 @@ class TransactionalTemplate
             try {
                 $hook->afterCommit();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute afterCommit in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute afterCommit in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -256,7 +256,7 @@ class TransactionalTemplate
             try {
                 $hook->afterCompletion();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute afterCompletion in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute afterCompletion in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -267,7 +267,7 @@ class TransactionalTemplate
             try {
                 $hook->beforeBegin();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute beforeBegin in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute beforeBegin in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -278,7 +278,7 @@ class TransactionalTemplate
             try {
                 $hook->afterBegin();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute afterBegin in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute afterBegin in Hook %s', $e->getMessage()));
             }
         }
     }
@@ -289,7 +289,7 @@ class TransactionalTemplate
             try {
                 $hook->afterCompletion();
             } catch (Exception $e) {
-                $this->logger->error(sprintf('Failed execute afterCompletion in hook %s', $e->getMessage()));
+                $this->logger->error(sprintf('Failed execute afterCompletion in Hook %s', $e->getMessage()));
             }
         }
     }

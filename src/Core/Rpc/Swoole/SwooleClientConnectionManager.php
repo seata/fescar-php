@@ -66,7 +66,7 @@ class SwooleClientConnectionManager
         return $pool->get();
     }
 
-    public function registerAddress(Address $address): static
+    public function registerAddress(Address $address): SwooleClientConnectionManager
     {
         if (! isset($this->addresses[(string)$address])) {
             $this->addresses[(string)$address] = $this->getConnectionPool($address);

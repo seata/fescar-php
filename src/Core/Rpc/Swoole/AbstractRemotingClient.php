@@ -10,6 +10,7 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
+use Hyperf\Seata\Core\Rpc\RpcClientBootstrapInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
@@ -55,18 +56,29 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     protected array $recvChannelMap = [];
     protected SwooleClientBootstrap $clientBootstrap;
 
+    protected RpcClientBootstrapInterface $rpcClientBootstrap;
+
     public function __construct(int $transactionRole)
     {
         parent::__construct();
         $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
+        $this->rpcClientBootstrap = $container->get(RpcClientBootstrapInterface::class);
+        $this->rpcClientBootstrap->setClientHandler(new ClientHandler());
         $this->connectionManager = $container->get(SwooleClientConnectionManager::class);
         $this->clientBootstrap = $container->get(SwooleClientBootstrap::class);
     }
 
     public function init() {
         // @TODO 启动一个 reconnect 的 Timer
+        \Swoole\Timer::tick(10 * 1000 , function () {
+            $this->connectionManager->reconnect($this->transactionServiceGroup);
+        });
+
+        parent::init();
+        // TODO merge send runnable
+        (new MergedSendRunnable($this->isSending, $this->basketMap, $this))->run();
         $this->clientBootstrap->start();
     }
 

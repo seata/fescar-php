@@ -8,9 +8,12 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
+use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
+use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
+use Hyperf\Seata\Core\Rpc\Swoole\SwooleClientConnectionManager;
 use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
@@ -58,6 +61,18 @@ abstract class AbstractRpcRemoting implements Disposable
     protected $mergeMsgMap = [];
 
     /**
+     * @var array ConcurrentHashMap<String serverAddress, BlockingQueue<RpcMessage>>
+    */
+    protected array $basketMap = [];
+
+    /**
+     * @var RpcHookInterface[]
+     */
+    protected array $rpcHooks = [];
+
+    protected SwooleClientConnectionManager $clientConnectionManager;
+
+    /**
      * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct()
@@ -66,6 +81,65 @@ abstract class AbstractRpcRemoting implements Disposable
         $this->logger = $container->get(StdoutLoggerInterface::class);
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
+        $this->clientConnectionManager = $container->get(SwooleClientConnectionManager::class);
+    }
+
+    public function init()
+    {
+        // TODO 增加定时器清理超时的 features
+    }
+
+    /**
+     * rpc sync request
+     * Obtain the return result through MessageFuture blocking.
+     *
+     * @param channel       netty channel
+     * @param rpcMessage    rpc message
+     * @param timeoutMillis rpc communication timeout
+     * @return response message
+     * @throws TimeoutException
+     */
+    protected function sendSync(Address $channel, RpcMessage $rpcMessage, int $timeoutMillis)
+    {
+        if ($timeoutMillis <= 0) {
+            throw new SeataException('timeout should more than 0ms');
+        }
+
+        if (empty($channel)) {
+            $this->logger->warning('sendSync nothing, caused by null channel.');
+            return null;
+        }
+
+        $messageFuture = new MessageFuture();
+        $messageFuture->setRequestMessage($rpcMessage);
+        $messageFuture->setTimeout($timeoutMillis);
+        $this->features[$rpcMessage->getId()] = $messageFuture;
+
+        $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
+
+        $data = $this->protocolEncoder->encode($rpcMessage);
+
+        /** @var \Swoole\Coroutine\Socket $socket */
+        $socket = $this->clientConnectionManager->acquireConnection($channel)->getConnection();
+        $result = $socket->sendAll($data, $timeoutMillis);
+
+        $messageFuture->get($timeoutMillis);
+        $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
+        return $result;
+    }
+
+    protected function doBeforeRpcHooks(string $remoteAddr, RpcMessage $request)
+    {
+        foreach ($this->rpcHooks as $hook) {
+            $hook->doBeforeRequest($remoteAddr, $request);
+        }
+    }
+
+    protected function doAfterRpcHooks(string $remoteAddr, RpcMessage $request, object $response)
+    {
+        foreach ($this->rpcHooks as $hook) {
+            $hook->doAfterResponse($remoteAddr, $request, $response);
+        }
     }
 
     /**
