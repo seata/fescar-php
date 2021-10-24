@@ -30,9 +30,9 @@ class ClientOnResponseProcessor extends AbstractRemotingProcessor
 
     private array $futures;
 
-    private TransactionMessageHandler $transactionMessageHandler;
+    private null|TransactionMessageHandler $transactionMessageHandler;
 
-    public function __construct(array $mergeMsgMap, array $futures, TransactionMessageHandler $transactionMessageHandler)
+    public function __construct(array $mergeMsgMap, array $futures, ?TransactionMessageHandler $transactionMessageHandler)
     {
         $this->mergeMsgMap = $mergeMsgMap;
         $this->futures = $futures;

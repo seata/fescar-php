@@ -19,6 +19,7 @@ use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 interface RemotingClientInterface
 {
 
+
     public function sendSyncRequest(ConnectionInterface $connection, object $message);
 
     public function sendAsyncRequest(
@@ -46,7 +47,7 @@ interface RemotingClientInterface
      * @param requestMessage the request message
      * @param mixed $channel
      */
-    public function onRegisterMsgSuccess(string $serverAddress, $channel, object $response, AbstractMessage $requestMessage);
+    public function onRegisterMsgSuccess(string $serverAddress, Address $channel, object $response, AbstractMessage $requestMessage);
 
     /**
      * On register msg fail.
@@ -57,7 +58,7 @@ interface RemotingClientInterface
      * @param requestMessage the request message
      * @param mixed $channel
      */
-    public function onRegisterMsgFail(string $serverAddress, $channel, object $response, AbstractMessage $requestMessage);
+    public function onRegisterMsgFail(string $serverAddress, Address $channel, object $response, AbstractMessage $requestMessage);
 
     public function registerProcessor(int $messageType, RemotingProcessorInterface $processor);
 }

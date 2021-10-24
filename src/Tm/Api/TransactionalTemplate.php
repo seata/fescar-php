@@ -27,10 +27,13 @@ use Throwable;
 
 class TransactionalTemplate
 {
-    /**
-     * @var StdoutLoggerInterface
-     */
-    private $logger;
+    private StdoutLoggerInterface $logger;
+
+    public function __construct(StdoutLoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
 
     public function execute(TransactionalExecutor $business)
     {

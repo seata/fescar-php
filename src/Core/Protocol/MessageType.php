@@ -81,6 +81,11 @@ class MessageType
     public const TYPE_BRANCH_STATUS_REPORT_RESULT = 14;
 
     /**
+     * The constant TYPE_GLOBAL_REPORT_RESULT.
+     */
+    public const TYPE_GLOBAL_REPORT_RESULT = 18;
+
+    /**
      * The constant TYPE_SEATA_MERGE.
      */
     public const TYPE_SEATA_MERGE = 59;
@@ -115,5 +120,6 @@ class MessageType
      * the constant TYPE_HEARTBEAT_MSG
      */
     public const TYPE_HEARTBEAT_MSG = 120;
+
 
 }

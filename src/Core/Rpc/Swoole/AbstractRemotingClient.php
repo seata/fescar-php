@@ -9,6 +9,7 @@ use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\RpcClientBootstrapInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
@@ -22,10 +23,7 @@ use Hyperf\Utils\Coroutine;
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
 
-    /**
-     * @var TransactionMessageHandler
-     */
-    protected $transactionMessageHandler;
+    protected null|TransactionMessageHandler $transactionMessageHandler = null;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -78,7 +76,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
         parent::init();
         // TODO merge send runnable
-        (new MergedSendRunnable($this->isSending, $this->basketMap, $this))->run();
+//        (new MergedSendRunnable($this->isSending, $this->basketMap, $this))->run();
         $this->clientBootstrap->start();
     }
 
@@ -132,5 +130,15 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
     public function setTransactionMessageHandler(TransactionMessageHandler $transactionMessageHandler) {
         $this->transactionMessageHandler = $transactionMessageHandler;
+    }
+
+    public function getTransactionMessageHandler(): ?TransactionMessageHandler
+    {
+        return $this->transactionMessageHandler;
+    }
+
+    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
+    {
+        $this->processorTable[$messageType] = $processor;
     }
 }

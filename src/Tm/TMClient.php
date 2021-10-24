@@ -5,32 +5,19 @@ namespace Hyperf\Seata\Tm;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\TmClient;
+use Hyperf\Seata\Core\Rpc\Swoole\TmClient as SwooleTMClient;
 
 class TMClient
 {
-    /**
-     * @var TmClient
-     */
-    protected $tmRpcClient;
+    protected SwooleTMClient $tmRpcClient;
 
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
+    protected ConfigInterface $config;
 
-    /**
-     * TMClient constructor.
-     *
-     * @param TmClient $tmRpcClient
-     * @param ConfigInterface $config
-     */
-    public function __construct(TmClient $tmRpcClient, ConfigInterface $config)
+    public function __construct(SwooleTMClient $tmRpcClient, ConfigInterface $config)
     {
         $this->tmRpcClient = $tmRpcClient;
         $this->config = $config;
     }
-
 
     public function init(string $applicationId, string $transactionServiceGroup, ?string $accessKey = null, ?string $secretKey = null)
     {

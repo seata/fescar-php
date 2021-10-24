@@ -50,6 +50,7 @@ class RmRemotingClient extends AbstractRemotingClient
 
     public function init()
     {
+
         $this->initRegisterProcessor();
         $this->initialized = true;
         parent::init();

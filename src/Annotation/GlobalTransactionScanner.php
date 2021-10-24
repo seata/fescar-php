@@ -4,15 +4,16 @@ namespace Hyperf\Seata\Annotation;
 
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
 use Hyperf\Seata\Rm\RMClient;
+use Hyperf\Seata\Tm\TMClient;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 
 class GlobalTransactionScanner
 {
-
     private const serialVersionUID = 1;
 
     private const AT_MODE = 1;
@@ -20,42 +21,28 @@ class GlobalTransactionScanner
 
     private const DEFAULT_MODE = self::AT_MODE + self::MT_MODE;
 
-    /**
-     * @var string
-     */
-    private $applicationId;
+    private string $applicationId;
 
-    /**
-     * @var string
-     */
-    private $txServiceGroup;
+    private string $txServiceGroup;
 
-    /**
-     * @var int
-     */
-    private $mode = self::DEFAULT_MODE;
+    private int $mode = self::DEFAULT_MODE;
 
-    /**
-     * @var bool
-     */
-    private $disableGlobalTransaction;
 
-    /**
-     * @var \Hyperf\Contract\ConfigInterface
-     */
-    protected $config;
+    private bool $disableGlobalTransaction;
 
-    /**
-     * @var \Hyperf\Contract\StdoutLoggerInterface
-     */
-    protected $logger;
+    protected ConfigInterface $config;
 
-    /**
-     * @var \Hyperf\Seata\Rm\RMClient
-     */
-    protected $RMClient;
+    protected LoggerInterface $logger;
 
-    public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient)
+    private null|string $accessKey = null;
+
+    private null|string $secretKey = null;
+
+    protected RMClient $RMClient;
+
+    protected TMClient $TMClient;
+
+    public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient, TMClient $TMClient)
     {
         $this->config = $config;
         $this->applicationId = $this->config->get('seata.application_id');
@@ -72,12 +59,14 @@ class GlobalTransactionScanner
         }
         $this->logger = $logger;
         $this->RMClient = $RMClient;
+        $this->TMClient = $TMClient;
     }
 
     public function initClients()
     {
         $this->dumpInfo("Initializing Global Transaction Clients ... ");
         // @todo Init TM
+        $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
         // Init RM
         $this->RMClient->init($this->applicationId, $this->txServiceGroup);
         $this->dumpInfo(sprintf('Resource Manager is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));

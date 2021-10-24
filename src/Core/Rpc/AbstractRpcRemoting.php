@@ -195,11 +195,6 @@ abstract class AbstractRpcRemoting implements Disposable
         return random_int(1000, 9999);
     }
 
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
-    {
-        $this->processorTable[$messageType] = $processor;
-    }
-
     public function getFeatures(): array
     {
         return $this->features;
