@@ -19,6 +19,9 @@ class SwooleClientConnectionManager
     protected RegistryFactory $registryFactory;
     protected LoggerInterface $logger;
     protected string $poolPrefix = 'rpc-swoole-client-';
+    /**
+     * @var array<string, Pool>
+     */
     protected array $addresses = [];
 
     public function __construct(PoolFactory $poolFactory, RegistryFactory $registryFactory, LoggerInterface $logger)
@@ -58,17 +61,29 @@ class SwooleClientConnectionManager
 
     public function acquireConnection(Address $address): ConnectionInterface
     {
-        $pool = $this->getConnectionPool($address);
+        $this->registerAddress($address);
+        $pool = $this->addresses[(string)$address];
         return $pool->get();
     }
 
     public function registerAddress(Address $address): static
     {
-        $this->addresses[] = $this->getConnectionPool($address);
+        if (! isset($this->addresses[(string)$address])) {
+            $this->addresses[(string)$address] = $this->getConnectionPool($address);
+        }
         return $this;
     }
 
     #[Pure]
+    public function getPoolNames(): array
+    {
+        return $this->poolFactory->getPoolNames();
+    }
+
+    #[Pure]
+    /**
+     * @return array<string, Pool>
+     */
     public function getAddresses(): array
     {
         return $this->addresses;
@@ -76,7 +91,7 @@ class SwooleClientConnectionManager
 
     protected function getConnectionPool(Address $address): Pool
     {
-        return $this->poolFactory->get($this->poolPrefix . (string) $address, function () use ($address) {
+        return $this->poolFactory->get($this->poolPrefix . $address, function () use ($address) {
             $socket = new Socket(AF_INET, SOCK_STREAM, 0);
             $socket->connect($address->getHost(), $address->getPort(), 100);
             return $socket;

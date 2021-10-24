@@ -36,17 +36,14 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 class ProtocolV1Decoder
 {
 
-    /**
-     * @var CodecFactory
-     */
-    protected $codecFactory;
+    protected CodecFactory $codecFactory;
 
     public function __construct(CodecFactory $codecFactory)
     {
         $this->codecFactory = $codecFactory;
     }
 
-    public function decode(ByteBuffer $buffer)
+    public function decode(ByteBuffer $buffer): RpcMessage
     {
         $magicCode0 = $buffer->readUByte();
         $magicCode1 = $buffer->readUByte();

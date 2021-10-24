@@ -11,42 +11,29 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Processor\Client;
 
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\MergedWarpMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessageInterface;
 use Hyperf\Seata\Core\Protocol\MergeResultMessage;
 use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
+use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
-use Hyperf\Utils\ApplicationContext;
 
-class ClientOnResponseProcessor implements RemotingProcessorInterface
+class ClientOnResponseProcessor extends AbstractRemotingProcessor
 {
-    /**
-     * @var StdoutLoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var array<Integer, MergeMessageInterface>
      */
-    private $mergeMsgMap;
+    private array $mergeMsgMap;
 
-    private $futures;
+    private array $futures;
 
-    /**
-     * @var TransactionMessageHandler
-     */
-    private $transactionMessageHandler;
+    private TransactionMessageHandler $transactionMessageHandler;
 
-    /**
-     * ClientOnResponseProcessor constructor.
-     */
     public function __construct(array $mergeMsgMap, array $futures, TransactionMessageHandler $transactionMessageHandler)
     {
-        $this->logger = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
         $this->mergeMsgMap = $mergeMsgMap;
         $this->futures = $futures;
         $this->transactionMessageHandler = $transactionMessageHandler;
@@ -70,7 +57,7 @@ class ClientOnResponseProcessor implements RemotingProcessorInterface
                     unset($this->futures[$msgId]);
                     $future->setRequestMessage($results->getMsgs()[$i]);
                 } else {
-                    $this->logger->info(sprintf('msg: %s is not found in futures.', $msgId));
+                    $this->getLogger()->info(sprintf('msg: %s is not found in futures.', $msgId));
                 }
             }
         } else {

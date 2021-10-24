@@ -15,10 +15,5 @@ use Hyperf\Seata\Core\Protocol\RpcMessage;
 
 interface RemotingProcessorInterface
 {
-    /**
-     * Process message.
-     *
-     * @param rpcMessage rpc message
-     */
     public function process($channel, RpcMessage $rpcMessage);
 }

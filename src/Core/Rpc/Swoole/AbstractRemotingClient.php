@@ -4,6 +4,7 @@ namespace Hyperf\Seata\Core\Rpc\Swoole;
 
 
 use Exception;
+use Hyperf\Pool\Pool;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
@@ -15,6 +16,7 @@ use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Seata\Tm\TransactionManagerHolder;
 use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Coroutine;
 
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
@@ -50,6 +52,8 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
      */
     protected int $transactionRole;
     protected SwooleClientConnectionManager $connectionManager;
+    protected array $recvChannelMap = [];
+    protected SwooleClientBootstrap $clientBootstrap;
 
     public function __construct(int $transactionRole)
     {
@@ -58,10 +62,12 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
         $this->connectionManager = $container->get(SwooleClientConnectionManager::class);
+        $this->clientBootstrap = $container->get(SwooleClientBootstrap::class);
     }
 
     public function init() {
         // @TODO 启动一个 reconnect 的 Timer
+        $this->clientBootstrap->start();
     }
 
     /**
@@ -89,7 +95,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     {
         $address = null;
         try {
-            $addressList = $this->registryFactory->getInstance()->lookup($transactionServiceGroup);
+            $addressList = $this->lookupAddresses($transactionServiceGroup);
             // @todo 通过负载均衡器选择一个地址
             $address = $addressList[0];
         } catch (Exception $exception) {
@@ -101,6 +107,15 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
             throw new SeataException(SeataErrorCode::NoAvailableService);
         }
         return $address;
+    }
+
+    /**
+     * @param string $transactionServiceGroup
+     * @return array<Address>
+     */
+    protected function lookupAddresses(string $transactionServiceGroup): array
+    {
+        return $this->registryFactory->getInstance()->lookup($transactionServiceGroup);;
     }
 
     public function setTransactionMessageHandler(TransactionMessageHandler $transactionMessageHandler) {

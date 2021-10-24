@@ -34,10 +34,7 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 class ProtocolV1Encoder
 {
 
-    /**
-     * @var CodecFactory
-     */
-    protected $codecFactory;
+    protected CodecFactory $codecFactory;
 
     public function __construct(CodecFactory $codecFactory)
     {

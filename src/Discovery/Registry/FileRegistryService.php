@@ -3,6 +3,7 @@
 namespace Hyperf\Seata\Discovery\Registry;
 
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Core\Rpc\Address;
 use InvalidArgumentException;
 
@@ -13,15 +14,9 @@ class FileRegistryService implements RegistryService
     private const ENDPOINT_SPLIT_CHAR = ";";
     private const IP_PORT_SPLIT_CHAR = ":";
 
-    /**
-     * @var \Hyperf\Contract\ConfigInterface
-     */
-    protected $config;
+    protected ConfigInterface $config;
 
-    /**
-     * @param \Hyperf\Contract\ConfigInterface $config
-     */
-    public function __construct(\Hyperf\Contract\ConfigInterface $config)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
     }

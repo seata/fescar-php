@@ -15,25 +15,18 @@ use Exception;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\UndoLogDeleteRequest;
+use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Utils\ApplicationContext;
 
-class RmUndoLogProcessor implements RemotingProcessorInterface
+class RmUndoLogProcessor extends AbstractRemotingProcessor
 {
-    /**
-     * @var StdoutLoggerInterface
-     */
-    protected $logger;
 
-    /**
-     * @var TransactionMessageHandler
-     */
-    private $handler;
+    private TransactionMessageHandler $handler;
 
     public function __construct(TransactionMessageHandler $handler)
     {
-        $this->logger = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
         $this->handler = $handler;
     }
 
@@ -41,7 +34,7 @@ class RmUndoLogProcessor implements RemotingProcessorInterface
     {
         /** @var UndoLogDeleteRequest $msg */
         $msg = $rpcMessage->getBody();
-        $this->logger->info(sprintf('rm handle undo log process:%s', $msg));
+        $this->getLogger()->info(sprintf('rm handle undo log process:%s', $msg));
         $this->handleUndoLogDelete($msg);
     }
 
@@ -50,7 +43,7 @@ class RmUndoLogProcessor implements RemotingProcessorInterface
         try {
             $this->handler->onRequest($undoLogDeleteRequest, null);
         } catch (Exception $exception) {
-            $this->logger->error(sprintf('Failed to delete undo log by undoLogDeleteRequest on %s', $undoLogDeleteRequest->getResourceId()));
+            $this->getLogger()->error(sprintf('Failed to delete undo log by undoLogDeleteRequest on %s', $undoLogDeleteRequest->getResourceId()));
         }
     }
 }
