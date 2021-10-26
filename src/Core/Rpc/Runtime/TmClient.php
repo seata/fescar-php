@@ -12,13 +12,16 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
+use Hyperf\Seata\Core\Protocol\RegisterTMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\response;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
+use Hyperf\Utils\Coroutine;
 
 class TmClient extends AbstractRemotingClient
 {
@@ -54,6 +57,30 @@ class TmClient extends AbstractRemotingClient
             parent::init();
             $this->initialized = true;
         }
+
+        $this->createHeartbeatLoop();
+        $this->registerService();
+    }
+
+    private function registerService()
+    {
+        $request = new RegisterTMRequest($this->applicationId, $this->transactionServiceGroup);
+        return $this->sendMsgWithResponse($request);
+    }
+
+    protected function createHeartbeatLoop()
+    {
+        Coroutine::create(function () {
+            while (true) {
+                try {
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
+                    var_dump($response);
+                } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                }
+                sleep(1);
+            }
+        });
     }
 
     public function getApplicationId(): string

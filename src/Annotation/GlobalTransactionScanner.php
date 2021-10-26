@@ -70,7 +70,7 @@ class GlobalTransactionScanner
     {
         $this->dumpInfo('Initializing Global Transaction Clients ... ');
         // @todo Init TM
-        // $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
+         $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
         // Init RM
         $this->RMClient->init($this->applicationId, $this->txServiceGroup);
         $this->dumpInfo(sprintf('Resource Manager is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));
