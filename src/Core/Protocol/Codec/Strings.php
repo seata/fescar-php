@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Protocol\Codec;
-
 
 class Strings
 {
-
     /**
-     * @var $string
+     * @var
      */
     protected $string;
 
@@ -24,17 +31,16 @@ class Strings
     public function __construct(string $string)
     {
         $this->string = $string;
-
-    }
-
-    public function getValue(): string
-    {
-        return $this->string;
     }
 
     public function __toString()
     {
         return $this->getValue();
+    }
+
+    public function getValue(): string
+    {
+        return $this->string;
     }
 
     public function getBytes(): array
@@ -43,7 +49,7 @@ class Strings
         while ($n < $this->length()) {
             $character = $this->string[$n];
             $this->bytes[] = ord($character);
-            $n++;
+            ++$n;
         }
         return $this->bytes;
     }
@@ -119,5 +125,4 @@ class Strings
         $string = substr($this->string, $start, $length);
         return new self($string);
     }
-
 }

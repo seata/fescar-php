@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Context;
-
 
 use Hyperf\Seata\Core\Model\BranchType;
 use Hyperf\Seata\Exception\IllegalArgumentException;
@@ -13,16 +21,21 @@ use RuntimeException;
 
 class RootContext extends Context
 {
-
     /**
      * The constant KEY_XID.
      */
-    public const KEY_XID = "TX_XID";
-    public const MDC_KEY_XID = "X-TX-XID";
-    public const MDC_KEY_BRANCH_ID = "X-TX-BRANCH-ID";
-    public const KEY_BRANCH_TYPE = "TX_BRANCH_TYPE";
-    public const KEY_GLOBAL_LOCK_FLAG = "TX_LOCK";
+    public const KEY_XID = 'TX_XID';
+
+    public const MDC_KEY_XID = 'X-TX-XID';
+
+    public const MDC_KEY_BRANCH_ID = 'X-TX-BRANCH-ID';
+
+    public const KEY_BRANCH_TYPE = 'TX_BRANCH_TYPE';
+
+    public const KEY_GLOBAL_LOCK_FLAG = 'TX_LOCK';
+
     public const VALUE_GLOBAL_LOCK_FLAG = true;
+
     protected static int $defaultBranchType;
 
     protected static LoggerInterface $logger;
@@ -80,12 +93,12 @@ class RootContext extends Context
 
     public static function inTccBranch(): bool
     {
-        return BranchType::TCC === static::getBranchType();
+        return static::getBranchType() === BranchType::TCC;
     }
 
     public static function inSagaBranch(): bool
     {
-        return BranchType::SAGA === static::getBranchType();
+        return static::getBranchType() === BranchType::SAGA;
     }
 
     public static function getBranchType(): ?int
@@ -106,7 +119,7 @@ class RootContext extends Context
     public static function unbindBranchType(): null|int
     {
         $prevBranchType = static::get(static::KEY_BRANCH_TYPE, null);
-        static::log('debug', 'Bind branch type %s', $prevBranchType ? (string)$prevBranchType : 'Null');
+        static::log('debug', 'Bind branch type %s', $prevBranchType ? (string) $prevBranchType : 'Null');
         static::set(static::KEY_BRANCH_TYPE, null);
         return $prevBranchType;
     }
@@ -136,5 +149,4 @@ class RootContext extends Context
             static::$logger->log($level, sprintf(...$content));
         }
     }
-
 }

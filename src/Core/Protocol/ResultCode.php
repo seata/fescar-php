@@ -19,13 +19,13 @@ class ResultCode
      * Failed result code.
      */
     // Failed
-    const Failed = 0;
+    public const Failed = 0;
 
     /**
      * Success result code.
      */
     // Success
-    const Success = 1;
+    public const Success = 1;
 
     public static function get(int $ordinal)
     {

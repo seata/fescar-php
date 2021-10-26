@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Utils\Buffer;
-
 
 class HeapByteBuffer extends ByteBuffer
 {
-
     public static function allocateFromBytes(array $bytes, int $offset, int $length)
     {
         return new self(-1, $offset, $offset + $length, count($bytes), $bytes, 0);
@@ -65,5 +72,4 @@ class HeapByteBuffer extends ByteBuffer
     {
         return $i + $this->offset;
     }
-
 }

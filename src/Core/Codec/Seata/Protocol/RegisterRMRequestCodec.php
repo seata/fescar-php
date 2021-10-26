@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol;
 
-
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Seata\Core\Protocol\Codec\Packer;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;

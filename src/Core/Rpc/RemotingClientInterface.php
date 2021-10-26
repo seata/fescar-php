@@ -18,7 +18,6 @@ use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 
 interface RemotingClientInterface
 {
-
     public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message);
 
     public function sendAsyncRequest(

@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Rpc\Runtime\V1;
 
 use Hyperf\Seata\Core\Codec\CodecFactory;
@@ -30,13 +39,12 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
  * <li>Head Length: include head data from magic code to head map. </li>
  * <li>Body Length: Full Length - Head Length</li>
  * </p>
- * https://github.com/seata/seata/issues/893
+ * https://github.com/seata/seata/issues/893.
  *
  * @see ProtocolV1Encoder
  */
 class ProtocolV1Decoder
 {
-
     protected CodecFactory $codecFactory;
 
     public function __construct(CodecFactory $codecFactory)
@@ -99,5 +107,4 @@ class ProtocolV1Decoder
 
         return $rpcMessage;
     }
-
 }

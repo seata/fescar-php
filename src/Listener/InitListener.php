@@ -1,22 +1,27 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Listener;
-
 
 use Hyperf\DbConnection\Db;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Framework\Event\AfterWorkerStart;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Seata\Annotation\GlobalTransactionScanner;
 use Hyperf\Seata\Rm\DataSource\DataSourceProxy;
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
-use Hyperf\Contract\ConfigInterface;
 
 class InitListener implements ListenerInterface
 {
-
     protected GlobalTransactionScanner $globalTransactionScanner;
+
     protected DataSourceProxy $dataSourceProxy;
 
     public function __construct(GlobalTransactionScanner $globalTransactionScanner, DataSourceProxy $dataSourceProxy)

@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol;
 
-
-use Hyperf\Seata\Core\Codec\Seata\the;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
@@ -63,6 +70,4 @@ abstract class AbstractResultMessageCodec extends AbstractMessageCodec
             }
         }
     }
-
-
 }

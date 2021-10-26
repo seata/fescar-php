@@ -16,12 +16,12 @@ class GlobalTransactionRole
     /**
      * The one begins the current global Transaction.
      */
-    const Launcher = 1;
+    public const Launcher = 1;
 
     /**
      * The one just joins into a existing global Transaction.
      */
-    const Participant = 2;
+    public const Participant = 2;
 
     /**
      * @var int

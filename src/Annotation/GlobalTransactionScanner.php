@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Annotation;
 
-
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Seata\Core\Model\ResourceManagerInterface;
-use Hyperf\Seata\Core\Rpc\Runtime\RmRemotingClient;
 use Hyperf\Seata\Rm\RMClient;
 use Hyperf\Seata\Tm\TMClient;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 
 class GlobalTransactionScanner
@@ -17,9 +21,18 @@ class GlobalTransactionScanner
     private const serialVersionUID = 1;
 
     private const AT_MODE = 1;
+
     private const MT_MODE = 2;
 
     private const DEFAULT_MODE = self::AT_MODE + self::MT_MODE;
+
+    protected ConfigInterface $config;
+
+    protected LoggerInterface $logger;
+
+    protected RMClient $RMClient;
+
+    protected TMClient $TMClient;
 
     private string $applicationId;
 
@@ -27,20 +40,11 @@ class GlobalTransactionScanner
 
     private int $mode = self::DEFAULT_MODE;
 
-
     private bool $disableGlobalTransaction;
-
-    protected ConfigInterface $config;
-
-    protected LoggerInterface $logger;
 
     private null|string $accessKey = null;
 
     private null|string $secretKey = null;
-
-    protected RMClient $RMClient;
-
-    protected TMClient $TMClient;
 
     public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient, TMClient $TMClient)
     {
@@ -64,7 +68,7 @@ class GlobalTransactionScanner
 
     public function initClients()
     {
-        $this->dumpInfo("Initializing Global Transaction Clients ... ");
+        $this->dumpInfo('Initializing Global Transaction Clients ... ');
         // @todo Init TM
         // $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
         // Init RM
@@ -79,5 +83,4 @@ class GlobalTransactionScanner
             $this->logger->info($message);
         }
     }
-
 }

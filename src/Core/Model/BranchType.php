@@ -1,13 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Model;
-
 
 class BranchType
 {
-    const AT = 1;
-    const TCC = 2;
-    const SAGA = 3;
-    const XA = 4;
+    public const AT = 1;
 
+    public const TCC = 2;
+
+    public const SAGA = 3;
+
+    public const XA = 4;
 }

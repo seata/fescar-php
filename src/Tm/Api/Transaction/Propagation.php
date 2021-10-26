@@ -49,7 +49,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const REQUIRED = 0;
+    public const REQUIRED = 0;
 
     /**
      * The REQUIRES_NEW.
@@ -82,7 +82,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const REQUIRES_NEW = 1;
+    public const REQUIRES_NEW = 1;
 
     /**
      * The NOT_SUPPORTED.
@@ -107,7 +107,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const NOT_SUPPORTED = 2;
+    public const NOT_SUPPORTED = 2;
 
     /**
      * The SUPPORTS.
@@ -128,7 +128,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const SUPPORTS = 3;
+    public const SUPPORTS = 3;
 
     /**
      * The NEVER.
@@ -148,7 +148,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const NEVER = 4;
+    public const NEVER = 4;
 
     /**
      * The MANDATORY.
@@ -168,7 +168,7 @@ class Propagation
      * </pre></code>
      * </p>
      */
-    const MANDATORY = 5;
+    public const MANDATORY = 5;
 
     /**
      * @var int

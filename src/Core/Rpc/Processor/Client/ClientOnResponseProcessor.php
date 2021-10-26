@@ -22,7 +22,6 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 
 class ClientOnResponseProcessor extends AbstractRemotingProcessor
 {
-
     /**
      * @var array<Integer, MergeMessageInterface>
      */

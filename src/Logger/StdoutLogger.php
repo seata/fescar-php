@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Logger;
-
 
 use Hyperf\Contract\ConfigInterface;
 use Psr\Log\LogLevel;
@@ -10,12 +18,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StdoutLogger implements LoggerInterface
 {
-
     protected ConfigInterface $config;
+
     protected OutputInterface $output;
+
     protected array $tags = [
         'class',
     ];
+
     private string $className;
 
     public function __construct(ConfigInterface $config, $output = null)
@@ -113,6 +123,11 @@ class StdoutLogger implements LoggerInterface
         $this->output->writeln($message);
     }
 
+    public function setClass(string $class)
+    {
+        $this->className = $class;
+    }
+
     protected function getMessage(string $message, string $level = LogLevel::INFO, array $tags = [])
     {
         switch ($level) {
@@ -140,10 +155,5 @@ class StdoutLogger implements LoggerInterface
         }
 
         return sprintf($template . $implodedTags . ' %s', $message);
-    }
-
-    public function setClass(string $class)
-    {
-        $this->className = $class;
     }
 }

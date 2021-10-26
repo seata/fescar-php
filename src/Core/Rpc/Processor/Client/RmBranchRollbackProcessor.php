@@ -21,6 +21,7 @@ use Throwable;
 class RmBranchRollbackProcessor extends AbstractRemotingProcessor
 {
     private TransactionMessageHandler $handler;
+
     private RemotingClientInterface $remotingClient;
 
     public function __construct(TransactionMessageHandler $handler, RemotingClientInterface $remotingClient)

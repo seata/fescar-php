@@ -1,8 +1,15 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Tm\Api\Transaction;
-
 
 use Throwable;
 
@@ -38,33 +45,21 @@ class TransactionInfo
      */
     private $lockRetryTimes;
 
-    /**
-     * @return int
-     */
     public function getTimeOut(): int
     {
         return $this->timeOut;
     }
 
-    /**
-     * @param int $timeOut
-     */
     public function setTimeOut(int $timeOut): void
     {
         $this->timeOut = $timeOut;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -100,12 +95,9 @@ class TransactionInfo
                 }
             }
         }
-        return !($winner instanceof NoRollbackRule);
+        return ! ($winner instanceof NoRollbackRule);
     }
 
-    /**
-     * @return Propagation
-     */
     public function getPropagation(): Propagation
     {
         if ($this->propagation !== null) {
@@ -115,48 +107,28 @@ class TransactionInfo
         return new Propagation(Propagation::REQUIRED);
     }
 
-    /**
-     * @param Propagation $propagation
-     */
     public function setPropagation(Propagation $propagation): void
     {
         $this->propagation = $propagation;
     }
 
-    /**
-     * @return int
-     */
     public function getLockRetryInterval(): int
     {
         return $this->lockRetryInterval;
     }
 
-    /**
-     * @param int $lockRetryInterval
-     */
     public function setLockRetryInterval(int $lockRetryInterval): void
     {
         $this->lockRetryInterval = $lockRetryInterval;
     }
 
-    /**
-     * @return int
-     */
     public function getLockRetryTimes(): int
     {
         return $this->lockRetryTimes;
     }
 
-    /**
-     * @param int $lockRetryTimes
-     */
     public function setLockRetryTimes(int $lockRetryTimes): void
     {
         $this->lockRetryTimes = $lockRetryTimes;
     }
-
-
-
-
-
 }

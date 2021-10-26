@@ -34,7 +34,6 @@ class TransactionalTemplate
         $this->logger = $logger;
     }
 
-
     public function execute(TransactionalExecutor $business)
     {
         // 1. Get transactionInfo

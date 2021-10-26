@@ -20,7 +20,6 @@ use Throwable;
 
 class RmBranchCommitProcessor extends AbstractRemotingProcessor
 {
-
     private TransactionMessageHandler $handler;
 
     private RemotingClientInterface $remotingClient;

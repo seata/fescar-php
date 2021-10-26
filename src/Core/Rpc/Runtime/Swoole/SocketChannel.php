@@ -79,7 +79,7 @@ class SocketChannel implements SocketChannelInterface
                     if (! $data) {
                         continue;
                     }
-                    $byteBuffer = ByteBuffer::wrapBin($data);
+                    $byteBuffer = ByteBuffer::wrapBinary($data);
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
                     if (isset($this->responses[$rpcMessage->getId()])) {
                         $responseChannel = $this->responses[$rpcMessage->getId()];

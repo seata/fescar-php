@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Utils\Buffer;
-
 
 abstract class Buffer
 {
-
     /**
      * @var int
      */
@@ -42,9 +49,11 @@ abstract class Buffer
         }
     }
 
-    public abstract function isReadOnly(): bool;
-    public abstract function hasArray(): bool;
-    public abstract function duplicate();
+    abstract public function isReadOnly(): bool;
+
+    abstract public function hasArray(): bool;
+
+    abstract public function duplicate();
 
     public function getCapacity(): int
     {
@@ -56,7 +65,7 @@ abstract class Buffer
      */
     public function setPosition(int $position)
     {
-        if ($position > $this->limit || $position< 0) {
+        if ($position > $this->limit || $position < 0) {
             throw new \InvalidArgumentException('Position cannot be negative and cannot less than limit');
         }
         $this->position = $position;
@@ -82,7 +91,6 @@ abstract class Buffer
     }
 
     /**
-     * @param int $length
      * @return $this
      */
     public function rewind(int $length)
@@ -179,11 +187,11 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public abstract function slice(int $position, int $limit);
+    abstract public function slice(int $position, int $limit);
 
     protected function checkBounds(int $offset, int $length, int $size)
     {
-        if (($offset | $length | ($offset + $length) | ($size - ($offset + $length))) < 0 ) {
+        if (($offset | $length | ($offset + $length) | ($size - ($offset + $length))) < 0) {
             throw new \RuntimeException('Index out of bound');
         }
     }
@@ -192,7 +200,8 @@ abstract class Buffer
     {
         if ($nb === null && $this->position >= $this->limit) {
             throw new \RuntimeException('Buffer under flow');
-        } elseif ($nb !== null && ($this->limit - $this->position) < $nb) {
+        }
+        if ($nb !== null && ($this->limit - $this->position) < $nb) {
             throw new \RuntimeException('Buffer under flow');
         }
         if ($nb === null) {

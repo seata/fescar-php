@@ -17,6 +17,4 @@ class EnhancedServiceLoader
     {
         return InnerEnhancedServiceLoader::getServiceLoader($service)->loadAll();
     }
-
-
 }

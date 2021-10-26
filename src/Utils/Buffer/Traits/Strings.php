@@ -1,12 +1,18 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Utils\Buffer\Traits;
-
 
 trait Strings
 {
-
     /**
      * Reads an UTF8 encoded string.
      */
@@ -71,7 +77,7 @@ trait Strings
      */
     public function putCString(string $value, int $offset = 0): self
     {
-        $value = utf8_encode($value.' ');
+        $value = utf8_encode($value . ' ');
         $length = strlen($value);
 
         return $this->pack("Z{$length}", $value, $offset);
@@ -97,5 +103,4 @@ trait Strings
 
         return $this->putUTF8String($value, $offset);
     }
-
 }

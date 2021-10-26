@@ -1,12 +1,18 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Utils\Buffer\Traits;
-
 
 trait Floats
 {
-
     public function readFloat32(int $offset = 0): float
     {
         return $this->unpack(['G', 'g', 'f'][$this->order], $offset);
@@ -36,5 +42,4 @@ trait Floats
     {
         return $this->putFloat64($value, $offset);
     }
-
 }

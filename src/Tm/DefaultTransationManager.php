@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Tm;
 
-
-use Hyperf\Seata\Core\Model\Give;
 use Hyperf\Seata\Core\Model\GlobalStatus;
-use Hyperf\Seata\Core\Model\ID;
-use Hyperf\Seata\Core\Model\Timeout;
 use Hyperf\Seata\Core\Model\TransactionManager;
-use Hyperf\Seata\Core\Model\XID;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractTransactionRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
@@ -19,11 +23,9 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
 use Hyperf\Seata\Core\Rpc\Runtime\TmClient;
-use Hyperf\Utils\ApplicationContext;
 
 class DefaultTransationManager implements TransactionManager
 {
-
     /**
      * @var TmClient
      */
@@ -33,7 +35,6 @@ class DefaultTransationManager implements TransactionManager
     {
         $this->tmRpcClient = $tmRpcClient;
     }
-
 
     public function begin(?string $applicationId, ?string $transactionServiceGroup, string $name, int $timeout): string
     {

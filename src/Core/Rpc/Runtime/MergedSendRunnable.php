@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Protocol\MergedWarpMessage;
@@ -9,7 +18,6 @@ use Hyperf\Utils\Coroutine;
 
 class MergedSendRunnable
 {
-
     protected bool $isSending;
 
     protected array $basketMap;
@@ -32,9 +40,8 @@ class MergedSendRunnable
 
     public function run()
     {
-        Coroutine::create(function (){
+        Coroutine::create(function () {
             while (true) {
-
                 if ($this->isSending) {
                     return;
                 }
@@ -70,10 +77,10 @@ class MergedSendRunnable
                 $this->isSending = false;
             }
         });
-
     }
 
-    private function printMergeMessageLog(MergedWarpMessage $mergeMessage) {
+    private function printMergeMessageLog(MergedWarpMessage $mergeMessage)
+    {
 //            if (LOGGER.isDebugEnabled()) {
 //                LOGGER.debug("merge msg size:{}", mergeMessage.msgIds.size());
 //                for (AbstractMessage cm : mergeMessage.msgs) {
@@ -89,5 +96,5 @@ class MergedSendRunnable
 //                }
 //                LOGGER.debug(sb.toString());
 //            }
-        }
+    }
 }

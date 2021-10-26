@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Utils\Buffer;
-
 
 use BadMethodCallException;
 use Hyperf\Seata\Exception\NotSupportYetException;
@@ -9,7 +17,6 @@ use Swoole\Coroutine\Socket;
 
 class SwooleSocketByteBuffer extends ByteBuffer
 {
-
     /**
      * @var Socket
      */
@@ -65,11 +72,6 @@ class SwooleSocketByteBuffer extends ByteBuffer
         $this->bytes[$this->ix($this->nextIndex())] = $byte;
     }
 
-    protected function ix(int $i): int
-    {
-        return $i + $this->offset;
-    }
-
     public function pack(string $format, $value, int $offset): ByteBuffer
     {
         throw new BadMethodCallException('It is a reayonly byte buffer object');
@@ -84,14 +86,17 @@ class SwooleSocketByteBuffer extends ByteBuffer
         return null;
     }
 
+    protected function ix(int $i): int
+    {
+        return $i + $this->offset;
+    }
+
     protected function recv(int $length)
     {
         $data = $this->socket->recv($length);
-        for ($i = 0; $i < strlen($data); $i++) {
+        for ($i = 0; $i < strlen($data); ++$i) {
             $this->put($data[$i]);
         }
         return $data;
     }
-
-
 }

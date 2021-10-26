@@ -1,8 +1,15 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Tm;
-
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Model\TransactionManager;
@@ -17,7 +24,7 @@ class TransactionManagerHolder
     /**
      * @var TransactionManager
      */
-    private static $instance = null;
+    private static $instance;
 
     public function __construct(StdoutLoggerInterface $logger)
     {
@@ -32,5 +39,4 @@ class TransactionManagerHolder
         self::$instance = make(DefaultTransationManager::class);
         return self::$instance;
     }
-
 }

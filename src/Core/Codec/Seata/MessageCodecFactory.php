@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Codec\Seata;
-
 
 use Hyperf\Seata\Core\Codec\Seata\Protocol as CodecProtocol;
 use Hyperf\Seata\Core\Protocol;
@@ -10,7 +18,6 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 
 class MessageCodecFactory
 {
-
     public function getMessage(int $typeCode): ?AbstractMessage
     {
         $message = null;
@@ -25,7 +32,7 @@ class MessageCodecFactory
             MessageType::TYPE_BRANCH_ROLLBACK => Protocol\Transaction\BranchRollbackRequest::class,
         ];
         if (isset($mapping[$typeCode])) {
-            $message = new $mapping[$typeCode];
+            $message = new $mapping[$typeCode]();
         }
         if ($message !== null) {
             return $message;
@@ -47,7 +54,7 @@ class MessageCodecFactory
             MessageType::TYPE_BRANCH_ROLLBACK => CodecProtocol\Transaction\BranchRollbackRequestCodec::class,
         ];
         if (isset($mapping[$typeCode])) {
-            $msgCodec = new $mapping[$typeCode];
+            $msgCodec = new $mapping[$typeCode]();
         }
         if ($msgCodec !== null) {
             return $msgCodec;
@@ -73,10 +80,10 @@ class MessageCodecFactory
             MessageType::TYPE_GLOBAL_STATUS => CodecProtocol\Transaction\GlobalStatusRequestCodec::class,
             MessageType::TYPE_GLOBAL_LOCK_QUERY => CodecProtocol\Transaction\GlobalLockQueryRequestCodec::class,
             MessageType::TYPE_BRANCH_REGISTER => CodecProtocol\Transaction\BranchRegisterRequestCodec::class,
-            MessageType::TYPE_BRANCH_STATUS_REPORT => CodecProtocol\Transaction\BranchReportRequestCodec::class
+            MessageType::TYPE_BRANCH_STATUS_REPORT => CodecProtocol\Transaction\BranchReportRequestCodec::class,
         ];
         if (isset($mapping[$typeCode])) {
-            return new $mapping[$typeCode];
+            return new $mapping[$typeCode]();
         }
         throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
     }
@@ -95,7 +102,7 @@ class MessageCodecFactory
             MessageType::TYPE_BRANCH_ROLLBACK_RESULT => CodecProtocol\Transaction\BranchRollbackResponseCodec::class,
         ];
         if (isset($mapping[$typeCode])) {
-            return new $mapping[$typeCode];
+            return new $mapping[$typeCode]();
         }
         throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
     }
@@ -114,9 +121,8 @@ class MessageCodecFactory
             MessageType::TYPE_BRANCH_ROLLBACK_RESULT => Protocol\Transaction\BranchRollbackResponse::class,
         ];
         if (isset($mapping[$typeCode])) {
-            return new $mapping[$typeCode];
+            return new $mapping[$typeCode]();
         }
         throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
     }
-
 }

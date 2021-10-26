@@ -1,23 +1,29 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Model;
-
 
 interface ResourceManagerInterface extends ResourceManagerInbound, ResourceManagerOutbound
 {
-
     /**
      * Register a Resource to be managed by Resource Manager.
      *
-     * @param Resource The resource to be managed.
+     * @param resource the resource to be managed
      */
     public function registerResource(Resource $resource): void;
 
     /**
      * Unregister a Resource from the Resource Manager.
      *
-     * @param Resource The resource to be removed.
+     * @param resource the resource to be removed
      */
     public function unregisterResource(Resource $resource): void;
 
@@ -31,8 +37,7 @@ interface ResourceManagerInterface extends ResourceManagerInbound, ResourceManag
     /**
      * Get the BranchType.
      *
-     * @return int The BranchType of ResourceManager.
+     * @return int the BranchType of ResourceManager
      */
     public function getBranchType(): int;
-
 }

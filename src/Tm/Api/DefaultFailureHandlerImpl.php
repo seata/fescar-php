@@ -79,5 +79,4 @@ class DefaultFailureHandlerImpl implements FailureHandler
         $globalStatus = new GlobalStatus(GlobalStatus::RollbackRetrying);
         make(CheckTimerTaskInterface::class)->setTx($tx)->setRequired($globalStatus)->run();
     }
-
 }

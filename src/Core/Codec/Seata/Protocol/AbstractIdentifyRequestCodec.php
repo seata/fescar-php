@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Codec\Seata\Protocol;
 
-
-use Hyperf\Seata\Core\Codec\Seata\the;
 use Hyperf\Seata\Core\Protocol\AbstractIdentifyRequest;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Codec\Strings;
@@ -28,7 +35,7 @@ abstract class AbstractIdentifyRequestCodec extends AbstractMessageCodec
         $extraData = $message->getExtraData();
 
         $values = [
-            $version, $applicationId, $transactionServiceGroup, $extraData
+            $version, $applicationId, $transactionServiceGroup, $extraData,
         ];
 
         foreach ($values as $value) {
@@ -82,8 +89,5 @@ abstract class AbstractIdentifyRequestCodec extends AbstractMessageCodec
         }
         $length = $buffer->readUShort();
         $message->setTransactionServiceGroup($buffer->readString($length));
-
     }
-
-
 }

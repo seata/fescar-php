@@ -11,19 +11,13 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
-use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
-use Hyperf\Seata\Core\Protocol\RegisterTMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
-use Hyperf\Seata\Core\Rpc\channel;
-use Hyperf\Seata\Core\Rpc\msg;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
-use Hyperf\Seata\Core\Rpc\requestMessage;
 use Hyperf\Seata\Core\Rpc\response;
-use Hyperf\Seata\Core\Rpc\serverAddress;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 
 class TmClient extends AbstractRemotingClient
@@ -62,26 +56,6 @@ class TmClient extends AbstractRemotingClient
         }
     }
 
-    /**
-     * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
-     */
-    private function initRegisterProcessor()
-    {
-        // 1.registry TC response processor
-        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(), $this->getTransactionMessageHandler());
-        $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_BEGIN_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_COMMIT_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_REPORT_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
-        // 2.registry heartbeat message processor
-        $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
-        $this->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor);
-
-    }
-
     public function getApplicationId(): string
     {
         return $this->applicationId;
@@ -112,17 +86,9 @@ class TmClient extends AbstractRemotingClient
         $this->secretKey = $secretKey;
     }
 
-    /**
-     * @param string $transactionServiceGroup
-     */
     public function setTransactionServiceGroup(string $transactionServiceGroup): void
     {
         $this->transactionServiceGroup = $transactionServiceGroup;
-    }
-
-    protected function getTransactionServiceGroup(): string
-    {
-        return $this->transactionServiceGroup;
     }
 
     public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message)
@@ -143,5 +109,29 @@ class TmClient extends AbstractRemotingClient
     public function onRegisterMsgFail(string $serverAddress, Address $channel, object $response, AbstractMessage $requestMessage)
     {
         // TODO: Implement onRegisterMsgFail() method.
+    }
+
+    protected function getTransactionServiceGroup(): string
+    {
+        return $this->transactionServiceGroup;
+    }
+
+    /**
+     * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
+     */
+    private function initRegisterProcessor()
+    {
+        // 1.registry TC response processor
+        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(), $this->getTransactionMessageHandler());
+        $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_GLOBAL_BEGIN_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_GLOBAL_COMMIT_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_GLOBAL_REPORT_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
+        $this->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
+        // 2.registry heartbeat message processor
+        $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
+        $this->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor);
     }
 }

@@ -11,11 +11,9 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Tm\Api\Transaction;
 
-use Throwable;
-
 class NoRollbackRule extends RollbackRule
 {
-    public static $DEFAULT_NO_ROLLBACK_RULE = null;
+    public static $DEFAULT_NO_ROLLBACK_RULE;
 
     public function __construct(string $exception)
     {

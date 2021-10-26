@@ -16,30 +16,30 @@ class TransactionalExecutorCode
     /**
      * Begin failure code.
      */
-    const BeginFailure = 0;
+    public const BeginFailure = 0;
 
     /**
      * Commit failure code.
      */
-    const CommitFailure = 1;
+    public const CommitFailure = 1;
 
     /**
      * Rollback failure code.
      */
-    const RollbackFailure = 2;
+    public const RollbackFailure = 2;
 
     /**
      * Rollback done code.
      */
-    const RollbackDone = 3;
+    public const RollbackDone = 3;
 
     /**
      * Report failure code.
      */
-    const ReportFailure = 4;
+    public const ReportFailure = 4;
 
     /**
      * Rollback retrying code.
      */
-    const RollbackRetrying = 5;
+    public const RollbackRetrying = 5;
 }

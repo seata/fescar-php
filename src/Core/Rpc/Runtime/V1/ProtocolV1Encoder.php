@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Rpc\Runtime\V1;
 
 use Hyperf\Seata\Core\Codec\CodecFactory;
@@ -29,11 +38,10 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
  * <li>Head Length: include head data from magic code to head map. </li>
  * <li>Body Length: Full Length - Head Length</li>
  * </p>
- * https://github.com/seata/seata/issues/893
+ * https://github.com/seata/seata/issues/893.
  */
 class ProtocolV1Encoder
 {
-
     protected CodecFactory $codecFactory;
 
     public function __construct(CodecFactory $codecFactory)
@@ -48,7 +56,6 @@ class ProtocolV1Encoder
 
             $fullLength = ProtocolConstants::V1_HEAD_LENGTH;
             $headLength = ProtocolConstants::V1_HEAD_LENGTH;
-            $messageType = $message->getMessageType();
 
             // Head Map, n bytes
             // full Length(4B) and head length(2B) will fix in the end.
@@ -59,7 +66,8 @@ class ProtocolV1Encoder
 
             // Body, n bytes
             $bodyBuffer = ByteBuffer::allocate();
-            if ($message->getMessageType() !== ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST && $message->getMessageType() !== ProtocolConstants::MSGTYPE_HEARTBEAT_RESPONSE) {
+            $messageType = $message->getMessageType();
+            if ($messageType !== ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST && $messageType !== ProtocolConstants::MSGTYPE_HEARTBEAT_RESPONSE) {
                 // heartbeat has no body
                 $codec = $this->codecFactory->get($message->getCodec());
                 $bodyBuffer = $codec->encode($message->getBody(), $bodyBuffer);
@@ -86,5 +94,4 @@ class ProtocolV1Encoder
             return $buffer->toBinary();
         }
     }
-
 }

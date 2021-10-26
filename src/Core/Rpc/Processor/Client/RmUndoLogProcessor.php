@@ -12,17 +12,13 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Processor\Client;
 
 use Exception;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\UndoLogDeleteRequest;
 use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
-use Hyperf\Utils\ApplicationContext;
 
 class RmUndoLogProcessor extends AbstractRemotingProcessor
 {
-
     private TransactionMessageHandler $handler;
 
     public function __construct(TransactionMessageHandler $handler)
