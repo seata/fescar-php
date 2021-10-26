@@ -7,7 +7,7 @@ namespace Hyperf\Seata\Utils\Buffer\Traits;
 trait UnsignedInteger
 {
 
-    public function readUInt8(int $offset = 0): int
+    public function readUInt8(int $offset = 0): ?int
     {
         return $this->unpack('C', $offset);
     }
@@ -27,7 +27,7 @@ trait UnsignedInteger
         return $this->unpack(['J', 'P', 'Q'][$this->order], $offset);
     }
 
-    public function readUByte(int $offset = 0): int
+    public function readUByte(int $offset = 0): ?int
     {
         return $this->readUInt8($offset);
     }

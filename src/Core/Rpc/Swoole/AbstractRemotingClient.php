@@ -50,11 +50,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
      * @see \Hyperf\Seata\Core\Rpc\TransactionRole
      */
     protected int $transactionRole;
-    protected SwooleClientConnectionManager $connectionManager;
     protected array $recvChannelMap = [];
-    protected SwooleClientBootstrap $clientBootstrap;
-
-    protected RpcClientBootstrapInterface $rpcClientBootstrap;
 
     public function __construct(int $transactionRole)
     {
@@ -64,20 +60,17 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $this->registryFactory = $container->get(RegistryFactory::class);
         $this->rpcClientBootstrap = $container->get(RpcClientBootstrapInterface::class);
         $this->rpcClientBootstrap->setClientHandler(new ClientHandler());
-        $this->connectionManager = $container->get(SwooleClientConnectionManager::class);
-        $this->clientBootstrap = $container->get(SwooleClientBootstrap::class);
     }
 
     public function init() {
         // @TODO 启动一个 reconnect 的 Timer
-        \Swoole\Timer::tick(10 * 1000 , function () {
-            $this->connectionManager->reconnect($this->transactionServiceGroup);
-        });
+        //\Hyperf\Engine\Coroutine::create(function () {
+        //    $this->socketManager->reconnect($this->transactionServiceGroup);
+        //});
 
         parent::init();
         // TODO merge send runnable
 //        (new MergedSendRunnable($this->isSending, $this->basketMap, $this))->run();
-        $this->clientBootstrap->start();
     }
 
     /**
@@ -88,15 +81,26 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function sendMsgWithResponse(AbstractMessage $message, int $timeout = 100)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
-        $connection = $this->connectionManager->acquireConnection($validAddress);
-        $result = $this->sendAsyncRequestWithResponse($connection, $message, $timeout);
-        $connection->release();
+        $socketChannel = $this->socketManager->acquireChannel($validAddress);
+        $result = $this->sendAsyncRequestWithResponse($socketChannel, $message, $timeout);
         if ($result instanceof GlobalBeginResponse && ! $result->getResultCode()) {
             if ($this->logger) {
                 $this->logger->error('begin response error,release socket');
             }
         }
         return $result;
+    }
+
+    /**
+     * @param \Hyperf\Seata\Core\Protocol\AbstractMessage $message
+     * @param int $timeout
+     * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
+     */
+    public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 100)
+    {
+        $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
+        $socketChannel = $this->socketManager->acquireChannel($validAddress);
+        $this->sendAsyncRequestWithResponse($socketChannel, $message, $timeout);
     }
 
     abstract protected function getTransactionServiceGroup(): string;

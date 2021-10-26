@@ -15,15 +15,16 @@ use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
+use Hyperf\Seata\Core\Rpc\Swoole\SocketChannel;
 
 interface RemotingClientInterface
 {
 
 
-    public function sendSyncRequest(ConnectionInterface $connection, object $message);
+    public function sendSyncRequest(SocketChannel $socketChannel, object $message);
 
     public function sendAsyncRequest(
-        ConnectionInterface $connection,
+        SocketChannel $socketChannel,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false

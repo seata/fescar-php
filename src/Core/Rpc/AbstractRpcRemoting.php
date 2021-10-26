@@ -3,22 +3,22 @@
 namespace Hyperf\Seata\Core\Rpc;
 
 
-use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Seata\Common\PositiveCounter;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
+use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
 use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\SwooleClientConnectionManager;
+use Hyperf\Seata\Core\Rpc\Swoole\SocketChannel;
+use Hyperf\Seata\Core\Rpc\Swoole\SwooleSocketManager;
 use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Utils\Buffer\SwooleSocketByteBuffer;
 
 abstract class AbstractRpcRemoting implements Disposable
@@ -48,7 +48,7 @@ abstract class AbstractRpcRemoting implements Disposable
     /**
      * @var array ConcurrentHashMap<Integer, MessageFuture>
      */
-    protected $features = [];
+    protected $futures = [];
 
     /**
      * @var array <MessageType, RemotingProcessor>
@@ -70,7 +70,7 @@ abstract class AbstractRpcRemoting implements Disposable
      */
     protected array $rpcHooks = [];
 
-    protected SwooleClientConnectionManager $clientConnectionManager;
+    protected SwooleSocketManager $socketManager;
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -81,7 +81,7 @@ abstract class AbstractRpcRemoting implements Disposable
         $this->logger = $container->get(StdoutLoggerInterface::class);
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-        $this->clientConnectionManager = $container->get(SwooleClientConnectionManager::class);
+        $this->socketManager = $container->get(SwooleSocketManager::class);
     }
 
     public function init()
@@ -99,7 +99,7 @@ abstract class AbstractRpcRemoting implements Disposable
      * @return response message
      * @throws TimeoutException
      */
-    protected function sendSync(Address $channel, RpcMessage $rpcMessage, int $timeoutMillis)
+    protected function sendSync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis)
     {
         if ($timeoutMillis <= 0) {
             throw new SeataException('timeout should more than 0ms');
@@ -113,18 +113,21 @@ abstract class AbstractRpcRemoting implements Disposable
         $messageFuture = new MessageFuture();
         $messageFuture->setRequestMessage($rpcMessage);
         $messageFuture->setTimeout($timeoutMillis);
-        $this->features[$rpcMessage->getId()] = $messageFuture;
+        $this->futures[$rpcMessage->getId()] = $messageFuture;
 
-        $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
+        // $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
 
-        $data = $this->protocolEncoder->encode($rpcMessage);
+        $result = $this->socketManager->acquireChannel($address)->sendSyncWithResponse($rpcMessage, $timeoutMillis);
 
-        /** @var \Swoole\Coroutine\Socket $socket */
-        $socket = $this->clientConnectionManager->acquireConnection($channel)->getConnection();
-        $result = $socket->sendAll($data, $timeoutMillis);
+        //$data = $this->protocolEncoder->encode($rpcMessage);
+        //
+        ///** @var \Swoole\Coroutine\Socket $socket */
+        //$socket = $this->clientConnectionManager->acquireConnection($channel)->getConnection();
+        //$result = $socket->sendAll($data, $timeoutMillis);
 
         $messageFuture->get($timeoutMillis);
-        $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
+
+        // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
         return $result;
     }
 
@@ -146,64 +149,64 @@ abstract class AbstractRpcRemoting implements Disposable
      * Send async request with response object.
      */
     protected function sendAsyncRequestWithResponse(
-        ConnectionInterface $connection,
+        SocketChannel $socketChannel,
         AbstractMessage $message,
         int $timeout
     ) {
         if ($timeout <= 0) {
             throw new SeataException('timeout should more than 0ms');
         }
-        return $this->sendAsyncRequest($connection, $message, $timeout, true);
+        return $this->sendAsyncRequest($socketChannel, $message, $timeout, true);
     }
 
-    protected function sendAsyncRequestWithoutResponse(ConnectionInterface $connection, AbstractMessage $message): int|AbstractResultMessage
+    protected function sendAsyncRequestWithoutResponse(SocketChannel $socketChannel, AbstractMessage $message): int|AbstractResultMessage
     {
-        return $this->sendAsyncRequest($connection, $message, 0, false);
+        return $this->sendAsyncRequest($socketChannel, $message, 0, false);
     }
 
     public function sendAsyncRequest(
-        ConnectionInterface $connection,
+        SocketChannel $socketChannel,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false
-    ): int|RpcMessage {
-        $rpcMessage = new RpcMessage();
-        $rpcMessage->setId($this->getNextMessageId());
-        $rpcMessage->setMessageType(ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY);
-        $rpcMessage->setCodec(ProtocolConstants::CONFIGURED_CODEC);
-        $rpcMessage->setCompressor(ProtocolConstants::CONFIGURED_COMPRESSOR);
-        $rpcMessage->setBody($message);
+    ) {
+        $messageType = $message instanceof HeartbeatMessage ? ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST : ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY;
+        $rpcMessage = $this->buildRequestMessage($message, $messageType);
 
         if ($rpcMessage->getBody() instanceof MergeMessage) {
             $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
         }
 
-        $data = $this->protocolEncoder->encode($rpcMessage);
-
-        /** @var \Swoole\Coroutine\Socket $socket */
-        $socket = $connection->getConnection();
-        $result = $socket->sendAll($data, $timeout);
         if ($withResponse) {
-            return $this->protocolDecoder->decode(ByteBuffer::allocateSocket($socket));
+            return $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
         }
-        return (int)$result;
+        return $socketChannel->sendSyncWithNoResponse($rpcMessage, $timeout);
+    }
+
+    protected function buildRequestMessage(AbstractMessage $message, int $messageType): RpcMessage
+    {
+        $rpcMessage = new RpcMessage();
+        $rpcMessage->setId($this->getNextMessageId());
+        $rpcMessage->setMessageType($messageType);
+        $rpcMessage->setCodec(ProtocolConstants::CONFIGURED_CODEC);
+        $rpcMessage->setCompressor(ProtocolConstants::CONFIGURED_COMPRESSOR);
+        $rpcMessage->setBody($message);
+        return $rpcMessage;
     }
 
     protected function getNextMessageId()
     {
-        return 1;
-        return random_int(1000, 9999);
+        return PositiveCounter::incrementAndGet();
     }
 
-    public function getFeatures(): array
+    public function getFutures(): array
     {
-        return $this->features;
+        return $this->futures;
     }
 
-    public function setFeatures(array $features): void
+    public function setFutures(array $futures): void
     {
-        $this->features = $features;
+        $this->futures = $futures;
     }
-
 
 }

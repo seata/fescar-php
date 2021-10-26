@@ -17,6 +17,7 @@
     },
     "require": {
         "php": ">=8.0",
+        "hyperf/engine-swow": "^1.1",
         "hyperf/utils": "*"
     },
     "require-dev": {

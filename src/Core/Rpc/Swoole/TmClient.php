@@ -125,7 +125,7 @@ class TmClient extends AbstractRemotingClient
         return $this->transactionServiceGroup;
     }
 
-    public function sendSyncRequest(ConnectionInterface $connection, object $message)
+    public function sendSyncRequest(SocketChannel $socketChannel, object $message)
     {
         // TODO: Implement sendSyncRequest() method.
     }

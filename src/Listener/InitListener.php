@@ -5,6 +5,8 @@ namespace Hyperf\Seata\Listener;
 
 use Hyperf\DbConnection\Db;
 use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Seata\Annotation\GlobalTransactionScanner;
 use Hyperf\Seata\Rm\DataSource\DataSourceProxy;
@@ -26,7 +28,8 @@ class InitListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            MainWorkerStart::class,
+            // MainWorkerStart::class,
+            BootApplication::class,
         ];
     }
 

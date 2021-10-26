@@ -14,7 +14,7 @@ class MergedSendRunnable
 
     protected array $basketMap;
 
-    protected SwooleClientConnectionManager $clientConnectionManager;
+    protected SwooleSocketManager $socketManager;
 
     /**
      * @var AbstractRemotingClient
@@ -26,7 +26,7 @@ class MergedSendRunnable
         $container = ApplicationContext::getContainer();
         $this->isSending = $isSending;
         $this->basketMap = $basketMap;
-        $this->clientConnectionManager = $container->get(SwooleClientConnectionManager::class);
+        $this->socketManager = $container->get(SwooleSocketManager::class);
         $this->remotingClient = $abstractRemotingClient;
     }
 
@@ -56,13 +56,13 @@ class MergedSendRunnable
                         $this->printMergeMessageLog($mergeMessage);
                     }
 
-                    $sendChannel = null;
+                    $socketChannel = null;
                     try {
                         // send batch message is sync request, but there is no need to get the return value.
                         // Since the messageFuture has been created before the message is placed in basketMap,
                         // the return value will be obtained in ClientOnResponseProcessor.
-                        $sendChannel = $this->clientConnectionManager->acquireConnection($address);
-                        $this->remotingClient->sendAsyncRequest($sendChannel, $mergeMessage);
+                        $socketChannel = $this->socketManager->acquireChannel($address);
+                        $this->remotingClient->sendAsyncRequest($socketChannel, $mergeMessage);
                     } catch (SeataException $exception) {
                         // TODO 待处理
                     }

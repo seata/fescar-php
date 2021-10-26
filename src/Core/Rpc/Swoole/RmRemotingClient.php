@@ -8,6 +8,7 @@ use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
@@ -28,6 +29,8 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Seata\Exception\TodoException;
 use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Coroutine;
+use Swoole\Timer;
 
 class RmRemotingClient extends AbstractRemotingClient
 {
@@ -39,25 +42,39 @@ class RmRemotingClient extends AbstractRemotingClient
     protected const MAX_QUEUE_SIZE = 20000;
     protected string $applicationId = '';
     protected string $transactionServiceGroup = '';
-    protected SwooleClientConnectionManager $clientConnectionManager;
+    protected SwooleSocketManager $socketManager;
 
     public function __construct($transactionRole = TransactionRole::RMROLE)
     {
         parent::__construct($transactionRole);
         $container = ApplicationContext::getContainer();
-        $this->clientConnectionManager = $container->get(SwooleClientConnectionManager::class);
+        $this->socketManager = $container->get(SwooleSocketManager::class);
     }
 
     public function init()
     {
-
         $this->initRegisterProcessor();
         $this->initialized = true;
         parent::init();
         if ($this->resourceManager && ! empty($this->resourceManager->getManagedResources()) && $this->transactionServiceGroup) {
-            $this->clientConnectionManager->reconnect($this->transactionServiceGroup);
+            $this->socketManager->reconnect($this->transactionServiceGroup);
         }
+        $this->createHeartbeatLoop();
         $this->registerService();
+    }
+
+    protected function createHeartbeatLoop()
+    {
+        Coroutine::create(function () {
+            while (true) {
+                try {
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
+                } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                }
+                sleep(5);
+            }
+        });
     }
 
     public function registerService(): RpcMessage
@@ -86,7 +103,7 @@ class RmRemotingClient extends AbstractRemotingClient
         $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
         $this->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
         // 4.registry TC response processor
-        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(), $this->getTransactionMessageHandler());
+        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
         $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
         $this->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
         $this->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
@@ -161,7 +178,7 @@ class RmRemotingClient extends AbstractRemotingClient
         return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
     }
 
-    public function sendSyncRequest(ConnectionInterface $connection, object $message): GlobalBeginResponse
+    public function sendSyncRequest(SocketChannel $socketChannel, object $message): GlobalBeginResponse
     {
         return $this->sendMsgWithResponse($message);
     }

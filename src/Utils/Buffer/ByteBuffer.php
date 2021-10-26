@@ -158,13 +158,24 @@ abstract class ByteBuffer extends Buffer
         return $buffer;
     }
 
+    public static function wrapBin(string $data): HeapByteBuffer
+    {
+        $capacity = strlen($data);
+        $buffer = new HeapByteBuffer(-1, 0, $capacity, $capacity);
+        $data && $buffer->put($data);
+        $buffer->clear();
+        return $buffer;
+    }
+
     /**
      * @return $this
      */
     public function merge(ByteBuffer $buffer)
     {
         $bytes = $buffer->getBytes();
-        $this->bytes = array_merge($this->bytes, $bytes);
+        if ($bytes) {
+            $this->bytes = array_merge($this->bytes, $bytes);
+        }
         return $this;
     }
 
@@ -242,11 +253,13 @@ abstract class ByteBuffer extends Buffer
     {
         $this->skip($offset);
 
-        $value = unpack($format, $this->toBinary(), $this->getPosition())[1];
-
-        $this->skip($this->getFormatLength($format));
-
-        return $value;
+        $value = unpack($format, $this->toBinary(), $this->getPosition());
+        if (is_array($value)) {
+            $value = $value[1];
+            $this->skip($this->getFormatLength($format));
+            return $value;
+        }
+        return '';
     }
 
     protected function getFormatLength(string $format): int

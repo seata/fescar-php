@@ -48,8 +48,10 @@ class ProtocolV1Encoder
 
             $fullLength = ProtocolConstants::V1_HEAD_LENGTH;
             $headLength = ProtocolConstants::V1_HEAD_LENGTH;
+            $messageType = $message->getMessageType();
 
             // Head Map, n bytes
+            // full Length(4B) and head length(2B) will fix in the end.
             $headMap = $message->getHeadMap();
             $headMapLength = HeadMapSerializer::encode($headMap, $buffer);
             $headLength += $headMapLength;
@@ -68,7 +70,7 @@ class ProtocolV1Encoder
             $buffer->putHex(ProtocolConstants::MAGIC_CODE_BYTES[1]);
             // Version, 1 byte
             $buffer->putHex(ProtocolConstants::VERSION);
-            // full Length(4B) and head length(2B) will fix in the end.
+            // Full length and Head length
             $buffer->putUInt32($fullLength);
             $buffer->putUInt16($headLength);
             // Message Type, 1 byte

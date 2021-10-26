@@ -17,7 +17,7 @@ class ProtocolConstants
     /**
      * Protocol version
      */
-    public const VERSION = 0x1;
+    public const VERSION = 1;
 
     /**
      * Max frame length
@@ -32,23 +32,23 @@ class ProtocolConstants
     /**
      * Message type: Request
      */
-    public const MSGTYPE_RESQUEST = 0x0;
+    public const MSGTYPE_RESQUEST_SYNC = 0;
     /**
      * Message type: Response
      */
-    public const MSGTYPE_RESPONSE = 0x1;
+    public const MSGTYPE_RESPONSE = 1;
     /**
      * Message type: Request which no need response
      */
-    public const MSGTYPE_RESQUEST_ONEWAY = 0x2;
+    public const MSGTYPE_RESQUEST_ONEWAY = 2;
     /**
      * Message type: Heartbeat Request
      */
-    public const MSGTYPE_HEARTBEAT_REQUEST = 0x3;
+    public const MSGTYPE_HEARTBEAT_REQUEST = 3;
     /**
      * Message type: Heartbeat Response
      */
-    public const MSGTYPE_HEARTBEAT_RESPONSE = 0x4;
+    public const MSGTYPE_HEARTBEAT_RESPONSE = 4;
 
     // public const byte MSGTYPE_NEGOTIATOR_REQUEST = 5;
     // public const byte MSGTYPE_NEGOTIATOR_RESPONSE = 6;

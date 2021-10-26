@@ -3,6 +3,7 @@
 namespace Hyperf\Seata\Core\Rpc\Swoole\V1;
 
 use Hyperf\Seata\Core\Codec\CodecFactory;
+use Hyperf\Seata\Core\Protocol\Codec\HeadMapSerializer;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
@@ -45,20 +46,28 @@ class ProtocolV1Decoder
 
     public function decode(ByteBuffer $buffer): RpcMessage
     {
+        // Magic Code, 2 bytes
         $magicCode0 = $buffer->readUByte();
         $magicCode1 = $buffer->readUByte();
         if ($magicCode0 !== ProtocolConstants::MAGIC_CODE_BYTES[0] || $magicCode1 !== ProtocolConstants::MAGIC_CODE_BYTES[1]) {
             throw new \InvalidArgumentException('Unknow magic code');
         }
+        // Version, 1 byte
         $version = $buffer->readUByte();
         if ($version !== ProtocolConstants::VERSION) {
             throw new \InvalidArgumentException('Unsupport protocol version');
         }
+
+        // full Length(4B) and head length(2B) will fix in the end.
         $fullLength = $buffer->readUInt();
         $headLength = $buffer->readUShort();
+        // Message Type, 1 byte
         $messageType = $buffer->readUByte();
+        // Serialization, 1 byte
         $codecType = $buffer->readUByte();
+        // Compress Type, 1 byte
         $compressor = $buffer->readUByte();
+        // Message ID, 4 bytes
         $messageId = $buffer->readUInt();
 
         $rpcMessage = new RpcMessage();

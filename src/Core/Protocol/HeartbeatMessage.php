@@ -3,15 +3,12 @@
 namespace Hyperf\Seata\Core\Protocol;
 
 
-class HeartbeatMessage
+class HeartbeatMessage extends AbstractMessage implements MessageTypeAware
 {
 
     protected const serialVersionUID = -985316399527884899;
 
-    /**
-     * @var bool
-     */
-    protected $ping;
+    protected bool $ping;
 
     public function __construct(bool $ping = true)
     {
@@ -42,6 +39,14 @@ class HeartbeatMessage
     {
         $this->ping = $ping;
         return $this;
+    }
+
+    /**
+     * Return the message type
+     */
+    public function getTypeCode(): int
+    {
+        return MessageType::TYPE_HEARTBEAT_MSG;
     }
 
 }
