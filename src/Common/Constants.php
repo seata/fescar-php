@@ -33,7 +33,9 @@ class Constants
      */
     public const DBKEYS_SPLIT_CHAR = ',';
 
-    /** the start time of transaction */
+    /**
+     * The start time of transaction.
+     */
     public const START_TIME = 'start-time';
 
     /**
@@ -52,22 +54,22 @@ class Constants
     public const ACTION_NAME = 'actionName';
 
     /**
-     * phase one method name.
+     * Phase one method name.
      */
     public const PREPARE_METHOD = 'sys::prepare';
 
     /**
-     * phase two commit method name.
+     * Phase two commit method name.
      */
     public const COMMIT_METHOD = 'sys::commit';
 
     /**
-     * phase two rollback method name.
+     * Phase two rollback method name.
      */
     public const ROLLBACK_METHOD = 'sys::rollback';
 
     /**
-     * host ip.
+     * Host IP.
      */
     public const HOST_NAME = 'host-name';
 
@@ -82,17 +84,17 @@ class Constants
     public const TCC_METHOD_ARGUMENTS = 'arguments';
 
     /**
-     * transaction context.
+     * Transaction context.
      */
     public const TCC_ACTIVITY_CONTEXT = 'activityContext';
 
     /**
-     * branch context.
+     * Branch context.
      */
     public const TCC_ACTION_CONTEXT = 'actionContext';
 
     /**
-     * default charset name.
+     * Default charset name.
      */
     public const DEFAULT_CHARSET_NAME = 'UTF-8';
 }

@@ -68,7 +68,7 @@ class DefaultValues
 
     public const DEFAULT_TRANSACTION_UNDO_DATA_VALIDATION = true;
 
-    public const DEFAULT_TRANSACTION_UNDO_LOG_SERIALIZATION = 'jackson';
+    public const DEFAULT_TRANSACTION_UNDO_LOG_SERIALIZATION = 'json';
 
     public const DEFAULT_ONLY_CARE_UPDATE_COLUMNS = true;
 
