@@ -63,15 +63,13 @@ class SocketChannel
         Coroutine::create(function () {
             while (true) {
                 try {
-                    $data = $this->socket->readString();
+                    $data = $this->socket->recvString();
                     if (! $data) {
                         continue;
                     }
                     $byteBuffer = ByteBuffer::wrapBin($data);
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
-                    var_dump($rpcMessage);
                     if (isset($this->responses[$rpcMessage->getId()])) {
-                        var_dump('response channel');
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     } elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
