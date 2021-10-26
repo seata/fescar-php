@@ -5,7 +5,7 @@ namespace Hyperf\Seata\Rm;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
+use Hyperf\Seata\Core\Rpc\Runtime\RmRemotingClient;
 
 class RMClient
 {

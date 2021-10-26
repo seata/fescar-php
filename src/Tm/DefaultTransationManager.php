@@ -18,7 +18,7 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
-use Hyperf\Seata\Core\Rpc\Swoole\TmClient;
+use Hyperf\Seata\Core\Rpc\Runtime\TmClient;
 use Hyperf\Utils\ApplicationContext;
 
 class DefaultTransationManager implements TransactionManager

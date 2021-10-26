@@ -5,7 +5,7 @@ namespace Hyperf\Seata\Tm;
 
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\TmClient as SwooleTMClient;
+use Hyperf\Seata\Core\Rpc\Runtime\TmClient as SwooleTMClient;
 
 class TMClient
 {

@@ -11,20 +11,18 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc;
 
-use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\SocketChannel;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 
 interface RemotingClientInterface
 {
 
-
-    public function sendSyncRequest(SocketChannel $socketChannel, object $message);
+    public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message);
 
     public function sendAsyncRequest(
-        SocketChannel $socketChannel,
+        SocketChannelInterface $socketChannel,
         AbstractMessage $message,
         int $timeout = 100,
         bool $withResponse = false

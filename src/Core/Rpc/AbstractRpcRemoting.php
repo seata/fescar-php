@@ -1,7 +1,15 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Seata\Core\Rpc;
-
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Common\PositiveCounter;
@@ -13,17 +21,15 @@ use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\SocketChannel;
-use Hyperf\Seata\Core\Rpc\Swoole\SwooleSocketManager;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketManager;
+use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
+use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Buffer\SwooleSocketByteBuffer;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
-
     /**
      * @var \Psr\Log\LoggerInterface
      */
@@ -62,7 +68,7 @@ abstract class AbstractRpcRemoting implements Disposable
 
     /**
      * @var array ConcurrentHashMap<String serverAddress, BlockingQueue<RpcMessage>>
-    */
+     */
     protected array $basketMap = [];
 
     /**
@@ -70,7 +76,7 @@ abstract class AbstractRpcRemoting implements Disposable
      */
     protected array $rpcHooks = [];
 
-    protected SwooleSocketManager $socketManager;
+    protected SocketManager $socketManager;
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
@@ -81,12 +87,41 @@ abstract class AbstractRpcRemoting implements Disposable
         $this->logger = $container->get(StdoutLoggerInterface::class);
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-        $this->socketManager = $container->get(SwooleSocketManager::class);
+        $this->socketManager = $container->get(SocketManager::class);
     }
 
     public function init()
     {
         // TODO 增加定时器清理超时的 features
+    }
+
+    public function sendAsyncRequest(
+        SocketChannelInterface $socketChannel,
+        AbstractMessage $message,
+        int $timeout = 100,
+        bool $withResponse = false
+    ) {
+        $messageType = $message instanceof HeartbeatMessage ? ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST : ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY;
+        $rpcMessage = $this->buildRequestMessage($message, $messageType);
+
+        if ($rpcMessage->getBody() instanceof MergeMessage) {
+            $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
+        }
+
+        if ($withResponse) {
+            return $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
+        }
+        return $socketChannel->sendSyncWithNoResponse($rpcMessage, $timeout);
+    }
+
+    public function getFutures(): array
+    {
+        return $this->futures;
+    }
+
+    public function setFutures(array $futures): void
+    {
+        $this->futures = $futures;
     }
 
     /**
@@ -96,8 +131,8 @@ abstract class AbstractRpcRemoting implements Disposable
      * @param channel       netty channel
      * @param rpcMessage    rpc message
      * @param timeoutMillis rpc communication timeout
-     * @return response message
      * @throws TimeoutException
+     * @return response message
      */
     protected function sendSync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis)
     {
@@ -149,7 +184,7 @@ abstract class AbstractRpcRemoting implements Disposable
      * Send async request with response object.
      */
     protected function sendAsyncRequestWithResponse(
-        SocketChannel $socketChannel,
+        SocketChannelInterface $socketChannel,
         AbstractMessage $message,
         int $timeout
     ) {
@@ -159,28 +194,9 @@ abstract class AbstractRpcRemoting implements Disposable
         return $this->sendAsyncRequest($socketChannel, $message, $timeout, true);
     }
 
-    protected function sendAsyncRequestWithoutResponse(SocketChannel $socketChannel, AbstractMessage $message): int|AbstractResultMessage
+    protected function sendAsyncRequestWithoutResponse(SocketChannelInterface $socketChannel, AbstractMessage $message): int|AbstractResultMessage
     {
         return $this->sendAsyncRequest($socketChannel, $message, 0, false);
-    }
-
-    public function sendAsyncRequest(
-        SocketChannel $socketChannel,
-        AbstractMessage $message,
-        int $timeout = 100,
-        bool $withResponse = false
-    ) {
-        $messageType = $message instanceof HeartbeatMessage ? ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST : ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY;
-        $rpcMessage = $this->buildRequestMessage($message, $messageType);
-
-        if ($rpcMessage->getBody() instanceof MergeMessage) {
-            $this->mergeMsgMap[$rpcMessage->getId()] = $rpcMessage->getBody();
-        }
-
-        if ($withResponse) {
-            return $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
-        }
-        return $socketChannel->sendSyncWithNoResponse($rpcMessage, $timeout);
     }
 
     protected function buildRequestMessage(AbstractMessage $message, int $messageType): RpcMessage
@@ -198,15 +214,4 @@ abstract class AbstractRpcRemoting implements Disposable
     {
         return PositiveCounter::incrementAndGet();
     }
-
-    public function getFutures(): array
-    {
-        return $this->futures;
-    }
-
-    public function setFutures(array $futures): void
-    {
-        $this->futures = $futures;
-    }
-
 }

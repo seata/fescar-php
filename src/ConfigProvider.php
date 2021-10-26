@@ -16,7 +16,7 @@ use Hyperf\Seata\Annotation\GlobalTransactionScanner;
 use Hyperf\Seata\Annotation\GlobalTransactionScannerFactory;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Rpc\RpcClientBootstrapInterface;
-use Hyperf\Seata\Core\Rpc\Swoole\SwooleRpcClientBootstrap;
+use Hyperf\Seata\Core\Rpc\Runtime\SwooleRpcClientBootstrap;
 use Hyperf\Seata\Listener\InitListener;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Seata\Logger\StdoutLogger;
@@ -34,7 +34,6 @@ class ConfigProvider
                 ResourceManagerInterface::class => DefaultResourceManager::class,
                 GlobalTransactionScanner::class => GlobalTransactionScannerFactory::class,
                 LoggerInterface::class => StdoutLogger::class,
-                RpcClientBootstrapInterface::class => SwooleRpcClientBootstrap::class,
             ],
         ];
     }

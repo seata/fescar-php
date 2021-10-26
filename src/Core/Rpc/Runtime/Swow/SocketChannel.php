@@ -1,29 +1,42 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+namespace Hyperf\Seata\Core\Rpc\Runtime\Swow;
 
-
-use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
+use Hyperf\Engine\Channel;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Decoder;
-use Hyperf\Seata\Core\Rpc\Swoole\V1\ProtocolV1Encoder;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
+use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
+use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
-use Hyperf\Engine\Channel;
 use Swow\Socket;
 
-class SocketChannel
+class SocketChannel implements SocketChannelInterface
 {
-
     protected ProtocolV1Encoder $protocolEncoder;
+
     protected ProtocolV1Decoder $protocolDecoder;
+
     protected int $messageId;
+
     protected Socket $socket;
+
     protected Address $address;
+
     protected array $responses = [];
+
     protected Channel $sendChannel;
 
     public function __construct(Socket $socket, Address $address)
@@ -33,7 +46,7 @@ class SocketChannel
         $container = ApplicationContext::getContainer();
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-        // $this->sendChannel = new Channel();
+        $this->sendChannel = new Channel();
         $this->createRecvLoop();
         //$this->createSendLoop();
     }
@@ -43,8 +56,7 @@ class SocketChannel
         $channel = new Channel();
         $this->responses[$rpcMessage->getId()] = $channel;
         $this->sendSyncWithNoResponse($rpcMessage, $timeoutMillis);
-        $responseMessage = $channel->pop();
-        return $responseMessage;
+        return $channel->pop();
     }
 
     public function sendSyncWithNoResponse(RpcMessage $rpcMessage, int $timeoutMillis)
@@ -83,20 +95,4 @@ class SocketChannel
             }
         });
     }
-
-    protected function createSendLoop()
-    {
-        Coroutine::create(function () {
-            while (true) {
-                try {
-                    $rpcMessage = $this->sendChannel->pop();
-                    $data = $this->protocolEncoder->encode($rpcMessage);
-                    $this->socket->sendAll($data);
-                } catch (\Exception $exception) {
-                    var_dump($exception->getMessage());
-                }
-            }
-        });
-    }
-
 }

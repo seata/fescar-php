@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 class ClientHandler
 {

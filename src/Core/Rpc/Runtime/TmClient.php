@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
@@ -125,7 +125,7 @@ class TmClient extends AbstractRemotingClient
         return $this->transactionServiceGroup;
     }
 
-    public function sendSyncRequest(SocketChannel $socketChannel, object $message)
+    public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message)
     {
         // TODO: Implement sendSyncRequest() method.
     }

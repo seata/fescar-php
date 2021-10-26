@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Protocol\MergedWarpMessage;
 use Hyperf\Seata\Exception\SeataException;
@@ -14,7 +14,7 @@ class MergedSendRunnable
 
     protected array $basketMap;
 
-    protected SwooleSocketManager $socketManager;
+    protected SocketManager $socketManager;
 
     /**
      * @var AbstractRemotingClient
@@ -26,7 +26,7 @@ class MergedSendRunnable
         $container = ApplicationContext::getContainer();
         $this->isSending = $isSending;
         $this->basketMap = $basketMap;
-        $this->socketManager = $container->get(SwooleSocketManager::class);
+        $this->socketManager = $container->get(SocketManager::class);
         $this->remotingClient = $abstractRemotingClient;
     }
 

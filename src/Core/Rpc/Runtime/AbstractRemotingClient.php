@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 
 use Exception;
@@ -58,8 +58,6 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
-        $this->rpcClientBootstrap = $container->get(RpcClientBootstrapInterface::class);
-        $this->rpcClientBootstrap->setClientHandler(new ClientHandler());
     }
 
     public function init() {

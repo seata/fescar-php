@@ -1,10 +1,16 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc\Swoole;
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
-
-use Exception;
-use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
@@ -13,42 +19,41 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
-use Hyperf\Seata\Core\Rpc\channel;
-use Hyperf\Seata\Core\Rpc\msg;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmUndoLogProcessor;
-use Hyperf\Seata\Core\Rpc\requestMessage;
 use Hyperf\Seata\Core\Rpc\response;
-use Hyperf\Seata\Core\Rpc\server;
-use Hyperf\Seata\Core\Rpc\serverAddress;
-use Hyperf\Seata\Core\Rpc\TimeoutException;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Seata\Exception\TodoException;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
-use Swoole\Timer;
 
 class RmRemotingClient extends AbstractRemotingClient
 {
+    protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
+
+    protected const MAX_QUEUE_SIZE = 20000;
 
     protected ResourceManagerInterface $resourceManager;
+
     protected string $customerKeys = '';
+
     protected bool $initialized = false;
-    protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
-    protected const MAX_QUEUE_SIZE = 20000;
+
     protected string $applicationId = '';
+
     protected string $transactionServiceGroup = '';
-    protected SwooleSocketManager $socketManager;
+
+    protected SocketManager $socketManager;
 
     public function __construct($transactionRole = TransactionRole::RMROLE)
     {
         parent::__construct($transactionRole);
         $container = ApplicationContext::getContainer();
-        $this->socketManager = $container->get(SwooleSocketManager::class);
+        $this->socketManager = $container->get(SocketManager::class);
     }
 
     public function init()
@@ -61,20 +66,6 @@ class RmRemotingClient extends AbstractRemotingClient
         }
         $this->createHeartbeatLoop();
         $this->registerService();
-    }
-
-    protected function createHeartbeatLoop()
-    {
-        Coroutine::create(function () {
-            while (true) {
-                try {
-                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
-                } catch (\InvalidArgumentException $exception) {
-                    var_dump($exception->getMessage());
-                }
-                sleep(5);
-            }
-        });
     }
 
     public function registerService(): RpcMessage
@@ -168,17 +159,7 @@ class RmRemotingClient extends AbstractRemotingClient
         throw new TodoException();
     }
 
-    protected function getMergedResourceKeys(): string
-    {
-        $resourceIds = [];
-        $managedResources = $this->getResourceManager()->getManagedResources();
-        foreach ($managedResources as $resource) {
-            $resourceIds[] = $resource->getResourceId();
-        }
-        return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
-    }
-
-    public function sendSyncRequest(SocketChannel $socketChannel, object $message): GlobalBeginResponse
+    public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message): GlobalBeginResponse
     {
         return $this->sendMsgWithResponse($message);
     }
@@ -204,5 +185,29 @@ class RmRemotingClient extends AbstractRemotingClient
         AbstractMessage $requestMessage
     ) {
         throw new TodoException();
+    }
+
+    protected function createHeartbeatLoop()
+    {
+        Coroutine::create(function () {
+            while (true) {
+                try {
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
+                } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                }
+                sleep(5);
+            }
+        });
+    }
+
+    protected function getMergedResourceKeys(): string
+    {
+        $resourceIds = [];
+        $managedResources = $this->getResourceManager()->getManagedResources();
+        foreach ($managedResources as $resource) {
+            $resourceIds[] = $resource->getResourceId();
+        }
+        return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
     }
 }

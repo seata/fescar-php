@@ -11,7 +11,7 @@ use Hyperf\Seata\Core\Protocol\ResultCode;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchRegisterRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchRegisterResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchReportResponse;
-use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
+use Hyperf\Seata\Core\Rpc\Runtime\RmRemotingClient;
 use Hyperf\Seata\Exception\NotSupportYetException;
 use Hyperf\Seata\Exception\TimeoutException;
 use Hyperf\Seata\Exception\TransactionException;

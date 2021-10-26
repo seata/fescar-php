@@ -15,7 +15,7 @@ use Hyperf\Seata\Core\Model\TransactionException;
 use Hyperf\Seata\Core\Protocol\ResultCode;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalLockQueryRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalLockQueryResponse;
-use Hyperf\Seata\Core\Rpc\Swoole\RmRemotingClient;
+use Hyperf\Seata\Core\Rpc\Runtime\RmRemotingClient;
 use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Exception\TimeoutException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
