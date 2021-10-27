@@ -48,7 +48,7 @@ class HeapByteBuffer extends ByteBuffer
         return new self(-1, 0, $remaining, $remaining, $this->bytes, $position + $this->offset);
     }
 
-    public function asReadOnlyBuffer()
+    public function asReadOnlyBuffer(): ByteBuffer
     {
         throw new \RuntimeException('Not implement yet');
     }

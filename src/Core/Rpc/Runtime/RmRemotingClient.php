@@ -86,23 +86,23 @@ class RmRemotingClient extends AbstractRemotingClient
     {
         // 1.registry rm client handle branch commit processor
         $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
-        $this->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
         // 2.registry rm client handle branch commit processor
         $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
-        $this->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
         // 3.registry rm handler undo log processor
         $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
-        $this->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
         // 4.registry TC response processor
         $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
-        $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
-        $this->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
-        $this->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
-        $this->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
         // 5.registry heartbeat message processor
         $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
-        $this->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor, null);
     }
 
     public function getResourceManager(): ResourceManagerInterface

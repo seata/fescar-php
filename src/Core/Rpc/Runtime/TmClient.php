@@ -57,7 +57,6 @@ class TmClient extends AbstractRemotingClient
             parent::init();
             $this->initialized = true;
         }
-
         $this->createHeartbeatLoop();
         $this->registerService();
     }
@@ -78,7 +77,7 @@ class TmClient extends AbstractRemotingClient
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());
                 }
-                sleep(1);
+                sleep(5);
             }
         });
     }
@@ -143,6 +142,11 @@ class TmClient extends AbstractRemotingClient
         return $this->transactionServiceGroup;
     }
 
+    protected function getFeatures()
+    {
+        return $this->futures;
+    }
+
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
@@ -150,15 +154,15 @@ class TmClient extends AbstractRemotingClient
     {
         // 1.registry TC response processor
         $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFeatures(), $this->getTransactionMessageHandler());
-        $this->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_BEGIN_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_COMMIT_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_REPORT_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
-        $this->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_BEGIN_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_COMMIT_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_REPORT_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
         // 2.registry heartbeat message processor
         $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
-        $this->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor);
+        $this->processorManager->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor);
     }
 }

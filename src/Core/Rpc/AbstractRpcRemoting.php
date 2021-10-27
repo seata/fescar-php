@@ -56,10 +56,6 @@ abstract class AbstractRpcRemoting implements Disposable
      */
     protected $futures = [];
 
-    /**
-     * @var array <MessageType, RemotingProcessor>
-     */
-    protected $processorTable = [];
 
     /**
      * @var array Map<Integer, MergeMessage>

@@ -15,6 +15,8 @@ use Hyperf\Engine\Channel;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
@@ -39,10 +41,14 @@ class SocketChannel implements SocketChannelInterface
 
     protected Channel $sendChannel;
 
-    public function __construct(Socket $socket, Address $address)
+    /** @var RemotingProcessorInterface[] */
+    protected array $processorTable = [];
+
+    public function __construct(Socket $socket, Address $address, array $processorTable)
     {
         $this->socket = $socket;
         $this->address = $address;
+        $this->processorTable = $processorTable;
         $container = ApplicationContext::getContainer();
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
@@ -76,18 +82,21 @@ class SocketChannel implements SocketChannelInterface
             while (true) {
                 try {
                     $data = $this->socket->recvString();
+
                     if (! $data) {
                         continue;
                     }
                     $byteBuffer = ByteBuffer::wrapBinary($data);
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
                     if (isset($this->responses[$rpcMessage->getId()])) {
+                        dump($rpcMessage);
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     } elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
                         var_dump('heartbeat', $rpcMessage);
                     } else {
-                        var_dump('else', $rpcMessage);
+//                        $this->processorTable[$rpcMessage->getMessageType()]->process($this, $rpcMessage);
+                        var_dump($rpcMessage);
                     }
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());

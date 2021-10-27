@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Exception;
+use Hyperf\Process\ProcessManager;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
+use Hyperf\Seata\Core\Rpc\ProcessorManager;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
@@ -63,12 +65,16 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
     protected array $recvChannelMap = [];
 
+
+    protected ProcessorManager $processorManager;
+
     public function __construct(int $transactionRole)
     {
         parent::__construct();
         $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
+        $this->processorManager = $container->get(ProcessorManager::class);
     }
 
     public function init()
@@ -117,11 +123,6 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function getTransactionMessageHandler(): ?TransactionMessageHandler
     {
         return $this->transactionMessageHandler;
-    }
-
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
-    {
-        $this->processorTable[$messageType] = $processor;
     }
 
     abstract protected function getTransactionServiceGroup(): string;

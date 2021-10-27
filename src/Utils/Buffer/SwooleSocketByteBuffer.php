@@ -50,7 +50,7 @@ class SwooleSocketByteBuffer extends ByteBuffer
         throw new NotSupportYetException();
     }
 
-    public function asReadOnlyBuffer()
+    public function asReadOnlyBuffer(): ByteBuffer
     {
         throw new NotSupportYetException();
     }

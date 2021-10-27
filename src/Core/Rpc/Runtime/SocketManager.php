@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Rpc\Address;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\Swoole\SocketChannel as SwooleSocketChannel;
 use Hyperf\Seata\Core\Rpc\Runtime\Swow\SocketChannel as SwowSocketChannel;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
@@ -29,6 +30,8 @@ class SocketManager
     protected LoggerInterface $logger;
 
     protected array $socketChannels = [];
+
+    protected array $processorTable = [];
 
     protected array $adapters = [
         Engine::ENGINE_SWOOLE => SwooleSocketChannel::class,
@@ -79,6 +82,11 @@ class SocketManager
         return $availList;
     }
 
+    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
+    {
+        $this->processorTable[$messageType] = $processor;
+    }
+
     protected function createSocket(Address $address): SwowSocket|SwooleSocket
     {
         if (Engine::isRunningInSwoole()) {
@@ -95,10 +103,10 @@ class SocketManager
     protected function createSocketChannel(SwooleSocket|SwowSocket $socket, Address $address): SocketChannelInterface
     {
         if (Engine::isRunningInSwoole()) {
-            return new SwooleSocketChannel($socket, $address);
+            return new SwooleSocketChannel($socket, $address, $this->processorTable);
         }
         if (Engine::isRunningInSwow()) {
-            return new SwowSocketChannel($socket, $address);
+            return new SwowSocketChannel($socket, $address, $this->processorTable);
         }
         throw new RuntimeException('Invalid runtime engine');
     }

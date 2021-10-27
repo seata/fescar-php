@@ -39,6 +39,8 @@ class SocketChannel implements SocketChannelInterface
 
     protected Channel $sendChannel;
 
+    protected array $processTable = [];
+
     public function __construct(Socket $socket, Address $address)
     {
         $this->socket = $socket;
