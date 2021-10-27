@@ -39,7 +39,7 @@ class TmClient extends AbstractRemotingClient
 
     protected bool $initialized = false;
 
-    public function __construct($transactionRole = TransactionRole::TMROLE)
+    public function __construct(int $transactionRole = TransactionRole::TMROLE)
     {
         parent::__construct($transactionRole);
     }

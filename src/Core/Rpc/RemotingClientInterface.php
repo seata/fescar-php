@@ -58,5 +58,4 @@ interface RemotingClientInterface
      */
     public function onRegisterMsgFail(string $serverAddress, Address $channel, object $response, AbstractMessage $requestMessage);
 
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor);
 }

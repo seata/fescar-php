@@ -24,7 +24,7 @@ use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmUndoLogProcessor;
-use Hyperf\Seata\Core\Rpc\response;
+use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Seata\Exception\TodoException;
@@ -49,7 +49,7 @@ class RmRemotingClient extends AbstractRemotingClient
 
     protected SocketManager $socketManager;
 
-    public function __construct($transactionRole = TransactionRole::RMROLE)
+    public function __construct(int $transactionRole = TransactionRole::RMROLE)
     {
         parent::__construct($transactionRole);
         $container = ApplicationContext::getContainer();
@@ -210,4 +210,5 @@ class RmRemotingClient extends AbstractRemotingClient
         }
         return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
     }
+
 }
