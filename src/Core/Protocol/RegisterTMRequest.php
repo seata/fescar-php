@@ -22,6 +22,30 @@ class RegisterTMRequest extends AbstractIdentifyRequest
     public string $UDATA_IP = "ip";
     public string $UDATA_TIMESTAMP = "timestamp";
 
+    public function __construct(string $applicationId, string $transactionServiceGroup, ?string $extraData = null)
+    {
+        parent::__construct($applicationId, $transactionServiceGroup, $extraData);
+
+        $stringBuilder = '';
+        if (! empty($extraData)) {
+            $stringBuilder .= $extraData;
+            if (substr($extraData, -1) !== PHP_EOL) {
+                $stringBuilder .= PHP_EOL;
+            }
+        }
+
+        if (! empty($transactionServiceGroup)) {
+            $stringBuilder .= sprintf('%s=%s', $this->UDATA_VGROUP, $transactionServiceGroup);
+            $stringBuilder .= PHP_EOL;
+            $clientIp = getHostByName(getHostName());
+            if (! empty($clientIp)) {
+                $stringBuilder .= sprintf('%s=%s', $this->UDATA_IP, $clientIp);
+                $stringBuilder .= PHP_EOL;
+            }
+        }
+        $this->extraData = $stringBuilder;
+    }
+
     public function getTypeCode(): int
     {
         return MessageType::TYPE_REG_CLT;

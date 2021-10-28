@@ -73,14 +73,17 @@ class ProtocolV1Encoder
                 $bodyBuffer = $codec->encode($message->getBody(), $bodyBuffer);
                 $fullLength += $bodyBuffer->binaryLength();
             }
+
             // Magic Code, 2 bytes
             $buffer->putHex(ProtocolConstants::MAGIC_CODE_BYTES[0]);
             $buffer->putHex(ProtocolConstants::MAGIC_CODE_BYTES[1]);
             // Version, 1 byte
             $buffer->putHex(ProtocolConstants::VERSION);
+
             // Full length and Head length
             $buffer->putUInt32($fullLength);
             $buffer->putUInt16($headLength);
+
             // Message Type, 1 byte
             $buffer->putHex($message->getMessageType());
             // Serialization, 1 byte
@@ -90,7 +93,8 @@ class ProtocolV1Encoder
             // Message ID, 4 bytes
             $buffer->putUInt32($message->getId());
             // Merge body buffer
-            $buffer->merge($bodyBuffer);
+            $buffer->merge($bodyBuffer, $message);
+
             return $buffer->toBinary();
         }
     }

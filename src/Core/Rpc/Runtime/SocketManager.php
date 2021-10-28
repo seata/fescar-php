@@ -82,11 +82,6 @@ class SocketManager
         return $availList;
     }
 
-    public function registerProcessor(int $messageType, RemotingProcessorInterface $processor)
-    {
-        $this->processorTable[$messageType] = $processor;
-    }
-
     protected function createSocket(Address $address): SwowSocket|SwooleSocket
     {
         if (Engine::isRunningInSwoole()) {

@@ -18,7 +18,6 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
-use Hyperf\Seata\Core\Rpc\ProcessorManager;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;

@@ -1,13 +1,12 @@
 <?php
 
-namespace Hyperf\Seata\Core\Rpc;
+namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 
 class ProcessorManager
 {
-
-    private array $processorTable = [];
+    protected array $processorTable = [];
 
     public function registerProcessor(int $messageType, RemotingProcessorInterface $processor):void
     {

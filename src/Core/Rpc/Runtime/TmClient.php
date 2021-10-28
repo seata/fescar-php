@@ -57,8 +57,8 @@ class TmClient extends AbstractRemotingClient
             parent::init();
             $this->initialized = true;
         }
-        $this->createHeartbeatLoop();
         $this->registerService();
+        $this->createHeartbeatLoop();
     }
 
     private function registerService()
@@ -77,7 +77,7 @@ class TmClient extends AbstractRemotingClient
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());
                 }
-                sleep(5);
+                sleep(1);
             }
         });
     }

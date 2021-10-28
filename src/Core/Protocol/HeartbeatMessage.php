@@ -15,7 +15,7 @@ class HeartbeatMessage extends AbstractMessage implements MessageTypeAware
 {
     protected const serialVersionUID = -985316399527884899;
 
-    protected bool $ping;
+    protected bool $ping = true;
 
     public function __construct(bool $ping = true)
     {
