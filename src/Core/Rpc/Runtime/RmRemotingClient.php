@@ -19,6 +19,7 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
+use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
@@ -62,16 +63,16 @@ class RmRemotingClient extends AbstractRemotingClient
         $this->initialized = true;
         parent::init();
         if ($this->resourceManager && ! empty($this->resourceManager->getManagedResources()) && $this->transactionServiceGroup) {
-            $this->socketManager->reconnect($this->transactionServiceGroup);
+            $this->socketManager->reconnect($this->transactionServiceGroup, 'rm');
         }
         $this->createHeartbeatLoop();
-        $this->registerService();
+        $this->registerResource($this->applicationId, $this->transactionServiceGroup);
     }
 
-    public function registerService(): RpcMessage
+    public function sendRegisterMessage(SocketChannelInterface $socketChannel, string $resourceId): RpcMessage
     {
         $request = new RegisterRMRequest($this->applicationId, $this->transactionServiceGroup);
-        $request->setResourceIds($this->getMergedResourceKeys());
+        $request->setResourceIds($resourceId);
         return $this->sendMsgWithResponse($request);
     }
 
@@ -79,6 +80,12 @@ class RmRemotingClient extends AbstractRemotingClient
     {
         if ($this->transactionServiceGroup !== '') {
             $this->clientConnectionManager->reconnect($this->transactionServiceGroup);
+        }
+        $addresses = $this->socketManager->getAvailServerList($this->transactionServiceGroup);
+        foreach ($addresses as $address) {
+            $address->setTarget('rm');
+            $socketChannel = $this->socketManager->acquireChannel($address);
+            $this->sendRegisterMessage($socketChannel, $resourceId);
         }
     }
 
@@ -213,4 +220,8 @@ class RmRemotingClient extends AbstractRemotingClient
         return implode(Constants::DBKEYS_SPLIT_CHAR, $resourceIds);
     }
 
+    protected function acquireChannel(Address $address): SocketChannelInterface
+    {
+        return $this->socketManager->acquireChannel($address, 'rm');
+    }
 }

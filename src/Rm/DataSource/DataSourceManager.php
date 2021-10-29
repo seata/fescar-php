@@ -35,9 +35,6 @@ class DataSourceManager extends AbstractResourceManager
         parent::__construct($rmRemotingClient);
         $container = ApplicationContext::getContainer();
         $this->logger = $container->get(LoggerFactory::class)->create(static::class);
-        Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {
-            return new MysqlConnectionProxy($connection, $database, $prefix, $config);
-        });
     }
 
     public function lockQuery(int $branchType, string $resourceId, string $xid, string $lockKeys): bool

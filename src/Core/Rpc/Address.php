@@ -15,6 +15,9 @@ use JetBrains\PhpStorm\Pure;
 
 class Address
 {
+
+    protected string $target;
+
     protected string $host = '';
 
     protected ?int $port;
@@ -28,7 +31,7 @@ class Address
     #[Pure]
     public function __toString()
     {
-        return $this->getHost() . ':' . $this->getPort();
+        return $this->getHost() . ':' . $this->getPort() . '?target=' . $this->getTarget();
     }
 
     public function getHost(): string
@@ -50,6 +53,17 @@ class Address
     public function setPort(?int $port): static
     {
         $this->port = $port;
+        return $this;
+    }
+
+    public function getTarget(): string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): static
+    {
+        $this->target = $target;
         return $this;
     }
 }

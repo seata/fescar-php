@@ -102,6 +102,10 @@ class SocketChannel implements SocketChannelInterface
                     }
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());
+                } finally {
+                    foreach ($this->responses as $responseChannel) {
+                        $responseChannel->close();
+                    }
                 }
             }
         });

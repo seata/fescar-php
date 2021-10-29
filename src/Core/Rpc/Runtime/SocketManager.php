@@ -46,15 +46,15 @@ class SocketManager
 
     public function acquireChannel(Address $address): SocketChannelInterface
     {
-        $serverAddress = (string) $address;
-        if (! isset($this->socketChannels[$serverAddress])) {
+        $key = (string) $address;
+        if (! isset($this->socketChannels[$key])) {
             $socketChannel = $this->createSocketChannel($this->createSocket($address), $address);
-            $this->socketChannels[$serverAddress] = $socketChannel;
+            $this->socketChannels[$key] = $socketChannel;
         }
-        return $this->socketChannels[$serverAddress];
+        return $this->socketChannels[$key];
     }
 
-    public function reconnect(string $transactionServiceGroup)
+    public function reconnect(string $transactionServiceGroup, string $target)
     {
         $availList = $this->getAvailServerList($transactionServiceGroup);
         if (empty($availList)) {
@@ -63,6 +63,7 @@ class SocketManager
         }
         foreach ($availList as $address) {
             try {
+                $address->setTarget($target);
                 $this->acquireChannel($address);
             } catch (\Throwable $exception) {
                 $this->logger->error(sprintf('Cannot connect to %s cause: %s', (string) $address, $exception->getMessage()));

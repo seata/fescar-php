@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Annotation;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Rm\RMClient;
 use Hyperf\Seata\Tm\TMClient;
 use Psr\Log\LoggerInterface;
@@ -46,7 +47,7 @@ class GlobalTransactionScanner
 
     private null|string $secretKey = null;
 
-    public function __construct(ConfigInterface $config, LoggerInterface $logger, RMClient $RMClient, TMClient $TMClient)
+    public function __construct(ConfigInterface $config, LoggerFactory $loggerFactory, RMClient $RMClient, TMClient $TMClient)
     {
         $this->config = $config;
         $this->applicationId = $this->config->get('seata.application_id');
@@ -61,7 +62,7 @@ class GlobalTransactionScanner
         if (! $this->txServiceGroup) {
             throw new \InvalidArgumentException('Config seata.tx_service_group does not exist');
         }
-        $this->logger = $logger;
+        $this->logger = $loggerFactory->create(static::class);
         $this->RMClient = $RMClient;
         $this->TMClient = $TMClient;
     }
@@ -69,11 +70,12 @@ class GlobalTransactionScanner
     public function initClients()
     {
         $this->dumpInfo('Initializing Global Transaction Clients ... ');
-        // @todo Init TM
-         $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
-        // Init RM
+        // Init TM Client
+        $this->TMClient->init($this->applicationId, $this->txServiceGroup, $this->accessKey, $this->secretKey);
+        $this->dumpInfo(sprintf('Transaction Manager Client is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));
+        // Init RM Client
         $this->RMClient->init($this->applicationId, $this->txServiceGroup);
-        $this->dumpInfo(sprintf('Resource Manager is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));
+        $this->dumpInfo(sprintf('Resource Manager Client is initialized. applicationId[%s] txServiceGroup[%s]', $this->applicationId, $this->txServiceGroup));
         $this->dumpInfo('Global Transaction Clients are initialized');
     }
 

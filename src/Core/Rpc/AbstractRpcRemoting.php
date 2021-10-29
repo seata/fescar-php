@@ -151,12 +151,6 @@ abstract class AbstractRpcRemoting implements Disposable
 
         $result = $this->socketManager->acquireChannel($address)->sendSyncWithResponse($rpcMessage, $timeoutMillis);
 
-        //$data = $this->protocolEncoder->encode($rpcMessage);
-        //
-        ///** @var \Swoole\Coroutine\Socket $socket */
-        //$socket = $this->clientConnectionManager->acquireConnection($channel)->getConnection();
-        //$result = $socket->sendAll($data, $timeoutMillis);
-
         $messageFuture->get($timeoutMillis);
 
         // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);

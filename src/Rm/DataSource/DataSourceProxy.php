@@ -12,7 +12,7 @@ use Hyperf\Seata\Rm\DefaultResourceManager;
 
 class DataSourceProxy extends AbstractDataSourceProxy implements Resource
 {
-    protected string $resourceGroupId = 'DEFAULT';
+    public string $resourceGroupId = 'DEFAULT';
     protected string $resourceId;
     protected LoggerInterface $logger;
     protected ConnectionProxyInterface $connection;
@@ -28,6 +28,8 @@ class DataSourceProxy extends AbstractDataSourceProxy implements Resource
         $this->resourceGroupId = $resourceGroupId;
         $this->connection = $connection;
         $this->defaultResourceManager->registerResource($this);
+
+        // @todo 补上 TableMetaChecker 逻辑
 
         // Set the default branch type to BranchType::AT in the RootContext
         RootContext::setDefaultBranchType($this->getBranchType());
