@@ -77,7 +77,7 @@ abstract class ByteBuffer extends Buffer
      */
     public const BYTE_ORDER_MB = 2;
 
-    protected ?array $bytes;
+    protected ?array $bytes = [];
 
     protected int $offset;
 
@@ -157,9 +157,9 @@ abstract class ByteBuffer extends Buffer
         return $buffer;
     }
 
-    public function merge(ByteBuffer $buffer, $message): static
+    public function merge(ByteBuffer $buffer): static
     {
-        $bytes = $buffer->getBytes($message);
+        $bytes = $buffer->getBytes();
         if ($bytes) {
             $this->bytes = array_merge($this->bytes, $bytes);
         }
@@ -288,16 +288,8 @@ abstract class ByteBuffer extends Buffer
         return $this->slice($offset, $length)->getBytes() ?? [];
     }
 
-    public function getBytes($message = null): ?array
+    public function getBytes(): ?array
     {
-        // fixme: 这里会卡住,$message 暂时传进来做调试判断使用的
-        if (! empty($message) && $message->getMessageType() == ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST ) {
-            var_dump('$this->bytes');
-            var_dump('===xxxxxx');
-            var_dump($this->bytes);
-            var_dump('--------getBytes-end');
-        }
-
         return $this->bytes;
     }
 

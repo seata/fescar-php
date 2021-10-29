@@ -89,7 +89,6 @@ class SocketChannel implements SocketChannelInterface
                     $byteBuffer = ByteBuffer::wrapBinary($data);
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
                     if (isset($this->responses[$rpcMessage->getId()])) {
-                        dump($rpcMessage);
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     } elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
