@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Processor;
 
 use Hyperf\Seata\Core\Protocol\RpcMessage;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 
 interface RemotingProcessorInterface
 {
-    public function process($channel, RpcMessage $rpcMessage);
+    public function process(SocketChannelInterface $channel, RpcMessage $rpcMessage);
 }

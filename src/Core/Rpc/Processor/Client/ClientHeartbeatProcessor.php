@@ -11,16 +11,21 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Processor\Client;
 
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
+use Hyperf\Seata\Logger\StdoutLogger;
+use Hyperf\Utils\ApplicationContext;
 
 class ClientHeartbeatProcessor extends AbstractRemotingProcessor
 {
-    public function process($channel, RpcMessage $rpcMessage)
+    public function process(SocketChannelInterface $channel, RpcMessage $rpcMessage)
     {
         if ($rpcMessage->getBody() == HeartbeatMessage::pong()) {
-            $this->getLogger()->debug('received PONG from {}', $channel);
+            $this->getLogger()->debug(sprintf('received PONG from %s', (string) $channel->getAddress()));
+            var_dump(sprintf('received PONG from %s', (string) $channel->getAddress()));
         }
     }
 }

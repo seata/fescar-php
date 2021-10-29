@@ -99,10 +99,10 @@ class SocketManager
     protected function createSocketChannel(SwooleSocket|SwowSocket $socket, Address $address): SocketChannelInterface
     {
         if (Engine::isRunningInSwoole()) {
-            return new SwooleSocketChannel($socket, $address, $this->processorTable);
+            return new SwooleSocketChannel($socket, $address);
         }
         if (Engine::isRunningInSwow()) {
-            return new SwowSocketChannel($socket, $address, $this->processorTable);
+            return new SwowSocketChannel($socket, $address);
         }
         throw new RuntimeException('Invalid runtime engine');
     }

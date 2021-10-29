@@ -41,14 +41,10 @@ class SocketChannel implements SocketChannelInterface
 
     protected Channel $sendChannel;
 
-    /** @var RemotingProcessorInterface[] */
-    protected array $processorTable = [];
-
-    public function __construct(Socket $socket, Address $address, array $processorTable)
+    public function __construct(Socket $socket, Address $address)
     {
         $this->socket = $socket;
         $this->address = $address;
-        $this->processorTable = $processorTable;
         $container = ApplicationContext::getContainer();
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
@@ -63,11 +59,11 @@ class SocketChannel implements SocketChannelInterface
         echo 'Ready to send the rpc message #' . $rpcMessage->getId() . PHP_EOL;
         var_dump($rpcMessage);
         $this->responses[$rpcMessage->getId()] = $channel;
-        $this->sendSyncWithNoResponse($rpcMessage, $timeoutMillis);
+        $this->sendSyncWithoutResponse($rpcMessage, $timeoutMillis);
         return $channel->pop();
     }
 
-    public function sendSyncWithNoResponse(RpcMessage $rpcMessage, int $timeoutMillis)
+    public function sendSyncWithoutResponse(RpcMessage $rpcMessage, int $timeoutMillis)
     {
         $data = $this->protocolEncoder->encode($rpcMessage);
         $this->socket->sendString($data);
@@ -95,10 +91,10 @@ class SocketChannel implements SocketChannelInterface
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     } elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
-                        var_dump('heartbeat', $rpcMessage);
+//                        var_dump('heartbeat', $rpcMessage);
                     } else {
 //                        $this->processorTable[$rpcMessage->getMessageType()]->process($this, $rpcMessage);
-                        var_dump($rpcMessage);
+//                        var_dump($rpcMessage);
                     }
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());

@@ -14,6 +14,7 @@ namespace Hyperf\Seata\Core\Rpc\Runtime;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
+use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RegisterTMRequest;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
@@ -21,6 +22,7 @@ use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\response;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 
 class TmClient extends AbstractRemotingClient
@@ -73,8 +75,10 @@ class TmClient extends AbstractRemotingClient
             while (true) {
                 try {
                     $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
-                    var_dump($response);
+//                    var_dump($response);
                 } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
                     var_dump($exception->getMessage());
                 }
                 sleep(5);
@@ -156,9 +160,10 @@ class TmClient extends AbstractRemotingClient
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
+        $container = ApplicationContext::getContainer();
         // 2.registry heartbeat message processor
-        $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
-        $this->processorManager->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor);
+        $clientHeartbeatProcessor = $container->get(ClientHeartbeatProcessor::class);
+        $this->processorManager->registerProcessor(ProtocolConstants::MSGTYPE_HEARTBEAT_RESPONSE, $clientHeartbeatProcessor);
     }
 
     protected function acquireChannel(Address $address): SocketChannelInterface

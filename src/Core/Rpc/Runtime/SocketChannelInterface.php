@@ -18,7 +18,7 @@ interface SocketChannelInterface
 {
     public function sendSyncWithResponse(RpcMessage $rpcMessage, int $timeoutMillis);
 
-    public function sendSyncWithNoResponse(RpcMessage $rpcMessage, int $timeoutMillis);
+    public function sendSyncWithoutResponse(RpcMessage $rpcMessage, int $timeoutMillis);
 
     public function getAddress(): Address;
 }
