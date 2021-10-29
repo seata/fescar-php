@@ -73,7 +73,6 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
         $this->registryFactory = $container->get(RegistryFactory::class);
-        $this->processorManager = $container->get(ProcessorManager::class);
     }
 
     public function init()
@@ -96,6 +95,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
         $socketChannel = $this->socketManager->acquireChannel($validAddress);
         $result = $this->sendAsyncRequestWithResponse($socketChannel, $message, $timeout);
+//        var_dump($result);
         if ($result instanceof GlobalBeginResponse && ! $result->getResultCode()) {
             if ($this->logger) {
                 $this->logger->error('begin response error,release socket');

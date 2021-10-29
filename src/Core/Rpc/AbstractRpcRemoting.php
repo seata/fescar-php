@@ -22,6 +22,7 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
+use Hyperf\Seata\Core\Rpc\Runtime\ProcessorManager;
 use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\SocketManager;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
@@ -75,6 +76,8 @@ abstract class AbstractRpcRemoting implements Disposable
 
     protected SocketManager $socketManager;
 
+    protected ProcessorManager $processorManager;
+
     /**
      * @param \Psr\Log\LoggerInterface $logger
      */
@@ -85,6 +88,7 @@ abstract class AbstractRpcRemoting implements Disposable
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
         $this->socketManager = $container->get(SocketManager::class);
+        $this->processorManager = $container->get(ProcessorManager::class);
     }
 
     public function init()
@@ -106,9 +110,11 @@ abstract class AbstractRpcRemoting implements Disposable
         }
 
         if ($withResponse) {
-            return $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
+            $response =  $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
+            $this->processorManager->runProcessor($socketChannel, $response);
+            return $response;
         }
-        return $socketChannel->sendSyncWithNoResponse($rpcMessage, $timeout);
+        return $socketChannel->sendSyncWithoutResponse($rpcMessage, $timeout);
     }
 
     public function getFutures(): array

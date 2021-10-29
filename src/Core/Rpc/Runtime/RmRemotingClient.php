@@ -84,22 +84,22 @@ class RmRemotingClient extends AbstractRemotingClient
 
     public function initRegisterProcessor()
     {
-        // 1.registry rm client handle branch commit processor
-        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
-        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
-        // 2.registry rm client handle branch commit processor
-        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
-        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
-        // 3.registry rm handler undo log processor
-        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
-        $this->processorManager->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
-        // 4.registry TC response processor
-        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
-        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
-        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
-        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
-        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
-        $this->processorManager->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
+//        // 1.registry rm client handle branch commit processor
+//        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
+//        // 2.registry rm client handle branch commit processor
+//        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
+//        // 3.registry rm handler undo log processor
+//        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
+//        $this->processorManager->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
+//        // 4.registry TC response processor
+//        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
+//        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
+//        $this->processorManager->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
         // 5.registry heartbeat message processor
         $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
         $this->processorManager->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor, null);
@@ -194,6 +194,8 @@ class RmRemotingClient extends AbstractRemotingClient
                 try {
                     $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
                 } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
                     var_dump($exception->getMessage());
                 }
                 sleep(5);

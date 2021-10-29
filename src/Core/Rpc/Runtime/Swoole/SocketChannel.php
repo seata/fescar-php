@@ -57,11 +57,11 @@ class SocketChannel implements SocketChannelInterface
     {
         $channel = new Channel();
         $this->responses[$rpcMessage->getId()] = $channel;
-        $this->sendSyncWithNoResponse($rpcMessage, $timeoutMillis);
+        $this->sendSyncWithoutResponse($rpcMessage, $timeoutMillis);
         return $channel->pop();
     }
 
-    public function sendSyncWithNoResponse(RpcMessage $rpcMessage, int $timeoutMillis)
+    public function sendSyncWithoutResponse(RpcMessage $rpcMessage, int $timeoutMillis)
     {
         $data = $this->protocolEncoder->encode($rpcMessage);
         $this->socket->sendString($data);
