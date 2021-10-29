@@ -97,7 +97,7 @@ abstract class ByteBuffer extends Buffer
         int $offset = 0
     ) {
         parent::__construct($mark, $position, $limit, $capacity);
-        $bytes && $this->bytes = $bytes;
+        $this->bytes = $bytes;
         $this->offset = $offset;
     }
 
@@ -119,7 +119,9 @@ abstract class ByteBuffer extends Buffer
         if ($limit === null) {
             $limit = $capacity;
         }
-        return new HeapByteBuffer(-1, 0, $limit, $capacity);
+        $instance = new HeapByteBuffer(-1, 0, $limit, $capacity);
+        $instance->bytes = [];
+        return $instance;
     }
 
     public static function allocateSocket(Socket $socket): SwooleSocketByteBuffer

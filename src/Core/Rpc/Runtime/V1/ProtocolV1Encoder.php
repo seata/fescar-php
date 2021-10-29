@@ -94,7 +94,6 @@ class ProtocolV1Encoder
             $buffer->putUInt32($message->getId());
             // Merge body buffer
             $buffer->merge($bodyBuffer);
-
             return $buffer->toBinary();
         }
     }
