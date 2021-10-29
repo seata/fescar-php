@@ -195,6 +195,8 @@ class RmRemotingClient extends AbstractRemotingClient
                     $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
+                    var_dump($exception->getMessage());
                 }
                 sleep(5);
             }

@@ -93,8 +93,7 @@ class ProtocolV1Encoder
             // Message ID, 4 bytes
             $buffer->putUInt32($message->getId());
             // Merge body buffer
-            $buffer->merge($bodyBuffer, $message);
-
+            $buffer->merge($bodyBuffer);
             return $buffer->toBinary();
         }
     }
