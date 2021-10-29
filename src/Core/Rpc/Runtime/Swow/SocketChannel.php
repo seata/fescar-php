@@ -92,7 +92,6 @@ class SocketChannel implements SocketChannelInterface
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
                     echo 'Recieved a rpc message #' . $rpcMessage->getId() . PHP_EOL;
                     if (isset($this->responses[$rpcMessage->getId()])) {
-                        dump($rpcMessage);
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     } elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {

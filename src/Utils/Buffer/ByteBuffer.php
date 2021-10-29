@@ -77,7 +77,7 @@ abstract class ByteBuffer extends Buffer
      */
     public const BYTE_ORDER_MB = 2;
 
-    protected ?array $bytes;
+    protected ?array $bytes = [];
 
     protected int $offset;
 
