@@ -42,8 +42,6 @@ class SocketChannel implements SocketChannelInterface
 
     protected Channel $sendChannel;
 
-    protected ProcessorManager $processorManger;
-
     public function __construct(Socket $socket, Address $address)
     {
         $this->socket = $socket;
@@ -51,7 +49,6 @@ class SocketChannel implements SocketChannelInterface
         $container = ApplicationContext::getContainer();
         $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-//        $this->processorManger = $container->get(ProcessorManager::class);
         $this->sendChannel = new Channel();
         $this->createRecvLoop();
         //$this->createSendLoop();
