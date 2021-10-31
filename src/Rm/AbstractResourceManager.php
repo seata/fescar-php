@@ -4,6 +4,7 @@ namespace Hyperf\Seata\Rm;
 
 
 use Exception;
+use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Model\Resource;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Model\the;
@@ -54,7 +55,7 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
                 ->setBranchType($branchType)
                 ->setApplicationData($applicationData);
 
-            $response = $this->rmRemotingClient->sendMsgWithResponse($request);
+            $response = $this->rmRemotingClient->sendMsgWithResponse($request, AddressTarget::RM);
             if (! $response instanceof BranchRegisterResponse) {
                 throw new RuntimeException('The response object is not valid');
             }
@@ -82,7 +83,7 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
             $request->setBranchId($branchId);
             $request->setStatus($status);
             $request->setApplicationData($applicationData);
-            $response = $this->rmRemotingClient->sendMsgWithResponse($request);
+            $response = $this->rmRemotingClient->sendMsgWithResponse($request, AddressTarget::RM);
             if (! $response instanceof BranchReportResponse) {
                 throw new RuntimeException('The response object is not valid');
             }

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Tm;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Seata\Core\Rpc\Runtime\TmClient as SwooleTMClient;
+use Hyperf\Seata\Core\Rpc\Runtime\TmRemotingClient as SwooleTMClient;
 
 class TMClient
 {

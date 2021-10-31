@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
+use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Common\Constants;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
@@ -69,17 +70,33 @@ class RmRemotingClient extends AbstractRemotingClient
         $this->registerResource($this->applicationId, $this->transactionServiceGroup);
     }
 
-    public function sendRegisterMessage(SocketChannelInterface $socketChannel, string $resourceId): RpcMessage
+    protected function createHeartbeatLoop()
+    {
+        Coroutine::create(function () {
+            while (true) {
+                try {
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::RM);
+                } catch (\InvalidArgumentException $exception) {
+                    var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
+                    var_dump($exception->getMessage());
+                }
+                sleep(5);
+            }
+        });
+    }
+
+    public function sendRegisterMessage(SocketChannelInterface $socketChannel, string $resourceId)
     {
         $request = new RegisterRMRequest($this->applicationId, $this->transactionServiceGroup);
         $request->setResourceIds($resourceId);
-        return $this->sendMsgWithResponse($request);
+        return $this->sendMsgWithResponse($request, AddressTarget::RM);
     }
 
     public function registerResource(string $resourceGroupId, string $resourceId): void
     {
         if ($this->transactionServiceGroup !== '') {
-            $this->clientConnectionManager->reconnect($this->transactionServiceGroup);
+            $this->socketManager->reconnect($this->transactionServiceGroup, 'rm');
         }
         $addresses = $this->socketManager->getAvailServerList($this->transactionServiceGroup);
         foreach ($addresses as $address) {
@@ -91,22 +108,22 @@ class RmRemotingClient extends AbstractRemotingClient
 
     public function initRegisterProcessor()
     {
-//        // 1.registry rm client handle branch commit processor
-//        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
-//        // 2.registry rm client handle branch commit processor
-//        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
-//        // 3.registry rm handler undo log processor
-//        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
-//        $this->processorManager->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
-//        // 4.registry TC response processor
-//        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
-//        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
-//        $this->processorManager->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
+        // 1.registry rm client handle branch commit processor
+        $rmBranchCommitProcessor = new RmBranchCommitProcessor($this->getTransactionMessageHandler(), $this);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_COMMIT, $rmBranchCommitProcessor);
+        // 2.registry rm client handle branch commit processor
+        $rmBranchRollbackProcessor = new RmBranchRollbackProcessor($this->getTransactionMessageHandler(), $this);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_ROLLBACK, $rmBranchRollbackProcessor);
+        // 3.registry rm handler undo log processor
+        $rmUndoLogProcessor = new RmUndoLogProcessor($this->getTransactionMessageHandler());
+        $this->processorManager->registerProcessor(MessageType::TYPE_RM_DELETE_UNDOLOG, $rmUndoLogProcessor);
+        // 4.registry TC response processor
+        $onResponseProcessor = new ClientOnResponseProcessor($this->getTransactionMessageHandler());
+        $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_REGISTER_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_BRANCH_STATUS_REPORT_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_LOCK_QUERY_RESULT, $onResponseProcessor, null);
+        $this->processorManager->registerProcessor(MessageType::TYPE_REG_RM_RESULT, $onResponseProcessor, null);
         // 5.registry heartbeat message processor
         $clientHeartbeatProcessor = new ClientHeartbeatProcessor();
         $this->processorManager->registerProcessor(MessageType::TYPE_HEARTBEAT_MSG, $clientHeartbeatProcessor, null);
@@ -168,12 +185,12 @@ class RmRemotingClient extends AbstractRemotingClient
 
     public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message): GlobalBeginResponse
     {
-        return $this->sendMsgWithResponse($message);
+        return $this->sendMsgWithResponse($message, AddressTarget::RM);
     }
 
     public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $message)
     {
-        $this->sendMsgWithResponse($rpcMessage);
+        $this->sendMsgWithResponse($rpcMessage, AddressTarget::RM);
     }
 
     public function onRegisterMsgSuccess(
@@ -194,22 +211,6 @@ class RmRemotingClient extends AbstractRemotingClient
         throw new TodoException();
     }
 
-    protected function createHeartbeatLoop()
-    {
-        Coroutine::create(function () {
-            while (true) {
-                try {
-                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
-                } catch (\InvalidArgumentException $exception) {
-                    var_dump($exception->getMessage());
-                } catch (\Throwable $exception) {
-                    var_dump($exception->getMessage());
-                }
-                sleep(5);
-            }
-        });
-    }
-
     protected function getMergedResourceKeys(): string
     {
         $resourceIds = [];
@@ -222,6 +223,6 @@ class RmRemotingClient extends AbstractRemotingClient
 
     protected function acquireChannel(Address $address): SocketChannelInterface
     {
-        return $this->socketManager->acquireChannel($address, 'rm');
+        return $this->socketManager->acquireChannel($address);
     }
 }

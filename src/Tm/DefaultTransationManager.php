@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Tm;
 
+use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Model\TransactionManager;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractTransactionRequest;
@@ -22,16 +23,16 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
-use Hyperf\Seata\Core\Rpc\Runtime\TmClient;
+use Hyperf\Seata\Core\Rpc\Runtime\TmRemotingClient;
 
 class DefaultTransationManager implements TransactionManager
 {
     /**
-     * @var TmClient
+     * @var TmRemotingClient
      */
     protected $tmRpcClient;
 
-    public function __construct(TmClient $tmRpcClient)
+    public function __construct(TmRemotingClient $tmRpcClient)
     {
         $this->tmRpcClient = $tmRpcClient;
     }
@@ -76,6 +77,6 @@ class DefaultTransationManager implements TransactionManager
     protected function sendRequest(AbstractTransactionRequest $request)
     {
         // @TODO 处理超时状态，抛出 TransactionException
-        return $this->tmRpcClient->sendMsgWithResponse($request);
+        return $this->tmRpcClient->sendMsgWithResponse($request, AddressTarget::TM);
     }
 }

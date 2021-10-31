@@ -4,6 +4,7 @@ namespace Hyperf\Seata\Rm\DataSource;
 
 
 use Hyperf\Database\Connection;
+use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Context\RootContext;
 use Hyperf\Seata\Core\Model\Application;
 use Hyperf\Seata\Core\Model\Branch;
@@ -45,7 +46,7 @@ class DataSourceManager extends AbstractResourceManager
             if (! RootContext::inGlobalTransaction() && ! RootContext::requireGlobalLock()) {
                 throw new RuntimeException('Unknown situation');
             }
-            $response = $this->rmRemotingClient->sendMsgWithResponse($request);
+            $response = $this->rmRemotingClient->sendMsgWithResponse($request, AddressTarget::RM);
             if (! $response instanceof GlobalLockQueryResponse) {
                 throw new RuntimeException('The response object is not valid');
             }

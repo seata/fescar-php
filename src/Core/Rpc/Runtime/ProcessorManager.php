@@ -17,11 +17,11 @@ class ProcessorManager
         $this->processorTable[$messageType] = $processor;
     }
 
-    public function runProcessor(SocketChannelInterface $channel, RpcMessage $message)
+    public function dispatch(SocketChannelInterface $channel, RpcMessage $message)
     {
-        if (! isset($this->processorTable[$message->getMessageType()])) {
+        if (! isset($this->processorTable[$message->getBody()->getTypeCode()])) {
             return;
         }
-        $this->processorTable[$message->getMessageType()]->process($channel, $message);
+        $this->processorTable[$message->getBody()->getTypeCode()]->process($channel, $message);
     }
 }

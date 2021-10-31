@@ -25,7 +25,6 @@ class ClientHeartbeatProcessor extends AbstractRemotingProcessor
     {
         if ($rpcMessage->getBody() == HeartbeatMessage::pong()) {
             $this->getLogger()->debug(sprintf('received PONG from %s', (string) $channel->getAddress()));
-            var_dump(sprintf('received PONG from %s', (string) $channel->getAddress()));
         }
     }
 }

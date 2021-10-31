@@ -16,7 +16,7 @@ use JetBrains\PhpStorm\Pure;
 class Address
 {
 
-    protected string $target;
+    protected string $target = '';
 
     protected string $host = '';
 

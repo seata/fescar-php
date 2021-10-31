@@ -110,9 +110,7 @@ abstract class AbstractRpcRemoting implements Disposable
         }
 
         if ($withResponse) {
-            $response =  $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
-            $this->processorManager->runProcessor($socketChannel, $response);
-            return $response;
+            return $socketChannel->sendSyncWithResponse($rpcMessage, $timeout);
         }
         return $socketChannel->sendSyncWithoutResponse($rpcMessage, $timeout);
     }
@@ -180,11 +178,8 @@ abstract class AbstractRpcRemoting implements Disposable
     /**
      * Send async request with response object.
      */
-    protected function sendAsyncRequestWithResponse(
-        SocketChannelInterface $socketChannel,
-        AbstractMessage $message,
-        int $timeout
-    ) {
+    protected function sendAsyncRequestWithResponse(SocketChannelInterface $socketChannel, AbstractMessage $message, int $timeout)
+    {
         if ($timeout <= 0) {
             throw new SeataException('timeout should more than 0ms');
         }

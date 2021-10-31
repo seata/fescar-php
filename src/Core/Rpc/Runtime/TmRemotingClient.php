@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
+use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
@@ -25,7 +26,7 @@ use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 
-class TmClient extends AbstractRemotingClient
+class TmRemotingClient extends AbstractRemotingClient
 {
     protected const KEEP_ALIVE_TIME = PHP_INT_MAX;
 
@@ -66,7 +67,7 @@ class TmClient extends AbstractRemotingClient
     private function registerService()
     {
         $request = new RegisterTMRequest($this->applicationId, $this->transactionServiceGroup);
-        return $this->sendMsgWithResponse($request);
+        return $this->sendMsgWithResponse($request, AddressTarget::TM);
     }
 
     protected function createHeartbeatLoop()
@@ -74,8 +75,7 @@ class TmClient extends AbstractRemotingClient
         Coroutine::create(function () {
             while (true) {
                 try {
-                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping());
-//                    var_dump($response);
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::TM);
                 } catch (\InvalidArgumentException $exception) {
                     var_dump($exception->getMessage());
                 } catch (\Throwable $exception) {
@@ -85,6 +85,7 @@ class TmClient extends AbstractRemotingClient
             }
         });
     }
+
 
     public function getApplicationId(): string
     {
@@ -152,7 +153,7 @@ class TmClient extends AbstractRemotingClient
     private function initRegisterProcessor()
     {
         // 1.registry TC response processor
-        $onResponseProcessor = new ClientOnResponseProcessor($this->mergeMsgMap, $this->getFutures(), $this->getTransactionMessageHandler());
+        $onResponseProcessor = new ClientOnResponseProcessor($this->getTransactionMessageHandler());
         $this->processorManager->registerProcessor(MessageType::TYPE_SEATA_MERGE_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_BEGIN_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_COMMIT_RESULT, $onResponseProcessor);
@@ -168,7 +169,7 @@ class TmClient extends AbstractRemotingClient
 
     protected function acquireChannel(Address $address): SocketChannelInterface
     {
-        return $this->socketManager->acquireChannel($address, 'tm');
+        return $this->socketManager->acquireChannel($address);
     }
 
 }

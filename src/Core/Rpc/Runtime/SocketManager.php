@@ -21,6 +21,7 @@ use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Utils\Engine;
 use Swoole\Coroutine\Socket as SwooleSocket;
+use Swow\Exception;
 use Swow\Socket as SwowSocket;
 
 class SocketManager
@@ -92,6 +93,7 @@ class SocketManager
         } else {
             throw new RuntimeException('Invalid runtime engine');
         }
+
         $socket->connect($address->getHost(), $address->getPort(), 100);
         return $socket;
     }
