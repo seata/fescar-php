@@ -1,6 +1,7 @@
 <?php
 
-namespace Hyperf\Database;
+namespace Hyperf\Seata\Rm\DataSource;
+
 
 
 use Hyperf\Contract\ConfigInterface;
@@ -21,6 +22,7 @@ use Hyperf\Seata\Exception\TransactionExceptionCode;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Seata\Rm\DataSource\ConnectionContext;
+use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManager;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManagerFactory;
@@ -48,12 +50,12 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
         $this->resourceGroupId = self::DEFAULT_RESOURCE_GROUP_ID;
         $this->resourceId = $this->generateResourceId($config);
         $this->context = new ConnectionContext();
-        $contaienr = ApplicationContext::getContainer();
-        $contaienr->get(ResourceManagerInterface::class)->registerResource($this);
-        $this->logger = $contaienr->get(LoggerFactory::class)->create(static::class);
-        $this->defaultResourceManager = $contaienr->get(DefaultResourceManager::class);
-        $this->undoLogManager = $contaienr->get(UndoLogManagerFactory::class)->getUndoLogManager('mysql');
-        $config = $contaienr->get(ConfigInterface::class);
+        $container = ApplicationContext::getContainer();
+        $container->get(ResourceManagerInterface::class)->registerResource($this);
+        $this->logger = $container->get(LoggerFactory::class)->create(static::class);
+        $this->defaultResourceManager = $container->get(DefaultResourceManager::class);
+        $this->undoLogManager = $container->get(UndoLogManagerFactory::class)->getUndoLogManager('mysql');
+        $config = $container->get(ConfigInterface::class);
         $this->reportSuccessEnable = $config->get('seata.client.rm.report_success_enable', false);
         $this->reportRetryCount = $config->get('seata.client.rm.report_retry_count', 5);
     }
