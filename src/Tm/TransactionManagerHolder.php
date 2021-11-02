@@ -36,7 +36,7 @@ class TransactionManagerHolder
         if (! empty(self::$instance)) {
             return self::$instance;
         }
-        self::$instance = make(DefaultTransationManager::class);
+        self::$instance = make(DefaultTranslationManager::class);
         return self::$instance;
     }
 }

@@ -14,6 +14,7 @@ namespace Hyperf\Seata\Tm;
 use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Core\Model\TransactionManager;
+use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\AbstractTransactionRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
@@ -24,8 +25,9 @@ use Hyperf\Seata\Core\Protocol\Transaction\GlobalRollbackResponse;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusRequest;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalStatusResponse;
 use Hyperf\Seata\Core\Rpc\Runtime\TmRemotingClient;
+use Hyperf\Utils\ApplicationContext;
 
-class DefaultTransationManager implements TransactionManager
+class DefaultTranslationManager implements TransactionManager
 {
     /**
      * @var TmRemotingClient
@@ -42,8 +44,9 @@ class DefaultTransationManager implements TransactionManager
         $request = new GlobalBeginRequest();
         $request->setTransactionName($name);
         $request->setTimeout($timeout);
+
         /** @var GlobalBeginResponse $response */
-        $response = $this->sendRequest($request);
+        $response = $this->sendRequest($request)->getBody();
         return $response->getXid();
     }
 
@@ -53,7 +56,7 @@ class DefaultTransationManager implements TransactionManager
         $request->setXid($xid);
         /** @var GlobalCommitResponse $response */
         $response = $this->sendRequest($request);
-        return $response->getGlobalStatus();
+        return $response->getBody()->getGlobalStatus();
     }
 
     public function rollback(string $xid): GlobalStatus
@@ -61,7 +64,7 @@ class DefaultTransationManager implements TransactionManager
         $request = new GlobalRollbackRequest();
         $request->setXid($xid);
         /** @var GlobalRollbackResponse $response */
-        $response = $this->sendRequest($request);
+        $response = $this->sendRequest($request)->getBody();
         return $response->getGlobalStatus();
     }
 
@@ -70,8 +73,8 @@ class DefaultTransationManager implements TransactionManager
         $request = new GlobalStatusRequest();
         $request->setXid($xid);
         /** @var GlobalStatusResponse $response */
-        $response = $this->sendRequest($request);
-        return $response->getGlobalStatus();
+        $response = $this->sendRequest($request)->getBody();
+        return $response->getGlobalStatus()->getStatus();
     }
 
     protected function sendRequest(AbstractTransactionRequest $request)

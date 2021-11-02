@@ -13,6 +13,8 @@ namespace Hyperf\Seata\Core\Model;
 
 class GlobalStatus
 {
+    private int $status;
+
     /**
      * Un known global status.
      */
@@ -108,4 +110,31 @@ class GlobalStatus
      */
     // Not managed in session MAP any more
     public const Finished = 15;
+
+    /**
+     * @param int $status
+     */
+    public function __construct(int $status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus(int $status): GlobalStatus
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+
 }

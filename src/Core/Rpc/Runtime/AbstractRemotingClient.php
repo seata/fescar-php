@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Exception;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Process\ProcessManager;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
@@ -24,6 +25,7 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 
@@ -72,8 +74,8 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function __construct(int $transactionRole)
     {
         parent::__construct();
-        $this->transactionRole = $transactionRole;
         $container = ApplicationContext::getContainer();
+        $this->transactionRole = $transactionRole;
         $this->registryFactory = $container->get(RegistryFactory::class);
     }
 
@@ -100,9 +102,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         $socketChannel = $this->acquireChannel($validAddress);
         $result = $this->sendAsyncRequestWithResponse($socketChannel, $message, $timeout);
         if ($result instanceof GlobalBeginResponse && ! $result->getResultCode()) {
-            if ($this->logger) {
-                $this->logger->error('begin response error,release socket');
-            }
+            $this->logger->error('begin response error,release socket');
         }
         return $result;
     }
@@ -147,9 +147,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
             // @todo 通过负载均衡器选择一个地址
             $address = $addressList[0];
         } catch (Exception $exception) {
-            if ($this->logger) {
-                $this->logger->error($exception->getMessage());
-            }
+            $this->logger->error($exception->getMessage());
         }
         if (! $address instanceof Address) {
             throw new SeataException(SeataErrorCode::NoAvailableService);

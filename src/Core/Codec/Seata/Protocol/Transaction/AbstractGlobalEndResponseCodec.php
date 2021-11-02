@@ -32,7 +32,8 @@ class AbstractGlobalEndResponseCodec extends AbstractTransactionResponseCodec
             throw new InvalidArgumentException('Invalid message');
         }
 
-        $buffer->putUByte($message->getGlobalStatus());
+        $buffer->putUByte($message->getGlobalStatus()->getStatus());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -44,5 +45,6 @@ class AbstractGlobalEndResponseCodec extends AbstractTransactionResponseCodec
         }
 
         $message->setGlobalStatus(new GlobalStatus((int) $buffer->readUByte()));
+        return $message;
     }
 }

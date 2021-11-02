@@ -25,6 +25,7 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 use Swow\Socket;
+use function Swow\Tools\br;
 
 class SocketChannel implements SocketChannelInterface
 {
@@ -80,16 +81,14 @@ class SocketChannel implements SocketChannelInterface
             $processorManger = ApplicationContext::getContainer()->get(ProcessorManager::class);
             while (true) {
                 try {
-                    $data = $this->socket->recvString();
+                    $data = $this->socket->recvStringData();
+
 
                     if (! $data) {
-                        // Coroutines give up
-                        usleep(1);
-                        continue;
+                        break;
                     }
                     $byteBuffer = ByteBuffer::wrapBinary($data);
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
-
                     $processorManger->dispatch($this, $rpcMessage);
 
                     echo 'Recieved a rpc message #' . $rpcMessage->getId() . PHP_EOL;
@@ -97,20 +96,19 @@ class SocketChannel implements SocketChannelInterface
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     }  else {
-//                        $this->processorTable[$rpcMessage->getMessageType()]->process($this, $rpcMessage);
                         var_dump($rpcMessage);
                     }
 //                    elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
 ////                        var_dump('heartbeat', $rpcMessage);
 //                    }
                 } catch (\InvalidArgumentException $exception) {
-                    var_dump($exception->getMessage());
+                    echo 'Recieved a rpc message fail error:' . $exception->getMessage() . PHP_EOL;
+                    break;
                 } catch (\Throwable $exception) {
-                    var_dump($exception->getMessage());
+                    echo 'Recieved a rpc message fail error:' . $exception->getMessage() . PHP_EOL;
+                    break;
                 } finally {
-                    foreach ($this->responses as $responseChannel) {
-                        $responseChannel->close();
-                    }
+                    isset($rpcMessage) && $this->responses[$rpcMessage->getId()]->close();
                 }
             }
         });

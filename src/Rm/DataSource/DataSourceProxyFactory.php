@@ -18,6 +18,7 @@ class DataSourceProxyFactory
 
     public function __invoke(ContainerInterface $container)
     {
+
         $instance = new DataSourceProxy($container->get(LoggerFactory::class), $container->get(DefaultResourceManager::class));
 
         //Connection::resolverFor('mysql', function ($connection, string $database, string $prefix, array $config) {

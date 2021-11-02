@@ -146,16 +146,16 @@ abstract class AbstractRpcRemoting implements Disposable
             return null;
         }
 
-        $messageFuture = new MessageFuture();
-        $messageFuture->setRequestMessage($rpcMessage);
-        $messageFuture->setTimeout($timeoutMillis);
-        $this->futures[$rpcMessage->getId()] = $messageFuture;
+//        $messageFuture = new MessageFuture();
+//        $messageFuture->setRequestMessage($rpcMessage);
+//        $messageFuture->setTimeout($timeoutMillis);
+//        $this->futures[$rpcMessage->getId()] = $messageFuture;
 
         // $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
 
         $result = $this->socketManager->acquireChannel($address)->sendSyncWithResponse($rpcMessage, $timeoutMillis);
 
-        $messageFuture->get($timeoutMillis);
+//        $messageFuture->get($timeoutMillis);
 
         // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
         return $result;

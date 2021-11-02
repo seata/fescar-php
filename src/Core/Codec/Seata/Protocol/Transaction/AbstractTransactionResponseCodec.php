@@ -31,6 +31,7 @@ abstract class AbstractTransactionResponseCodec extends AbstractResultMessageCod
             throw new \InvalidArgumentException('Invalid message');
         }
         $buffer->putUByte($message->getTransactionExceptionCode());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -42,5 +43,6 @@ abstract class AbstractTransactionResponseCodec extends AbstractResultMessageCod
         }
 
         $message->setTransactionExceptionCode((int) $buffer->readUByte());
+        return $message;
     }
 }

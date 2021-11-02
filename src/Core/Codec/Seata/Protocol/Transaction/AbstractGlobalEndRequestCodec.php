@@ -29,6 +29,7 @@ abstract class AbstractGlobalEndRequestCodec extends AbstractTransactionRequestT
         }
         $this->putProperty($buffer, $message->getXid());
         $this->putProperty($buffer, $message->getExtraData());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -45,5 +46,6 @@ abstract class AbstractGlobalEndRequestCodec extends AbstractTransactionRequestT
         if ($length > 0) {
             $message->setExtraData($buffer->readString($length));
         }
+        return $message;
     }
 }

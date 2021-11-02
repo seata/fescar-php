@@ -85,7 +85,7 @@ class MessageCodecFactory
         if (isset($mapping[$typeCode])) {
             return new $mapping[$typeCode]();
         }
-        throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
+        throw new \InvalidArgumentException('Not support typeCode: ' . $typeCode);
     }
 
     protected function getMergeResponseMessageSeataCodec(int $typeCode)
@@ -104,7 +104,7 @@ class MessageCodecFactory
         if (isset($mapping[$typeCode])) {
             return new $mapping[$typeCode]();
         }
-        throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
+        throw new \InvalidArgumentException('Not support typeCode: ' . $typeCode);
     }
 
     protected function getMergeResponseInstanceByCode(int $typeCode)
@@ -123,6 +123,6 @@ class MessageCodecFactory
         if (isset($mapping[$typeCode])) {
             return new $mapping[$typeCode]();
         }
-        throw new \InvalidArgumentException('Not support typeCode: ' + $typeCode);
+        throw new \InvalidArgumentException('Not support typeCode: ' . $typeCode);
     }
 }

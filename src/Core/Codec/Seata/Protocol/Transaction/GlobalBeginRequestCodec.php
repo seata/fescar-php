@@ -30,6 +30,7 @@ class GlobalBeginRequestCodec extends AbstractTransactionRequestToTCCodec
 
         $buffer->putUInt($message->getTimeout());
         $this->putProperty($buffer, $message->getTransactionName());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage

@@ -16,12 +16,12 @@ abstract class AbstractGlobalEndRequest extends AbstractTransactionRequestToTC
     /**
      * @var string
      */
-    protected $xid;
+    protected string $xid;
 
     /**
      * @var string
      */
-    protected $extraData;
+    protected string $extraData = '';
 
     public function getXid(): string
     {

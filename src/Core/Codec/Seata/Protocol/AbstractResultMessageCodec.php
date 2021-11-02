@@ -55,6 +55,7 @@ abstract class AbstractResultMessageCodec extends AbstractMessageCodec
                 $buffer->putUShort(0);
             }
         }
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -69,5 +70,6 @@ abstract class AbstractResultMessageCodec extends AbstractMessageCodec
                 $message->setMessage($buffer->readString($length));
             }
         }
+        return $message;
     }
 }

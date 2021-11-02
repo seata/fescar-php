@@ -32,6 +32,7 @@ class GlobalBeginResponseCodec extends AbstractTransactionResponseCodec
 
         $this->putProperty($buffer, $message->getXid());
         $this->putProperty($buffer, $message->getExtraData());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -51,5 +52,6 @@ class GlobalBeginResponseCodec extends AbstractTransactionResponseCodec
         if ($length > 0) {
             $message->setExtraData($buffer->readString($length));
         }
+        return $message;
     }
 }
