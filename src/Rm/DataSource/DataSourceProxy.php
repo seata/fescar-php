@@ -35,7 +35,7 @@ class DataSourceProxy extends AbstractDataSourceProxy implements Resource
         RootContext::setDefaultBranchType($this->getBranchType());
     }
 
-    public function getConnectin(): ConnectionProxyInterface
+    public function getConnection(): ConnectionProxyInterface
     {
         return $this->connection;
     }
@@ -58,5 +58,10 @@ class DataSourceProxy extends AbstractDataSourceProxy implements Resource
     public function getBranchType(): int
     {
         return BranchType::AT;
+    }
+
+    public function getPlainConnection()
+    {
+        return $this->connection;
     }
 }

@@ -40,10 +40,10 @@ class AbstractExceptionHandler
             $callback->execute($request, $response);
             $callback->onSuccess($request, $response);
         } catch (TransactionException $tex) {
-            $this->logger->info('Catch TransactionException while do RPC, request: ' . $tex->getMessage());
+            $this->logger->error('Catch TransactionException while do RPC, request: ' . $tex->getMessage());
             $callback->onTransactionException($request, $response, $tex);
         } catch (RuntimeException $rex) {
-            $this->logger->info('Catch RuntimeException while do RPC, request:' . $rex->getMessage());
+            $this->logger->error('Catch RuntimeException while do RPC, request:' . $rex->getMessage());
             $callback->onException($request, $response, $rex);
         }
     }

@@ -28,7 +28,7 @@ class UndoLogDeleteRequest extends AbstractTransactionRequestToRM
 
     private $saveDays = self::DEFAULT_SAVE_DAYS;
 
-    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
+    public function handle(?RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         $this->handler->handle($this);
         return null;

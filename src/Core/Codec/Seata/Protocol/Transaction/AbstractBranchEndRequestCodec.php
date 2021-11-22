@@ -79,6 +79,8 @@ abstract class AbstractBranchEndRequestCodec extends AbstractTransactionRequestT
         } else {
             $buffer->putUInt(0);
         }
+
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -137,5 +139,7 @@ abstract class AbstractBranchEndRequestCodec extends AbstractTransactionRequestT
             return $message;
         }
         $message->setApplicationData($buffer->readString($applicationDataLength));
+
+        return $message;
     }
 }

@@ -1,39 +1,30 @@
 <?php
 
-namespace Hyperf\Seata\Rm\DataSource;
-
-
+namespace Hyperf\Seata\Rm;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Database\Connection;
-use Hyperf\Database\DBAL\MySqlDriver;
-use Hyperf\Database\Query\Grammars\MySqlGrammar as QueryGrammar;
-use Hyperf\Database\Query\Processors\MySqlProcessor;
-use Hyperf\Database\Schema\Grammars\MySqlGrammar as SchemaGrammar;
-use Hyperf\Database\Schema\MySqlBuilder;
+use Hyperf\Seata\Core\Context\RootContext;
 use Hyperf\Seata\Core\Model\BranchStatus;
 use Hyperf\Seata\Core\Model\BranchType;
 use Hyperf\Seata\Core\Model\Resource;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
 use Hyperf\Seata\Exception\LockConflictException;
-use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Exception\TransactionException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Seata\Rm\DataSource\ConnectionContext;
 use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
+use Hyperf\Seata\Rm\DataSource\Sql\SQLVisitorFactory;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManager;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManagerFactory;
-use Hyperf\Seata\Rm\DefaultResourceManager;
 use Hyperf\Utils\ApplicationContext;
 use JetBrains\PhpStorm\Pure;
+use RuntimeException;
 
-// todo
-class MysqlConnection extends Connection implements Resource, ConnectionProxyInterface
+class PDOProxy extends \PDO implements Resource,ConnectionProxyInterface
 {
-
     protected string $resourceId = '';
     protected string $resourceGroupId = '';
     private const DEFAULT_RESOURCE_GROUP_ID = 'DEFAULT';
@@ -44,13 +35,13 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
     public bool $reportSuccessEnable;
     protected int $reportRetryCount;
 
-    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
+    public function __construct($dsn, $username = null, $password = null, $options = null)
     {
-        parent::__construct($pdo, $database, $tablePrefix, $config);
+        parent::__construct($dsn, $username, $password, $options);
         $this->resourceGroupId = self::DEFAULT_RESOURCE_GROUP_ID;
-        $this->resourceId = $this->generateResourceId($config);
-        $this->context = new ConnectionContext();
+        $this->resourceId = $dsn;
         $container = ApplicationContext::getContainer();
+        $this->context = $container->get(ConnectionContext::class);
         $container->get(ResourceManagerInterface::class)->registerResource($this);
         $this->logger = $container->get(LoggerFactory::class)->create(static::class);
         $this->defaultResourceManager = $container->get(DefaultResourceManager::class);
@@ -73,28 +64,6 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
     public function getBranchType(): int
     {
         return BranchType::AT;
-    }
-
-    public function setResourceGroupId(string $resourceGroupId): static
-    {
-        $this->resourceGroupId = $resourceGroupId;
-        return $this;
-    }
-
-    protected function generateResourceId(array $config): string
-    {
-        $driver = 'pdo';
-        $engine = $config['driver'] ?? 'mysql';
-        $host = $config['host'] ?? null;
-        $port = (int)($config['port'] ?? 3306);
-        $database = $config['database'] ?? null;
-        $resourceId = sprintf('%s:%s://%s:%d/%s', $driver, $engine, $host, $port, $database);
-        return $resourceId;
-    }
-
-    public function getContext(): ConnectionContext
-    {
-        return $this->context;
     }
 
     public function bind(string $xid): void
@@ -148,7 +117,7 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
     private function recognizeLockKeyConflictException(TransactionException $exception, string $lockKeys = null): void
     {
         if ($exception->getCode() === TransactionExceptionCode::LockKeyConflict) {
-            $message = sprintf('Get global lock fail, xid: ', $this->context->getXid());
+            $message = sprintf('Get global lock fail, xid: %s', $this->context->getXid());
             if ($lockKeys) {
                 $message .= sprintf(', lockKeys: %s', $lockKeys);
             }
@@ -171,6 +140,7 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
 
     public function commit(): void
     {
+        var_dump('-----commit');
         if ($this->context->inGlobalTransaction()) {
             $this->processGlobalTransactionCommit();
         } elseif ($this->context->isGlobalLockRequire()) {
@@ -223,6 +193,7 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
 
     public function rollBack($toLevel = null): void
     {
+        var_dump('------rollback');
         parent::rollBack($toLevel);
         if ($this->context->inGlobalTransaction() && $this->context->isBranchRegistered()) {
             $this->report(false);
@@ -312,6 +283,24 @@ class MysqlConnection extends Connection implements Resource, ConnectionProxyInt
     protected function getDoctrineDriver()
     {
         return new MySqlDriver();
+    }
+
+    public function getContext(): ConnectionContext
+    {
+        return $this->context;
+    }
+
+    /**
+     * paser sql
+     */
+    public function prepare($query, array $options = [])
+    {
+        // TODO: get DB Type
+        // TODO: parser sql
+        $targetPreparedStatement = null;
+        if (RootContext::getBranchType() === BranchType::AT) {
+            $sqlRecognizers = SQLVisitorFactory::get($query);
+        }
     }
 
 }

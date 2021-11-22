@@ -37,6 +37,8 @@ class BranchRegisterRequestCodec extends AbstractTransactionRequestToTCCodec
         $this->putProperty($buffer, $message->getLockKey(), 32);
         // Application Data
         $this->putProperty($buffer, $message->getApplicationData(), 32);
+
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -71,5 +73,7 @@ class BranchRegisterRequestCodec extends AbstractTransactionRequestToTCCodec
         if ($length > 0) {
             $message->setApplicationData($buffer->readString($length));
         }
+
+        return $message;
     }
 }

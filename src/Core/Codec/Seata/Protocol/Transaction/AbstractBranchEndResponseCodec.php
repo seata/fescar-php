@@ -35,6 +35,7 @@ abstract class AbstractBranchEndResponseCodec extends AbstractTransactionRespons
         }
         $buffer->putULong($message->getBranchId());
         $buffer->putUByte($message->getBranchStatus());
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -51,5 +52,7 @@ abstract class AbstractBranchEndResponseCodec extends AbstractTransactionRespons
         }
         $message->setBranchId($buffer->readULong());
         $message->setBranchStatus($buffer->readUByte());
+
+        return $message;
     }
 }

@@ -18,7 +18,7 @@ class UndoLogManagerFactory
         ];
     }
 
-    public function getUndoLogManager(string $dbType)
+    public function getUndoLogManager(string $dbType): UndoLogManager
     {
         return $this->managers[$dbType];
     }

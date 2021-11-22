@@ -31,6 +31,8 @@ class BranchRegisterResponseCodec extends AbstractTransactionResponseCodec
         }
 
         $buffer->putULong($message->getBranchId());
+
+        return $buffer;
     }
 
     public function decode(AbstractMessage $message, ByteBuffer $buffer): AbstractMessage
@@ -42,5 +44,7 @@ class BranchRegisterResponseCodec extends AbstractTransactionResponseCodec
         }
 
         $message->setBranchId($buffer->readULong());
+
+        return $message;
     }
 }

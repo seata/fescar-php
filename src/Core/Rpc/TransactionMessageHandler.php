@@ -23,7 +23,7 @@ interface TransactionMessageHandler
      * @param context context of the RPC
      * @return response to the request
      */
-    public function onRequest(AbstractMessage $request, RpcContext $context): AbstractResultMessage;
+    public function onRequest(AbstractMessage $request, ?RpcContext $context): AbstractResultMessage;
 
     /**
      * On a response received.
@@ -31,5 +31,5 @@ interface TransactionMessageHandler
      * @param response received response message
      * @param context  context of the RPC
      */
-    public function onResponse(AbstractResultMessage $response, RpcContext $context);
+    public function onResponse(AbstractResultMessage $response, ?RpcContext $context);
 }

@@ -56,9 +56,8 @@ abstract class AbstractResourceManager implements ResourceManagerInterface
                 ->setApplicationData($applicationData);
 
             $response = $this->rmRemotingClient->sendMsgWithResponse($request, AddressTarget::RM);
-            if (! $response instanceof BranchRegisterResponse) {
-                throw new RuntimeException('The response object is not valid');
-            }
+
+
             if ($response->getResultCode() === ResultCode::Failed) {
                 throw new TransactionException(sprintf('Response[%s]', $response->getMessage()), $response->getTransactionExceptionCode());
             }

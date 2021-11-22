@@ -41,7 +41,7 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
      */
     protected $applicationData;
 
-    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
+    public function handle(?RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         return $this->handler->handle($this);
     }
@@ -114,5 +114,17 @@ abstract class AbstractBranchEndRequest extends AbstractTransactionRequestToRM
     {
         $this->applicationData = $applicationData;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            'xid=%s,branchId=%s,branchType=%s,resourceId=%s,applicationData=%s' ,
+            $this->xid,
+            $this->branchId,
+            $this->branchType,
+            $this->resourceId,
+            $this->applicationData
+        );
     }
 }

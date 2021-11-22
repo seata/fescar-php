@@ -16,15 +16,15 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 
 class BranchRegisterRequest extends AbstractTransactionRequestToTC
 {
-    private $xid = '';
+    private string $xid = '';
 
-    private $branchType = BranchType::AT;
+    private int $branchType = BranchType::AT;
 
-    private $resourceId = '';
+    private string $resourceId = '';
 
-    private $lockKey = '';
+    private string $lockKey = '';
 
-    private $applicationData = '';
+    private string $applicationData = '';
 
     public function getXid(): string
     {

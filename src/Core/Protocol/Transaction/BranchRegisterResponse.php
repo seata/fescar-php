@@ -15,19 +15,19 @@ use Hyperf\Seata\Core\Protocol\MessageType;
 
 class BranchRegisterResponse extends AbstractTransactionResponse
 {
-    protected string $branchId;
+    protected int $branchId;
 
     public function getTypeCode(): int
     {
         return MessageType::TYPE_BRANCH_REGISTER_RESULT;
     }
 
-    public function getBranchId(): string
+    public function getBranchId(): int
     {
         return $this->branchId;
     }
 
-    public function setBranchId(string $branchId): static
+    public function setBranchId(int $branchId): static
     {
         $this->branchId = $branchId;
         return $this;

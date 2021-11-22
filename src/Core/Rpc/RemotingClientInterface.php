@@ -34,7 +34,7 @@ interface RemotingClientInterface
      * @param rpcMessage    rpc message from server request
      * @param msg           transaction message {@link io.seata.core.protocol}
      */
-    public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $message);
+    public function sendAsyncResponse(Address $serverAddress, RpcMessage $rpcMessage, object $message);
 
     /**
      * On register msg success.

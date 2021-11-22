@@ -161,6 +161,12 @@ abstract class AbstractRpcRemoting implements Disposable
         return $result;
     }
 
+    protected function sendAsync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis = 100)
+    {
+        $channel = $this->socketManager->acquireChannel($address);
+        $channel->sendSyncWithoutResponse($rpcMessage, $timeoutMillis);
+    }
+
     protected function doBeforeRpcHooks(string $remoteAddr, RpcMessage $request)
     {
         foreach ($this->rpcHooks as $hook) {
@@ -200,6 +206,17 @@ abstract class AbstractRpcRemoting implements Disposable
         $rpcMessage->setCompressor(ProtocolConstants::CONFIGURED_COMPRESSOR);
         $rpcMessage->setBody($message);
         return $rpcMessage;
+    }
+
+    protected function buildResponseMessage(RpcMessage $rpcMessage, object $message, int $messageType): RpcMessage
+    {
+        $rpcMsg = new RpcMessage();
+        $rpcMsg->setMessageType($messageType);
+        $rpcMsg->setCodec($rpcMessage->getCodec());
+        $rpcMsg->setCompressor($rpcMessage->getCompressor());
+        $rpcMsg->setBody($message);
+        $rpcMsg->setId($rpcMessage->getId());
+        return $rpcMsg;
     }
 
     protected function getNextMessageId()

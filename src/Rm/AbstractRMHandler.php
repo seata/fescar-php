@@ -30,13 +30,14 @@ use Hyperf\Seata\Core\Protocol\Transaction\UndoLogDeleteRequest;
 use Hyperf\Seata\Core\Rpc\RpcContext;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Exception\IllegalArgumentException;
+use Hyperf\Utils\ApplicationContext;
 
 abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMInboundHandler, TransactionMessageHandler
 {
 
     public abstract function getBranchType(): int;
 
-    public function handle(AbstractBranchEndRequest $request): AbstractBranchEndResponse
+    public function handle(AbstractBranchEndRequest $request): ?AbstractBranchEndResponse
     {
         if ($request instanceof BranchCommitRequest) {
             return $this->handleBranchCommitRequest($request);
@@ -51,7 +52,7 @@ abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMI
         }
     }
 
-    public function onRequest(AbstractMessage $request, RpcContext $context): AbstractResultMessage
+    public function onRequest(AbstractMessage $request, ?RpcContext $context): AbstractResultMessage
     {
         if (! ($request instanceof AbstractTransactionRequestToRM)) {
             throw new IllegalArgumentException();
@@ -60,7 +61,7 @@ abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMI
         return $request->handle($context);
     }
 
-    public function onResponse(AbstractResultMessage $response, RpcContext $context)
+    public function onResponse(AbstractResultMessage $response, ?RpcContext $context)
     {
         $this->logger->info(sprintf('the rm client received response msg [%s] from tc server.', $response->getMessage()));
     }
@@ -125,14 +126,14 @@ abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMI
     private function handleBranchRollbackRequest(BranchRollbackRequest $request)
     {
         $response = new BranchRollbackResponse();
-        $this->exceptionHandleTemplate(new class($this) extends AbstractCallback {
-            /**
-             * @var AbstractRMHandler
-             */
-            protected $handler;
+        $handler = ApplicationContext::getContainer()->get(RMHandlerAT::class);
+        $this->exceptionHandleTemplate(new class($handler) extends AbstractCallback {
 
-            public function __construct(AbstractRMHandler $handler)
+            protected RMHandlerAT $handler;
+
+            public function __construct(RMHandlerAT $handler)
             {
+                // TODO 这里看看是否处理有问题
                 $this->handler = $handler;
             }
 
@@ -141,6 +142,7 @@ abstract class AbstractRMHandler extends AbstractExceptionHandler implements RMI
                 $this->handler->doBranchRollback($request, $response);
             }
         }, $request, $response);
+
         return $response;
     }
 

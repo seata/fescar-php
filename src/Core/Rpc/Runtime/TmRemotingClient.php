@@ -77,9 +77,9 @@ class TmRemotingClient extends AbstractRemotingClient
                 try {
                     $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::TM);
                 } catch (\InvalidArgumentException $exception) {
-                    var_dump($exception->getMessage());
+//                    var_dump($exception->getMessage());
                 } catch (\Throwable $exception) {
-                    var_dump($exception->getMessage());
+//                    var_dump($exception->getMessage());
                 }
                 sleep(5);
             }
@@ -125,11 +125,6 @@ class TmRemotingClient extends AbstractRemotingClient
     public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message)
     {
         // TODO: Implement sendSyncRequest() method.
-    }
-
-    public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $message)
-    {
-        // TODO: Implement sendAsyncResponse() method.
     }
 
     public function onRegisterMsgSuccess(string $serverAddress, Address $channel, object $response, AbstractMessage $requestMessage)

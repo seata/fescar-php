@@ -96,7 +96,7 @@ class SocketChannel implements SocketChannelInterface
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     }  else {
-                        var_dump($rpcMessage);
+//                        var_dump($rpcMessage);
                     }
 //                    elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
 ////                        var_dump('heartbeat', $rpcMessage);

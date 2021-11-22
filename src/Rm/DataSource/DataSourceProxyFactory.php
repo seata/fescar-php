@@ -25,11 +25,11 @@ class DataSourceProxyFactory
         //    return new MysqlConnectionProxy($connection, $database, $prefix, $config);
         //});
 
-        $mysqlConnectinProxy = $container->get(PoolFactory::class)->getPool('default')->get();
+//        $mysqlConnectinProxy = $container->get(PoolFactory::class)->getPool('default')->get();
 
-        echo '<pre>';var_dump($mysqlConnectinProxy);echo '</pre>';exit();
+//        echo '<pre>';var_dump($mysqlConnectinProxy);echo '</pre>';exit();
 
-        $instance->init($mysqlConnectinProxy, $instance->resourceGroupId);
+//        $instance->init($mysqlConnectinProxy, $instance->resourceGroupId);
         return $instance;
     }
 

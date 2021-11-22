@@ -38,7 +38,7 @@ class RootContext extends Context
 
     protected static int $defaultBranchType;
 
-    protected static LoggerInterface $logger;
+    protected static ?LoggerInterface $logger = null;
 
     public static function setDefaultBranchType(int $branchType): void
     {

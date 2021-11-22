@@ -77,9 +77,9 @@ class RmRemotingClient extends AbstractRemotingClient
                 try {
                     $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::RM);
                 } catch (\InvalidArgumentException $exception) {
-                    var_dump($exception->getMessage());
+//                    var_dump($exception->getMessage());
                 } catch (\Throwable $exception) {
-                    var_dump($exception->getMessage());
+//                    var_dump($exception->getMessage());
                 }
                 sleep(5);
             }
@@ -186,11 +186,6 @@ class RmRemotingClient extends AbstractRemotingClient
     public function sendSyncRequest(SocketChannelInterface $socketChannel, object $message): GlobalBeginResponse
     {
         return $this->sendMsgWithResponse($message, AddressTarget::RM);
-    }
-
-    public function sendAsyncResponse(string $serverAddress, RpcMessage $rpcMessage, object $message)
-    {
-        $this->sendMsgWithResponse($rpcMessage, AddressTarget::RM);
     }
 
     public function onRegisterMsgSuccess(

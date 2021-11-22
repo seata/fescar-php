@@ -15,12 +15,12 @@ abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
 {
     protected string $xid = '';
 
-    protected int $branchId;
+    protected ?int $branchId = null;
 
     /**
      * @see \Hyperf\Seata\Core\Model\BranchStatus
      */
-    protected int $branchStatus;
+    protected ?int $branchStatus = null;
 
     public function getXid(): string
     {
@@ -33,7 +33,7 @@ abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
         return $this;
     }
 
-    public function getBranchId(): int
+    public function getBranchId(): ?int
     {
         return $this->branchId;
     }
@@ -53,5 +53,17 @@ abstract class AbstractBranchEndResponse extends AbstractTransactionResponse
     {
         $this->branchStatus = $branchStatus;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            'xid=%s,branchId=%s,branchStatus=%s,result code =%s,getMsg =%s',
+            $this->xid,
+            $this->branchId,
+            $this->branchStatus,
+            $this->getResultCode(),
+            $this->getMessage()
+        );
     }
 }

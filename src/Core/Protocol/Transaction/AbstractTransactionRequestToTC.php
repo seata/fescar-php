@@ -18,9 +18,9 @@ abstract class AbstractTransactionRequestToTC extends AbstractTransactionRequest
     /**
      * The Handler.
      *
-     * @vat TCInboundHandler
+     * @var TCInboundHandler
      */
-    protected $handler;
+    protected  $handler;
 
     /**
      * Sets tc inbound handler.
@@ -30,7 +30,7 @@ abstract class AbstractTransactionRequestToTC extends AbstractTransactionRequest
         $this->handler = $handler;
     }
 
-    public function handle(RpcContext $rpcContext): ?AbstractTransactionResponse
+    public function handle(?RpcContext $rpcContext): ?AbstractTransactionResponse
     {
         return $this->handler->handle($this, $rpcContext);
     }

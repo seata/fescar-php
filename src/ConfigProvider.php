@@ -13,6 +13,9 @@ namespace Hyperf\Seata;
 
 
 use Hyperf\Database\Connection;
+use Hyperf\Database\Connectors\ConnectionFactory;
+use Hyperf\Database\Connectors\Connector;
+use Hyperf\Database\MySqlConnection;
 use Hyperf\Rm\DataSource\MysqlConnectionProxyFactory;
 use Hyperf\Seata\Annotation\GlobalTransactionScanner;
 use Hyperf\Seata\Core\Model\ResourceManagerInterface;
@@ -39,9 +42,9 @@ class ConfigProvider
                 LoggerInterface::class => StdoutLogger::class,
 //                DataSourceProxy::class => DataSourceProxyFactory::class,
             ],
-            'scan' => [
-                'class_map' => [
-                    Connection::class => __DIR__ . '/Rm/DataSource/MysqlConnection.php'
+            'annotations' => [
+                'paths' => [
+                    __DIR__,
                 ],
             ],
         ];

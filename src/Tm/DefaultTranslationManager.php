@@ -47,6 +47,7 @@ class DefaultTranslationManager implements TransactionManager
 
         /** @var GlobalBeginResponse $response */
         $response = $this->sendRequest($request)->getBody();
+
         return $response->getXid();
     }
 

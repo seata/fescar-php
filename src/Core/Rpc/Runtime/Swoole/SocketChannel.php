@@ -94,12 +94,14 @@ class SocketChannel implements SocketChannelInterface
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
                     }  else {
-                        var_dump('else', $rpcMessage);
+//                        var_dump('else', $rpcMessage);
                     }
 //                    elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
 //                        var_dump('heartbeat', $rpcMessage);
 //                    }
                 } catch (\InvalidArgumentException $exception) {
+//                    var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
                     var_dump($exception->getMessage());
                 }
             }
@@ -115,7 +117,7 @@ class SocketChannel implements SocketChannelInterface
                     $data = $this->protocolEncoder->encode($rpcMessage);
                     $this->socket->sendAll($data);
                 } catch (\Exception $exception) {
-                    var_dump($exception->getMessage());
+//                    var_dump($exception->getMessage());
                 }
             }
         });

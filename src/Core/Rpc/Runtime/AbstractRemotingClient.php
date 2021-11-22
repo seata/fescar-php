@@ -16,6 +16,8 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Process\ProcessManager;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
+use Hyperf\Seata\Core\Protocol\ProtocolConstants;
+use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
@@ -153,5 +155,11 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
             throw new SeataException(SeataErrorCode::NoAvailableService);
         }
         return $address;
+    }
+
+    public function sendAsyncResponse(Address $serverAddress, RpcMessage $rpcMessage, object $message)
+    {
+        $rpcMsg = $this->buildResponseMessage($rpcMessage, $message, ProtocolConstants::MSGTYPE_RESPONSE);
+        $this->sendAsync($serverAddress, $rpcMsg);
     }
 }

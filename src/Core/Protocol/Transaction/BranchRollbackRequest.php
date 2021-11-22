@@ -19,4 +19,5 @@ class BranchRollbackRequest extends AbstractBranchEndRequest
     {
         return MessageType::TYPE_BRANCH_ROLLBACK;
     }
+
 }

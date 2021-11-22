@@ -15,6 +15,7 @@ use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\BranchRollbackRequest;
 use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
+use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Throwable;
 
@@ -30,7 +31,7 @@ class RmBranchRollbackProcessor extends AbstractRemotingProcessor
         $this->remotingClient = $remotingClient;
     }
 
-    public function process($channel, RpcMessage $rpcMessage)
+    public function process(SocketChannelInterface $channel, RpcMessage $rpcMessage)
     {
         /** @var BranchRollbackRequest $msg */
         $msg = $rpcMessage->getBody();
@@ -38,12 +39,12 @@ class RmBranchRollbackProcessor extends AbstractRemotingProcessor
         $this->handleBranchRollback($rpcMessage, $channel, $msg);
     }
 
-    private function handleBranchRollback(RpcMessage $rpcMessage, $channel, BranchRollbackRequest $branchCommitRequest)
+    private function handleBranchRollback(RpcMessage $rpcMessage, SocketChannelInterface $channel, BranchRollbackRequest $branchCommitRequest)
     {
         $resultMessage = $this->handler->onRequest($branchCommitRequest, null);
         $this->getLogger()->debug(sprintf('branch rollback result:%s', $resultMessage));
         try {
-            $this->remotingClient->sendAsyncResponse($channel, $rpcMessage, $resultMessage);
+            $this->remotingClient->sendAsyncResponse($channel->getAddress(), $rpcMessage, $resultMessage);
         } catch (Throwable $throwable) {
             $this->getLogger()->error(sprintf('"send response error: %s', $throwable->getMessage()));
         }

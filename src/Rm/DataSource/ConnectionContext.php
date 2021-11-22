@@ -5,12 +5,13 @@ namespace Hyperf\Seata\Rm\DataSource;
 
 use Hyperf\Seata\Exception\ShouldNeverHappenException;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
+use Hyperf\Utils\Context;
 
 class ConnectionContext
 {
 
-    private ?string $xid;
-    private ?int $branchId;
+    private ?string $xid = null;
+    private ?int $branchId = null;
     private bool $globalLockRequire = false;
     private bool $autoCommitChanged = false;
     // Table and primary key should not be duplicated
@@ -21,33 +22,41 @@ class ConnectionContext
 
     public function appendLockKey(string $lockKey)
     {
+//        Context::set('seata:lockKeysBuffer', $lockKey);
         $this->lockKeysBuffer[$lockKey] = $lockKey;
     }
 
     public function appendUndoItem(SQLUndoLog $sqlUndoLog)
     {
-        $this->sqlUndoItemsBuffer[] = $sqlUndoLog;
+        $sqlUndoItemsBuffer = Context::get('seata:sqlUndoItemsBuffer', []);
+        $sqlUndoItemsBuffer[] = $sqlUndoLog;
+        Context::set('seata:sqlUndoItemsBuffer', $sqlUndoItemsBuffer);
+//        $this->sqlUndoItemsBuffer[] = $sqlUndoLog;
     }
 
     public function getXid(): ?string
     {
-        return $this->xid;
+        return Context::get('seata:xid');
+//        return $this->xid;
     }
 
     public function setXid(string $xid): static
     {
-        $this->xid = $xid;
+        Context::set('seata:xid', $xid);
+//        $this->xid = $xid;
         return $this;
     }
 
     public function getBranchId(): ?int
     {
-        return $this->branchId;
+        return Context::get('seata:branchId');
+//        return $this->branchId;
     }
 
     public function setBranchId(int $branchId): static
     {
-        $this->branchId = $branchId;
+        Context::set('seata:branchId', $branchId);
+//        $this->branchId = $branchId;
         return $this;
     }
 
@@ -64,12 +73,12 @@ class ConnectionContext
 
     public function inGlobalTransaction(): bool
     {
-        return (bool)$this->xid;
+        return (bool)$this->getXid();
     }
 
     public function isBranchRegistered(): bool
     {
-        return (bool)$this->branchId;
+        return (bool)$this->getBranchId();
     }
 
     public function bind(string $xid): void
@@ -83,7 +92,8 @@ class ConnectionContext
 
     public function hasUndoLog(): bool
     {
-        return ! empty($this->sqlUndoItemsBuffer);
+        return ! empty(Context::get('seata:sqlUndoItemsBuffer'));
+//        return ! empty($this->sqlUndoItemsBuffer);
     }
 
     public function hasLockKey(): bool
@@ -104,11 +114,15 @@ class ConnectionContext
 
     public function reset(): void
     {
+
         $this->xid = null;
         $this->branchId = null;
         $this->globalLockRequire = false;
-        $this->lockKeysBuffer = [];
-        $this->sqlUndoItemsBuffer = [];
+//        $this->lockKeysBuffer = [];
+//        $this->sqlUndoItemsBuffer = [];
+        Context::set('seata:sqlUndoItemsBuffer', []);
+        Context::set('seata:branchId', null);
+        Context::set('seata:xid', null);
         $this->autoCommitChanged = false;
     }
 
@@ -123,7 +137,8 @@ class ConnectionContext
 
     public function getUndoItms(): array
     {
-        return $this->sqlUndoItemsBuffer;
+        return Context::get('seata:sqlUndoItemsBuffer');
+//        return $this->sqlUndoItemsBuffer;
     }
 
 }
