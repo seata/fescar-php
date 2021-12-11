@@ -56,7 +56,7 @@
     },
     "scripts": {
         "test": "phpunit -c phpunit.xml --colors=always",
-        "analyse": "phpstan analyse --memory-limit 1024M -l 0 ./src",
+        "analyse": "phpstan analyse --memory-limit 5G -l 0 ./src/SqlParser/Antlr/MySql/Parser",
         "cs-fix": "php-cs-fixer fix $1"
     }
 }

@@ -38,7 +38,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function emergency($message, array $context = [])
+    public function emergency(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -46,7 +46,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function alert($message, array $context = [])
+    public function alert(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
@@ -54,7 +54,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function critical($message, array $context = [])
+    public function critical(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
@@ -62,7 +62,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function error($message, array $context = [])
+    public function error(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -70,7 +70,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function warning($message, array $context = [])
+    public function warning(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
@@ -78,7 +78,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function notice($message, array $context = [])
+    public function notice(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
@@ -86,7 +86,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function info($message, array $context = [])
+    public function info(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -94,7 +94,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function debug($message, array $context = [])
+    public function debug(\Stringable|string $message, array $context = []):void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -102,7 +102,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = [])
+    public function log($level,\Stringable|string  $message, array $context = []):void
     {
         $config = $this->config->get(LoggerInterface::class, $this->config->get(StdoutLoggerInterface::class));
         if (! in_array($level, $config['log_level'], true)) {

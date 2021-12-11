@@ -1,13 +1,16 @@
 <?php
 
 /*
- * Generated from MySqlParser.g4 by ANTLR 4.9.2
+ * Generated from ./MySqlParser.g4 by ANTLR 4.9
  */
 
+namespace Hyperf\Seata\SqlParser\Antlr\MySql\Listener;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
 use Antlr\Antlr4\Runtime\Tree\ErrorNode;
 use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlLexer;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 
 /**
  * This class provides an empty implementation of {@see MySqlParserListener},
@@ -684,6 +687,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterVisibilityColumnConstraint(Context\VisibilityColumnConstraintContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitVisibilityColumnConstraint(Context\VisibilityColumnConstraintContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterAutoIncrementColumnConstraint(Context\AutoIncrementColumnConstraintContext $context) : void {}
 
 	/**
@@ -809,6 +825,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitSerialDefaultColumnConstraint(Context\SerialDefaultColumnConstraintContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterCheckColumnConstraint(Context\CheckColumnConstraintContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitCheckColumnConstraint(Context\CheckColumnConstraintContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -1243,6 +1272,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterTableOptionTableType(Context\TableOptionTableTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitTableOptionTableType(Context\TableOptionTableTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterTableOptionUnion(Context\TableOptionUnionContext $context) : void {}
 
 	/**
@@ -1251,6 +1293,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitTableOptionUnion(Context\TableOptionUnionContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterTableType(Context\TableTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitTableType(Context\TableTypeContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -1360,14 +1415,14 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterPartitionComparision(Context\PartitionComparisionContext $context) : void {}
+	public function enterPartitionComparison(Context\PartitionComparisonContext $context) : void {}
 
 	/**
 	 * {@inheritdoc}
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function exitPartitionComparision(Context\PartitionComparisionContext $context) : void {}
+	public function exitPartitionComparison(Context\PartitionComparisonContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -1906,6 +1961,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterAlterByDropConstraintCheck(Context\AlterByDropConstraintCheckContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitAlterByDropConstraintCheck(Context\AlterByDropConstraintCheckContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterAlterByDropPrimaryKey(Context\AlterByDropPrimaryKeyContext $context) : void {}
 
 	/**
@@ -1927,6 +1995,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitAlterByRenameIndex(Context\AlterByRenameIndexContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterAlterByAlterIndexVisibility(Context\AlterByAlterIndexVisibilityContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitAlterByAlterIndexVisibility(Context\AlterByAlterIndexVisibilityContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -3206,6 +3287,45 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterGroupByClause(Context\GroupByClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitGroupByClause(Context\GroupByClauseContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterHavingClause(Context\HavingClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitHavingClause(Context\HavingClauseContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterWindowClause(Context\WindowClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitWindowClause(Context\WindowClauseContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterGroupByItem(Context\GroupByItemContext $context) : void {}
 
 	/**
@@ -4454,6 +4574,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterRoleOption(Context\RoleOptionContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitRoleOption(Context\RoleOptionContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterGrantProxy(Context\GrantProxyContext $context) : void {}
 
 	/**
@@ -4501,6 +4634,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitShortRevoke(Context\ShortRevokeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterRoleRevoke(Context\RoleRevokeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitRoleRevoke(Context\RoleRevokeContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -5988,6 +6134,32 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterLongVarcharDataType(Context\LongVarcharDataTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitLongVarcharDataType(Context\LongVarcharDataTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterLongVarbinaryDataType(Context\LongVarbinaryDataTypeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitLongVarbinaryDataType(Context\LongVarbinaryDataTypeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterCollectionOptions(Context\CollectionOptionsContext $context) : void {}
 
 	/**
@@ -6079,6 +6251,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterTableNames(Context\TableNamesContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitTableNames(Context\TableNamesContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterIndexColumnNames(Context\IndexColumnNamesContext $context) : void {}
 
 	/**
@@ -6100,19 +6285,6 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitExpressions(Context\ExpressionsContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterExpressionsForUpdate(Context\ExpressionsForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitExpressionsForUpdate(Context\ExpressionsForUpdateContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -6261,6 +6433,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterNonAggregateFunctionCall(Context\NonAggregateFunctionCallContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitNonAggregateFunctionCall(Context\NonAggregateFunctionCallContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterScalarFunctionCall(Context\ScalarFunctionCallContext $context) : void {}
 
 	/**
@@ -6334,6 +6519,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitValuesFunctionCall(Context\ValuesFunctionCallContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterCaseExpressionFunctionCall(Context\CaseExpressionFunctionCallContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitCaseExpressionFunctionCall(Context\CaseExpressionFunctionCallContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -6443,6 +6641,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterJsonValueFunctionCall(Context\JsonValueFunctionCallContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitJsonValueFunctionCall(Context\JsonValueFunctionCallContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterCaseFuncAlternative(Context\CaseFuncAlternativeContext $context) : void {}
 
 	/**
@@ -6503,6 +6714,136 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitAggregateWindowedFunction(Context\AggregateWindowedFunctionContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterNonAggregateWindowedFunction(Context\NonAggregateWindowedFunctionContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitNonAggregateWindowedFunction(Context\NonAggregateWindowedFunctionContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterOverClause(Context\OverClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitOverClause(Context\OverClauseContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterWindowSpec(Context\WindowSpecContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitWindowSpec(Context\WindowSpecContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterWindowName(Context\WindowNameContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitWindowName(Context\WindowNameContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterFrameClause(Context\FrameClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitFrameClause(Context\FrameClauseContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterFrameUnits(Context\FrameUnitsContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitFrameUnits(Context\FrameUnitsContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterFrameExtent(Context\FrameExtentContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitFrameExtent(Context\FrameExtentContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterFrameBetween(Context\FrameBetweenContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitFrameBetween(Context\FrameBetweenContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterFrameRange(Context\FrameRangeContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitFrameRange(Context\FrameRangeContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterPartitionClause(Context\PartitionClauseContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitPartitionClause(Context\PartitionClauseContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -6638,6 +6979,45 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterSubqueryComparisonPredicate(Context\SubqueryComparisonPredicateContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitSubqueryComparisonPredicate(Context\SubqueryComparisonPredicateContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterJsonMemberOfPredicate(Context\JsonMemberOfPredicateContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitJsonMemberOfPredicate(Context\JsonMemberOfPredicateContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterBinaryComparisonPredicate(Context\BinaryComparisonPredicateContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitBinaryComparisonPredicate(Context\BinaryComparisonPredicateContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterInPredicate(Context\InPredicateContext $context) : void {}
 
 	/**
@@ -6651,19 +7031,6 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterSubqueryComparasionPredicate(Context\SubqueryComparasionPredicateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitSubqueryComparasionPredicate(Context\SubqueryComparasionPredicateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
 	public function enterBetweenPredicate(Context\BetweenPredicateContext $context) : void {}
 
 	/**
@@ -6672,19 +7039,6 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitBetweenPredicate(Context\BetweenPredicateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterBinaryComparasionPredicate(Context\BinaryComparasionPredicateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitBinaryComparasionPredicate(Context\BinaryComparasionPredicateContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -6729,357 +7083,6 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterLogicalExpressionForUpdate(Context\LogicalExpressionForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitLogicalExpressionForUpdate(Context\LogicalExpressionForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterPredicateExpressionForUpdate(Context\PredicateExpressionForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitPredicateExpressionForUpdate(Context\PredicateExpressionForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterIsExpressionForUpdate(Context\IsExpressionForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitIsExpressionForUpdate(Context\IsExpressionForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterNotExpressionForUpdate(Context\NotExpressionForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitNotExpressionForUpdate(Context\NotExpressionForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterBinaryComparasionPredicateForUpdate(Context\BinaryComparasionPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitBinaryComparasionPredicateForUpdate(Context\BinaryComparasionPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterLikePredicateForUpdate(Context\LikePredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitLikePredicateForUpdate(Context\LikePredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterRegexpPredicateForUpdate(Context\RegexpPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitRegexpPredicateForUpdate(Context\RegexpPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterIsNullPredicateForUpdate(Context\IsNullPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitIsNullPredicateForUpdate(Context\IsNullPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterBetweenPredicateForUpdate(Context\BetweenPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitBetweenPredicateForUpdate(Context\BetweenPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterSoundsLikePredicateForUpdate(Context\SoundsLikePredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitSoundsLikePredicateForUpdate(Context\SoundsLikePredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterInPredicateForUpdate(Context\InPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitInPredicateForUpdate(Context\InPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterSubqueryComparasionPredicateForUpdate(Context\SubqueryComparasionPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitSubqueryComparasionPredicateForUpdate(Context\SubqueryComparasionPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterExpressionAtomPredicateForUpdate(Context\ExpressionAtomPredicateForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitExpressionAtomPredicateForUpdate(Context\ExpressionAtomPredicateForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterIntervalExpressionAtomForUpdate(Context\IntervalExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitIntervalExpressionAtomForUpdate(Context\IntervalExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterFullColumnNameExpressionAtomForUpdate(Context\FullColumnNameExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitFullColumnNameExpressionAtomForUpdate(Context\FullColumnNameExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterMysqlVariableExpressionAtomForUpdate(Context\MysqlVariableExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitMysqlVariableExpressionAtomForUpdate(Context\MysqlVariableExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterUnaryExpressionAtomForUpdate(Context\UnaryExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitUnaryExpressionAtomForUpdate(Context\UnaryExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterNestedRowExpressionAtomForUpdate(Context\NestedRowExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitNestedRowExpressionAtomForUpdate(Context\NestedRowExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterSubqueryExpessionAtomForUpdate(Context\SubqueryExpessionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitSubqueryExpessionAtomForUpdate(Context\SubqueryExpessionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterBitExpressionAtomForUpdate(Context\BitExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitBitExpressionAtomForUpdate(Context\BitExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterMathExpressionAtomForUpdate(Context\MathExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitMathExpressionAtomForUpdate(Context\MathExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterConstantExpressionAtomForUpdate(Context\ConstantExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitConstantExpressionAtomForUpdate(Context\ConstantExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterCollateExpressionAtomForUpdate(Context\CollateExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitCollateExpressionAtomForUpdate(Context\CollateExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterBinaryExpressionAtomForUpdate(Context\BinaryExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitBinaryExpressionAtomForUpdate(Context\BinaryExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterNestedExpressionAtomForUpdate(Context\NestedExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitNestedExpressionAtomForUpdate(Context\NestedExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterExistsExpessionAtomForUpdate(Context\ExistsExpessionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitExistsExpessionAtomForUpdate(Context\ExistsExpessionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterFunctionCallExpressionAtomForUpdate(Context\FunctionCallExpressionAtomForUpdateContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitFunctionCallExpressionAtomForUpdate(Context\FunctionCallExpressionAtomForUpdateContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
 	public function enterUnaryExpressionAtom(Context\UnaryExpressionAtomContext $context) : void {}
 
 	/**
@@ -7101,19 +7104,6 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitCollateExpressionAtom(Context\CollateExpressionAtomContext $context) : void {}
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function enterSubqueryExpessionAtom(Context\SubqueryExpessionAtomContext $context) : void {}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 * The default implementation does nothing.
-	 */
-	public function exitSubqueryExpessionAtom(Context\SubqueryExpessionAtomContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -7171,6 +7161,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
+	public function enterExistsExpressionAtom(Context\ExistsExpressionAtomContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitExistsExpressionAtom(Context\ExistsExpressionAtomContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
 	public function enterIntervalExpressionAtom(Context\IntervalExpressionAtomContext $context) : void {}
 
 	/**
@@ -7184,14 +7187,27 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function enterExistsExpessionAtom(Context\ExistsExpessionAtomContext $context) : void {}
+	public function enterJsonExpressionAtom(Context\JsonExpressionAtomContext $context) : void {}
 
 	/**
 	 * {@inheritdoc}
 	 *
 	 * The default implementation does nothing.
 	 */
-	public function exitExistsExpessionAtom(Context\ExistsExpessionAtomContext $context) : void {}
+	public function exitJsonExpressionAtom(Context\JsonExpressionAtomContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterSubqueryExpressionAtom(Context\SubqueryExpressionAtomContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitSubqueryExpressionAtom(Context\SubqueryExpressionAtomContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
@@ -7322,6 +7338,19 @@ class MySqlParserBaseListener implements MySqlParserListener
 	 * The default implementation does nothing.
 	 */
 	public function exitMathOperator(Context\MathOperatorContext $context) : void {}
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function enterJsonOperator(Context\JsonOperatorContext $context) : void {}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * The default implementation does nothing.
+	 */
+	public function exitJsonOperator(Context\JsonOperatorContext $context) : void {}
 	/**
 	 * {@inheritdoc}
 	 *
