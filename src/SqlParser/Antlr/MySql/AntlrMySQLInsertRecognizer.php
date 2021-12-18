@@ -6,6 +6,7 @@ use Antlr\Antlr4\Runtime\CommonTokenStream;
 use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlLexer;
 use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 use Hyperf\Seata\SqlParser\Antlr\MySql\stream\ANTLRNoCaseStringStream;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Visit\InsertStatementSqlVisitor;
 use Hyperf\Seata\SqlParser\Antlr\MySqlContext;
 use Hyperf\Seata\SqlParser\Core\SQLInsertRecognizer;
 use Hyperf\Seata\SqlParser\Core\SQLType;

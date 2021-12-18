@@ -1,0 +1,99 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
+
+    use Antlr\Antlr4\Runtime\Token;
+    use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+    use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+    use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
+    use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+
+    class AlterByAddSpecialIndexContext extends AlterSpecificationContext
+    {
+        /**
+         * @var null|Token
+         */
+        public $keyType;
+
+        /**
+         * @var null|Token
+         */
+        public $indexFormat;
+
+        public function __construct(AlterSpecificationContext $context)
+        {
+            parent::__construct($context);
+
+            $this->copyFrom($context);
+        }
+
+        public function ADD(): ?TerminalNode
+        {
+            return $this->getToken(MySqlParser::ADD, 0);
+        }
+
+        public function indexColumnNames(): ?IndexColumnNamesContext
+        {
+            return $this->getTypedRuleContext(IndexColumnNamesContext::class, 0);
+        }
+
+        public function FULLTEXT(): ?TerminalNode
+        {
+            return $this->getToken(MySqlParser::FULLTEXT, 0);
+        }
+
+        public function SPATIAL(): ?TerminalNode
+        {
+            return $this->getToken(MySqlParser::SPATIAL, 0);
+        }
+
+        public function uid(): ?UidContext
+        {
+            return $this->getTypedRuleContext(UidContext::class, 0);
+        }
+
+        /**
+         * @return null|array<IndexOptionContext>|IndexOptionContext
+         */
+        public function indexOption(?int $index = null)
+        {
+            if ($index === null) {
+                return $this->getTypedRuleContexts(IndexOptionContext::class);
+            }
+
+            return $this->getTypedRuleContext(IndexOptionContext::class, $index);
+        }
+
+        public function INDEX(): ?TerminalNode
+        {
+            return $this->getToken(MySqlParser::INDEX, 0);
+        }
+
+        public function KEY(): ?TerminalNode
+        {
+            return $this->getToken(MySqlParser::KEY, 0);
+        }
+
+        public function enterRule(ParseTreeListener $listener): void
+        {
+            if ($listener instanceof MySqlParserListener) {
+                $listener->enterAlterByAddSpecialIndex($this);
+            }
+        }
+
+        public function exitRule(ParseTreeListener $listener): void
+        {
+            if ($listener instanceof MySqlParserListener) {
+                $listener->exitAlterByAddSpecialIndex($this);
+            }
+        }
+    }

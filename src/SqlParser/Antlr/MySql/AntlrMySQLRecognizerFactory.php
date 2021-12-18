@@ -36,11 +36,13 @@ class AntlrMySQLRecognizerFactory implements SQLRecognizerFactory
             $originalSQL = $visitor->visit($sqlStatementContext);
 
             $recognizerHolder = SQLOperateRecognizerHolderFactory::getSQLRecognizerHolder(strtolower($dbType));
-
+            var_dump($sqlStatementContext->dmlStatement());
             if ($sqlStatementContext->dmlStatement()->updateStatement() != null) {
                 $recognizer = $recognizerHolder->getUpdateRecognizer($originalSQL);
             } elseif ($sqlStatementContext->dmlStatement()->insertStatement() != null) {
+                var_dump('--insert');
                 $recognizer = $recognizerHolder->getInsertRecognizer($originalSQL);
+                var_dump($recognizer);
             }elseif ($sqlStatementContext->dmlStatement()->deleteStatement() != null) {
                 $recognizer = $recognizerHolder->getDeleteRecognizer($originalSQL);
             } elseif ($sqlStatementContext->dmlStatement()->selectStatement() != null) {
