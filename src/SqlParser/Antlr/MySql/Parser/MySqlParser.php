@@ -6,7 +6,22 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser;
 
+use Antlr\Antlr4\Runtime\Atn\ATN;
+use Antlr\Antlr4\Runtime\Atn\ATNDeserializer;
+use Antlr\Antlr4\Runtime\Atn\ParserATNSimulator;
+use Antlr\Antlr4\Runtime\Dfa\DFA;
+use Antlr\Antlr4\Runtime\Error\Exceptions\FailedPredicateException;
+use Antlr\Antlr4\Runtime\Error\Exceptions\NoViableAltException;
+use Antlr\Antlr4\Runtime\Error\Exceptions\RecognitionException;
+use Antlr\Antlr4\Runtime\Parser;
+use Antlr\Antlr4\Runtime\PredictionContexts\PredictionContextCache;
+use Antlr\Antlr4\Runtime\RuleContext;
+use Antlr\Antlr4\Runtime\RuntimeMetaData;
 use Antlr\Antlr4\Runtime\Token;
+use Antlr\Antlr4\Runtime\TokenStream;
+use Antlr\Antlr4\Runtime\Vocabulary;
+use Antlr\Antlr4\Runtime\VocabularyImpl;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 final class MySqlParser extends Parser
 {
