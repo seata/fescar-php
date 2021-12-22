@@ -11,6 +11,7 @@ use Antlr\Antlr4\Runtime\Tree\ErrorNode;
 use Antlr\Antlr4\Runtime\Tree\TerminalNode;
 use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlLexer;
 use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 /**
  * This class provides an empty implementation of {@see MySqlParserListener},

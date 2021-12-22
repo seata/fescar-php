@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
-    use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
-    use Antlr\Antlr4\Runtime\Tree\TerminalNode;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 
     class SqlStatementsContext extends ParserRuleContext
     {
@@ -37,7 +37,6 @@ use Antlr\Antlr4\Runtime\ParserRuleContext;
             if ($index === null) {
                 return $this->getTypedRuleContexts(SqlStatementContext::class);
             }
-
             return $this->getTypedRuleContext(SqlStatementContext::class, $index);
         }
 

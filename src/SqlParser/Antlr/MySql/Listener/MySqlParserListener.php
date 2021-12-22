@@ -6,6 +6,7 @@
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Listener;
 
 use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 /**
  * This interface defines a complete listener for a parse tree produced by

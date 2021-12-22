@@ -101,7 +101,6 @@ class DefaultResourceManager implements ResourceManagerInterface
         string $lockKeys
     ): int {
 
-        dump($lockKeys);
         return $this->getResourceManager($branchType)
             ->branchRegister($branchType, $resourceId, $clientId, $xid, $applicationData, $lockKeys);
     }

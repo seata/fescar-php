@@ -22,5 +22,5 @@ public function getInsertColumns(): array;
      * @param primaryKeyIndex insert sql primary key index.
      * @return the insert rows
      */
-public function getInsertRows(array $primaryKeyIndex): array;
+public function getInsertRows(array $primaryKeyIndex): ?array;
 }

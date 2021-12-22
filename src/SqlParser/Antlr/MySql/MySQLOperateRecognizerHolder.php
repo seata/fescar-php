@@ -20,11 +20,11 @@ class MySQLOperateRecognizerHolder implements SQLOperateRecognizerHolder
 
     public function getUpdateRecognizer(string $sql): SQLRecognizer
     {
-        // TODO: Implement getUpdateRecognizer() method.
+        return new AntlrMySQLUpdateRecognizer($sql);
     }
 
     public function getSelectForUpdateRecognizer(string $sql): SQLRecognizer
     {
-        // TODO: Implement getSelectForUpdateRecognizer() method.
+        return new AntlrMySQLSelectRecognizer($sql);
     }
 }

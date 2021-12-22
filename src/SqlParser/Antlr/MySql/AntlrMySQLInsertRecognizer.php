@@ -13,50 +13,64 @@ use Hyperf\Seata\SqlParser\Core\SQLType;
 
 class AntlrMySQLInsertRecognizer implements SQLInsertRecognizer
 {
+    private MySqlContext $sqlContext;
+
     public function __construct(string $sql)
     {
         $lexer = new MySqlLexer(new ANTLRNoCaseStringStream($sql));
         $tokenStream = new CommonTokenStream($lexer);
+
         $parser = new MySqlParser($tokenStream);
         $rootContext = $parser->root();
-        $sqlContext = new MySqlContext();
-        $sqlContext->setOriginalSQL($sql);
-        $visitor = new InsertStatementSqlVisitor($sqlContext);
+        $this->sqlContext = new MySqlContext();
+        $this->sqlContext->setOriginalSQL($sql);
+        $visitor = new InsertStatementSqlVisitor($this->sqlContext);
         $visitor->visit($rootContext);
     }
 
     public function insertColumnsIsEmpty(): bool
     {
-        // TODO: Implement insertColumnsIsEmpty() method.
+        $insertColumnNames = $this->sqlContext->getInsertColumnNames();
+
+        if (empty($insertColumnNames)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function getInsertColumns(): array
     {
-        // TODO: Implement getInsertColumns() method.
+        $insertColumnNames = $this->sqlContext->getInsertForValColumnNames();
+        if (empty($insertColumnNames)) {
+            return [];
+        }
+        return $insertColumnNames;
     }
 
-    public function getInsertRows(array $primaryKeyIndex): array
+    public function getInsertRows(array $primaryKeyIndex): ?array
     {
-        // TODO: Implement getInsertRows() method.
+        return null;
     }
 
     public function getSQLType(): SQLType
     {
-        // TODO: Implement getSQLType() method.
+
+        return new SQLType(SQLType::INSERT);
     }
 
     public function getTableAlias(): string
     {
-        // TODO: Implement getTableAlias() method.
+        return $this->sqlContext->getTableAlias();
     }
 
     public function getTableName(): string
     {
-        // TODO: Implement getTableName() method.
+        return $this->sqlContext->getTableName();
     }
 
     public function getOriginalSQL(): string
     {
-        // TODO: Implement getOriginalSQL() method.
+        return $this->sqlContext->getOriginalSQL();
     }
 }

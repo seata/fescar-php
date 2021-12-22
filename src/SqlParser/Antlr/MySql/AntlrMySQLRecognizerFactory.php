@@ -29,25 +29,26 @@ class AntlrMySQLRecognizerFactory implements SQLRecognizerFactory
 //
         $recognizers = null;
         $recognizer = null;
+
 //
         foreach ($sqlStatementContexts as $sqlStatementContext) {
             $visitor = new StatementSqlVisitor();
 
+
+//            dump($sqlStatementContext);
             $originalSQL = $visitor->visit($sqlStatementContext);
 
             $recognizerHolder = SQLOperateRecognizerHolderFactory::getSQLRecognizerHolder(strtolower($dbType));
-            var_dump($sqlStatementContext->dmlStatement());
+
+
             if ($sqlStatementContext->dmlStatement()->updateStatement() != null) {
-                $recognizer = $recognizerHolder->getUpdateRecognizer($originalSQL);
+                $recognizer = $recognizerHolder->getUpdateRecognizer($sql);
             } elseif ($sqlStatementContext->dmlStatement()->insertStatement() != null) {
-                var_dump('--insert');
-                $recognizer = $recognizerHolder->getInsertRecognizer($originalSQL);
-                var_dump($recognizer);
-            }elseif ($sqlStatementContext->dmlStatement()->deleteStatement() != null) {
-                $recognizer = $recognizerHolder->getDeleteRecognizer($originalSQL);
+                $recognizer = $recognizerHolder->getInsertRecognizer($sql);
+            } elseif ($sqlStatementContext->dmlStatement()->deleteStatement() != null) {
+                $recognizer = $recognizerHolder->getDeleteRecognizer($sql);
             } elseif ($sqlStatementContext->dmlStatement()->selectStatement() != null) {
-                var_dump('--select');
-                $recognizer = $recognizerHolder->getSelectForUpdateRecognizer($originalSQL);
+                $recognizer = $recognizerHolder->getSelectForUpdateRecognizer($sql);
             }
 
             if (! isset($recognizers)) {

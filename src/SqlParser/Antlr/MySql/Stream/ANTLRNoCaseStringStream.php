@@ -1,6 +1,6 @@
 <?php
 
-namespace Hyperf\Seata\SqlParser\Antlr\MySql\stream;
+namespace Hyperf\Seata\SqlParser\Antlr\MySql\Stream;
 
 
 use Antlr\Antlr4\Runtime\CharStream;
