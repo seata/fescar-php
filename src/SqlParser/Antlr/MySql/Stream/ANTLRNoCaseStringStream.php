@@ -27,6 +27,9 @@ class ANTLRNoCaseStringStream implements CharStream
     public function __construct(string $input, array $characters = [])
     {
         $this->input = $input;
+        if (empty($characters)) {
+            $characters = str_split($input);
+        }
         $this->characters = $characters;
         $this->size = \count($this->characters);
     }

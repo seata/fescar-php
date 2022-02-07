@@ -8,25 +8,22 @@ use Hyperf\Seata\Exception\NotSupportYetException;
 class TableMeta
 {
 
-    /**
-     * @var string
-     */
-    private $tableName = '';
+    private string $tableName = '';
 
     /**
      * @var ColumnMeta[]
      */
-    private $allColumns = [];
+    private array $allColumns = [];
 
     /**
      * @var IndexMeta[]
      */
-    private $allIndexes = [];
+    private array $allIndexes = [];
 
     /**
      * Gets pk name.
      *
-     * @return the pk name
+     * @return string the pk name
      */
     public function getPkName(): string
     {
@@ -90,6 +87,11 @@ class TableMeta
         return $this->allColumns;
     }
 
+    public function getAllColumnsWithName(string $colName): ColumnMeta
+    {
+        return $this->allColumns[$colName];
+    }
+
     /**
      * @param \Hyperf\Seata\Rm\DataSource\Sql\Struct\ColumnMeta[] $allColumns
      * @return TableMeta
@@ -97,6 +99,12 @@ class TableMeta
     public function setAllColumns($allColumns)
     {
         $this->allColumns = $allColumns;
+        return $this;
+    }
+
+    public function addAllColumns(ColumnMeta $columnMeta): static
+    {
+        $this->allColumns[$columnMeta->getColumnName()] = $columnMeta;
         return $this;
     }
 
@@ -112,6 +120,12 @@ class TableMeta
     public function setAllIndexes($allIndexes)
     {
         $this->allIndexes = $allIndexes;
+        return $this;
+    }
+
+    public function addAllIndex(IndexMeta $indexMeta): static
+    {
+        $this->allIndexes[] = $indexMeta;
         return $this;
     }
 

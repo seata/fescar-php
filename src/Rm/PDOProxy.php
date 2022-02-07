@@ -15,12 +15,16 @@ use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Seata\Rm\DataSource\ConnectionContext;
 use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
+use Hyperf\Seata\Rm\DataSource\Exec\DeleteExecutor;
 use Hyperf\Seata\Rm\DataSource\Sql\SQLVisitorFactory;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManager;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManagerFactory;
+use Hyperf\Seata\SqlParser\SqlParserFactory;
 use Hyperf\Utils\ApplicationContext;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use JetBrains\PhpStorm\Pure;
+use PHPSQLParser\PHPSQLParser;
 use RuntimeException;
 
 class PDOProxy extends \PDO implements Resource,ConnectionProxyInterface
@@ -295,12 +299,16 @@ class PDOProxy extends \PDO implements Resource,ConnectionProxyInterface
      */
     public function prepare($query, array $options = [])
     {
-        // TODO: get DB Type
-        // TODO: parser sql
-        $targetPreparedStatement = null;
-        if (RootContext::getBranchType() === BranchType::AT) {
-            $sqlRecognizers = SQLVisitorFactory::get($query);
-        }
+        $sqlParser = SqlParserFactory::parser($query);
+        $sqlParser->setResourceId($this->getResourceId());
+        $prepare = parent::prepare($query, $options);
+        return new PDOStatementProxy($prepare, $this, $sqlParser);
     }
+
+    public function parentPrepare($query, $options): bool|\PDOStatement
+    {
+        return parent::prepare($query, $options);
+    }
+
 
 }

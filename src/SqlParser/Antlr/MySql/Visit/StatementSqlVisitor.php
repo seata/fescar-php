@@ -8,27 +8,28 @@ use Antlr\Antlr4\Runtime\Tree\TerminalNode;
 class StatementSqlVisitor extends MySqlParserBaseVisitor
 {
 
+    private string $stringBuilder = '';
+
     public function visitTerminal(TerminalNode $node): string
     {
-        $stringBuilder = '';
         $text = $node->getText();
-
-        if (! empty($text)) {
+        if ($text != null && trim($text) != '') {
             if ($this->shouldAddSpace(trim($text))) {
-                $stringBuilder .= ' ';
+                $this->stringBuilder .= ' ';
             }
-            $stringBuilder .= $text;
+            $this->stringBuilder .= $text;
         }
 
-        return $stringBuilder;
+
+        return $this->stringBuilder;
     }
 
     private function shouldAddSpace(string $text): bool
     {
-        if (strlen($text) > 0) {
+        if (strlen($this->stringBuilder) == 0) {
             return false;
         }
-        $lastChar = substr($text, -1);
+        $lastChar = substr($this->stringBuilder, -1);
 
         switch ($lastChar) {
             case '.':

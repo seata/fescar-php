@@ -11,6 +11,9 @@ class Row
      */
     private $fields = [];
 
+    /**
+     * @return Field[]
+     */
     public function getFields(): array
     {
         return $this->fields;

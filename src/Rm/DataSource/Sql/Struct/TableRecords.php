@@ -59,6 +59,8 @@ class TableRecords
         return $this->tableMeta;
     }
 
+
+
     /**
      * @return TableRecords
      */
@@ -100,6 +102,22 @@ class TableRecords
     {
         $this->rows = $rows;
         return $this;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function pkFields(): array
+    {
+        $pkRows = [];
+        foreach ($this->getRows() as $row) {
+            foreach ($row->getFields() as $field) {
+                if (strtolower($field->getName()) == strtolower($this->getTableMeta()->getPkName())) {
+                    $pkRows[] = $field;
+                }
+            }
+        }
+        return $pkRows;
     }
 
 }
