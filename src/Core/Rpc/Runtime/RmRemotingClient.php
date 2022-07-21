@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
@@ -18,7 +26,6 @@ use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RegisterRMRequest;
-use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
@@ -26,7 +33,6 @@ use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchCommitProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmBranchRollbackProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\RmUndoLogProcessor;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
 use Hyperf\Seata\Exception\TodoException;
@@ -68,22 +74,6 @@ class RmRemotingClient extends AbstractRemotingClient
         }
         $this->createHeartbeatLoop();
         $this->registerResource($this->applicationId, $this->transactionServiceGroup);
-    }
-
-    protected function createHeartbeatLoop()
-    {
-        Coroutine::create(function () {
-            while (true) {
-                try {
-                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::RM);
-                } catch (\InvalidArgumentException $exception) {
-//                    var_dump($exception->getMessage());
-                } catch (\Throwable $exception) {
-//                    var_dump($exception->getMessage());
-                }
-                sleep(5);
-            }
-        });
     }
 
     public function sendRegisterMessage(SocketChannelInterface $socketChannel, string $resourceId)
@@ -204,6 +194,22 @@ class RmRemotingClient extends AbstractRemotingClient
         AbstractMessage $requestMessage
     ) {
         throw new TodoException();
+    }
+
+    protected function createHeartbeatLoop()
+    {
+        Coroutine::create(function () {
+            while (true) {
+                try {
+                    $response = $this->sendMsgWithResponse(HeartbeatMessage::ping(), AddressTarget::RM);
+                } catch (\InvalidArgumentException $exception) {
+//                    var_dump($exception->getMessage());
+                } catch (\Throwable $exception) {
+//                    var_dump($exception->getMessage());
+                }
+                sleep(5);
+            }
+        });
     }
 
     protected function getMergedResourceKeys(): string

@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime\Swow;
 
@@ -15,8 +23,6 @@ use Hyperf\Engine\Channel;
 use Hyperf\Seata\Core\Protocol\MessageType;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Address;
-use Hyperf\Seata\Core\Rpc\Processor\AbstractRemotingProcessor;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\ProcessorManager;
 use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
@@ -25,7 +31,6 @@ use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 use Swow\Socket;
-use function Swow\Tools\br;
 
 class SocketChannel implements SocketChannelInterface
 {
@@ -52,7 +57,7 @@ class SocketChannel implements SocketChannelInterface
         $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
         $this->sendChannel = new Channel();
         $this->createRecvLoop();
-        //$this->createSendLoop();
+        // $this->createSendLoop();
     }
 
     public function sendSyncWithResponse(RpcMessage $rpcMessage, int $timeoutMillis)
@@ -83,7 +88,6 @@ class SocketChannel implements SocketChannelInterface
                 try {
                     $data = $this->socket->recvStringData();
 
-
                     if (! $data) {
                         break;
                     }
@@ -95,11 +99,11 @@ class SocketChannel implements SocketChannelInterface
                     if (isset($this->responses[$rpcMessage->getId()])) {
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
-                    }  else {
-//                        var_dump($rpcMessage);
                     }
+//                        var_dump($rpcMessage);
+
 //                    elseif ($rpcMessage->getMessageType() === MessageType::TYPE_HEARTBEAT_MSG) {
-////                        var_dump('heartbeat', $rpcMessage);
+                    // //                        var_dump('heartbeat', $rpcMessage);
 //                    }
                 } catch (\InvalidArgumentException $exception) {
                     echo 'Recieved a rpc message fail error:' . $exception->getMessage() . PHP_EOL;

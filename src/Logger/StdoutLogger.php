@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Logger;
 
@@ -38,7 +46,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function emergency(\Stringable|string $message, array $context = []):void
+    public function emergency(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -46,7 +54,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function alert(\Stringable|string $message, array $context = []):void
+    public function alert(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
@@ -54,7 +62,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function critical(\Stringable|string $message, array $context = []):void
+    public function critical(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
@@ -62,7 +70,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function error(\Stringable|string $message, array $context = []):void
+    public function error(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -70,7 +78,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function warning(\Stringable|string $message, array $context = []):void
+    public function warning(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
@@ -78,7 +86,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function notice(\Stringable|string $message, array $context = []):void
+    public function notice(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
@@ -86,7 +94,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function info(\Stringable|string $message, array $context = []):void
+    public function info(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -94,7 +102,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function debug(\Stringable|string $message, array $context = []):void
+    public function debug(\Stringable|string $message, array $context = []): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -102,7 +110,7 @@ class StdoutLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level,\Stringable|string  $message, array $context = []):void
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         $config = $this->config->get(LoggerInterface::class, $this->config->get(StdoutLoggerInterface::class));
         if (! in_array($level, $config['log_level'], true)) {

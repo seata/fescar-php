@@ -2,75 +2,83 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
-    use Antlr\Antlr4\Runtime\Token;
-    use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
-    use Antlr\Antlr4\Runtime\Tree\TerminalNode;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+use Antlr\Antlr4\Runtime\Token;
+use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 
-    class PasswordFunctionClauseContext extends ParserRuleContext
+class PasswordFunctionClauseContext extends ParserRuleContext
+{
+    /**
+     * @var null|Token
+     */
+    public $functionName;
+
+    public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
     {
-        /**
-         * @var null|Token
-         */
-        public $functionName;
+        parent::__construct($parent, $invokingState);
+    }
 
-        public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
-        {
-            parent::__construct($parent, $invokingState);
-        }
+    public function getRuleIndex(): int
+    {
+        return MySqlParser::RULE_passwordFunctionClause;
+    }
 
-        public function getRuleIndex(): int
-        {
-            return MySqlParser::RULE_passwordFunctionClause;
-        }
+    public function LR_BRACKET(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::LR_BRACKET, 0);
+    }
 
-        public function LR_BRACKET(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::LR_BRACKET, 0);
-        }
+    public function functionArg(): ?FunctionArgContext
+    {
+        return $this->getTypedRuleContext(FunctionArgContext::class, 0);
+    }
 
-        public function functionArg(): ?FunctionArgContext
-        {
-            return $this->getTypedRuleContext(FunctionArgContext::class, 0);
-        }
+    public function RR_BRACKET(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::RR_BRACKET, 0);
+    }
 
-        public function RR_BRACKET(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::RR_BRACKET, 0);
-        }
+    public function PASSWORD(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::PASSWORD, 0);
+    }
 
-        public function PASSWORD(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::PASSWORD, 0);
-        }
+    public function OLD_PASSWORD(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::OLD_PASSWORD, 0);
+    }
 
-        public function OLD_PASSWORD(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::OLD_PASSWORD, 0);
-        }
-
-        public function enterRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->enterPasswordFunctionClause($this);
-            }
-        }
-
-        public function exitRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->exitPasswordFunctionClause($this);
-            }
+    public function enterRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->enterPasswordFunctionClause($this);
         }
     }
+
+    public function exitRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->exitPasswordFunctionClause($this);
+        }
+    }
+}

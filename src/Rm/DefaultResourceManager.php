@@ -1,5 +1,22 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 1999-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm;
 
 use Hyperf\Contract\ContainerInterface;
@@ -10,27 +27,19 @@ use Hyperf\Seata\Rm\DataSource\DataSourceManager;
 
 class DefaultResourceManager implements ResourceManagerInterface
 {
-
     /**
-     * All resource managers
+     * All resource managers.
      *
      * @var \Hyperf\Seata\Core\Model\ResourceManagerInterface[]
      */
     protected array $resourceManagers = [];
+
     protected ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->initResourceManagers();
-    }
-
-    protected function initResourceManagers(): void
-    {
-        $at = $this->container->get(DataSourceManager::class);
-        $this->resourceManagers = [
-            $at->getBranchType() => $at,
-        ];
     }
 
     public function registerResource(Resource $resource): void
@@ -55,7 +64,7 @@ class DefaultResourceManager implements ResourceManagerInterface
     }
 
     /**
-     * Get ResourceManager by branch Type
+     * Get ResourceManager by branch Type.
      */
     public function getResourceManager(int $branchType): ResourceManagerInterface
     {
@@ -100,7 +109,6 @@ class DefaultResourceManager implements ResourceManagerInterface
         string $applicationData,
         string $lockKeys
     ): int {
-
         return $this->getResourceManager($branchType)
             ->branchRegister($branchType, $resourceId, $clientId, $xid, $applicationData, $lockKeys);
     }
@@ -118,5 +126,13 @@ class DefaultResourceManager implements ResourceManagerInterface
     public function lockQuery(int $branchType, string $resourceId, string $xid, string $lockKeys): bool
     {
         return $this->getResourceManager($branchType)->lockQuery($branchType, $resourceId, $xid, $lockKeys);
+    }
+
+    protected function initResourceManagers(): void
+    {
+        $at = $this->container->get(DataSourceManager::class);
+        $this->resourceManagers = [
+            $at->getBranchType() => $at,
+        ];
     }
 }

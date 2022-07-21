@@ -2,89 +2,97 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
-    use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
-    use Antlr\Antlr4\Runtime\Tree\TerminalNode;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 
-    class SimpleIdContext extends ParserRuleContext
+class SimpleIdContext extends ParserRuleContext
+{
+    public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
     {
-        public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
-        {
-            parent::__construct($parent, $invokingState);
-        }
+        parent::__construct($parent, $invokingState);
+    }
 
-        public function getRuleIndex(): int
-        {
-            return MySqlParser::RULE_simpleId;
-        }
+    public function getRuleIndex(): int
+    {
+        return MySqlParser::RULE_simpleId;
+    }
 
-        public function ID(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::ID, 0);
-        }
+    public function ID(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::ID, 0);
+    }
 
-        public function charsetNameBase(): ?CharsetNameBaseContext
-        {
-            return $this->getTypedRuleContext(CharsetNameBaseContext::class, 0);
-        }
+    public function charsetNameBase(): ?CharsetNameBaseContext
+    {
+        return $this->getTypedRuleContext(CharsetNameBaseContext::class, 0);
+    }
 
-        public function transactionLevelBase(): ?TransactionLevelBaseContext
-        {
-            return $this->getTypedRuleContext(TransactionLevelBaseContext::class, 0);
-        }
+    public function transactionLevelBase(): ?TransactionLevelBaseContext
+    {
+        return $this->getTypedRuleContext(TransactionLevelBaseContext::class, 0);
+    }
 
-        public function engineName(): ?EngineNameContext
-        {
-            return $this->getTypedRuleContext(EngineNameContext::class, 0);
-        }
+    public function engineName(): ?EngineNameContext
+    {
+        return $this->getTypedRuleContext(EngineNameContext::class, 0);
+    }
 
-        public function privilegesBase(): ?PrivilegesBaseContext
-        {
-            return $this->getTypedRuleContext(PrivilegesBaseContext::class, 0);
-        }
+    public function privilegesBase(): ?PrivilegesBaseContext
+    {
+        return $this->getTypedRuleContext(PrivilegesBaseContext::class, 0);
+    }
 
-        public function intervalTypeBase(): ?IntervalTypeBaseContext
-        {
-            return $this->getTypedRuleContext(IntervalTypeBaseContext::class, 0);
-        }
+    public function intervalTypeBase(): ?IntervalTypeBaseContext
+    {
+        return $this->getTypedRuleContext(IntervalTypeBaseContext::class, 0);
+    }
 
-        public function dataTypeBase(): ?DataTypeBaseContext
-        {
-            return $this->getTypedRuleContext(DataTypeBaseContext::class, 0);
-        }
+    public function dataTypeBase(): ?DataTypeBaseContext
+    {
+        return $this->getTypedRuleContext(DataTypeBaseContext::class, 0);
+    }
 
-        public function keywordsCanBeId(): ?KeywordsCanBeIdContext
-        {
-            return $this->getTypedRuleContext(KeywordsCanBeIdContext::class, 0);
-        }
+    public function keywordsCanBeId(): ?KeywordsCanBeIdContext
+    {
+        return $this->getTypedRuleContext(KeywordsCanBeIdContext::class, 0);
+    }
 
-        public function functionNameBase(): ?FunctionNameBaseContext
-        {
-            return $this->getTypedRuleContext(FunctionNameBaseContext::class, 0);
-        }
+    public function functionNameBase(): ?FunctionNameBaseContext
+    {
+        return $this->getTypedRuleContext(FunctionNameBaseContext::class, 0);
+    }
 
-        public function enterRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->enterSimpleId($this);
-            }
-        }
-
-        public function exitRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->exitSimpleId($this);
-            }
+    public function enterRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->enterSimpleId($this);
         }
     }
+
+    public function exitRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->exitSimpleId($this);
+        }
+    }
+}

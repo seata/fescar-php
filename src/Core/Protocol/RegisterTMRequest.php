@@ -2,25 +2,36 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Core\Protocol;
 
 class RegisterTMRequest extends AbstractIdentifyRequest
 {
-
     protected const serialVersionUID = -5929081344190543690;
 
     public string $UDATA_VGROUP = 'vgroup';
-    public string $UDATA_AK = "ak";
-    public string $UDATA_DIGEST = "digest";
-    public string $UDATA_IP = "ip";
-    public string $UDATA_TIMESTAMP = "timestamp";
+
+    public string $UDATA_AK = 'ak';
+
+    public string $UDATA_DIGEST = 'digest';
+
+    public string $UDATA_IP = 'ip';
+
+    public string $UDATA_TIMESTAMP = 'timestamp';
 
     public function __construct(string $applicationId, string $transactionServiceGroup, ?string $extraData = null)
     {
@@ -37,7 +48,7 @@ class RegisterTMRequest extends AbstractIdentifyRequest
         if (! empty($transactionServiceGroup)) {
             $stringBuilder .= sprintf('%s=%s', $this->UDATA_VGROUP, $transactionServiceGroup);
             $stringBuilder .= PHP_EOL;
-            $clientIp = getHostByName(getHostName());
+            $clientIp = gethostbyname(gethostname());
             if (! empty($clientIp)) {
                 $stringBuilder .= sprintf('%s=%s', $this->UDATA_IP, $clientIp);
                 $stringBuilder .= PHP_EOL;

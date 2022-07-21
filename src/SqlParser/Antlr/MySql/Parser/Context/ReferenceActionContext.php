@@ -2,88 +2,96 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 1999-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\SqlParser\Antlr\MySql\Parser\Context;
 
 use Antlr\Antlr4\Runtime\ParserRuleContext;
-    use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
-    use Antlr\Antlr4\Runtime\Tree\TerminalNode;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
-    use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
+use Antlr\Antlr4\Runtime\Tree\ParseTreeListener;
+use Antlr\Antlr4\Runtime\Tree\TerminalNode;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Listener\MySqlParserListener;
+use Hyperf\Seata\SqlParser\Antlr\MySql\Parser\MySqlParser;
 
-    class ReferenceActionContext extends ParserRuleContext
+class ReferenceActionContext extends ParserRuleContext
+{
+    /**
+     * @var null|ReferenceControlTypeContext
+     */
+    public $onDelete;
+
+    /**
+     * @var null|ReferenceControlTypeContext
+     */
+    public $onUpdate;
+
+    public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
     {
-        /**
-         * @var null|ReferenceControlTypeContext
-         */
-        public $onDelete;
+        parent::__construct($parent, $invokingState);
+    }
 
-        /**
-         * @var null|ReferenceControlTypeContext
-         */
-        public $onUpdate;
+    public function getRuleIndex(): int
+    {
+        return MySqlParser::RULE_referenceAction;
+    }
 
-        public function __construct(?ParserRuleContext $parent, ?int $invokingState = null)
-        {
-            parent::__construct($parent, $invokingState);
+    /**
+     * @return null|array<TerminalNode>|TerminalNode
+     */
+    public function ON(?int $index = null)
+    {
+        if ($index === null) {
+            return $this->getTokens(MySqlParser::ON);
         }
 
-        public function getRuleIndex(): int
-        {
-            return MySqlParser::RULE_referenceAction;
+        return $this->getToken(MySqlParser::ON, $index);
+    }
+
+    public function DELETE(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::DELETE, 0);
+    }
+
+    /**
+     * @return null|array<ReferenceControlTypeContext>|ReferenceControlTypeContext
+     */
+    public function referenceControlType(?int $index = null)
+    {
+        if ($index === null) {
+            return $this->getTypedRuleContexts(ReferenceControlTypeContext::class);
         }
 
-        /**
-         * @return null|array<TerminalNode>|TerminalNode
-         */
-        public function ON(?int $index = null)
-        {
-            if ($index === null) {
-                return $this->getTokens(MySqlParser::ON);
-            }
+        return $this->getTypedRuleContext(ReferenceControlTypeContext::class, $index);
+    }
 
-            return $this->getToken(MySqlParser::ON, $index);
-        }
+    public function UPDATE(): ?TerminalNode
+    {
+        return $this->getToken(MySqlParser::UPDATE, 0);
+    }
 
-        public function DELETE(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::DELETE, 0);
-        }
-
-        /**
-         * @return null|array<ReferenceControlTypeContext>|ReferenceControlTypeContext
-         */
-        public function referenceControlType(?int $index = null)
-        {
-            if ($index === null) {
-                return $this->getTypedRuleContexts(ReferenceControlTypeContext::class);
-            }
-
-            return $this->getTypedRuleContext(ReferenceControlTypeContext::class, $index);
-        }
-
-        public function UPDATE(): ?TerminalNode
-        {
-            return $this->getToken(MySqlParser::UPDATE, 0);
-        }
-
-        public function enterRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->enterReferenceAction($this);
-            }
-        }
-
-        public function exitRule(ParseTreeListener $listener): void
-        {
-            if ($listener instanceof MySqlParserListener) {
-                $listener->exitReferenceAction($this);
-            }
+    public function enterRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->enterReferenceAction($this);
         }
     }
+
+    public function exitRule(ParseTreeListener $listener): void
+    {
+        if ($listener instanceof MySqlParserListener) {
+            $listener->exitReferenceAction($this);
+        }
+    }
+}
