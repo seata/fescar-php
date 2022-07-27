@@ -50,8 +50,8 @@ class GlobalTransactionScanner
     public function __construct(ConfigInterface $config, LoggerFactory $loggerFactory, RMClient $RMClient, TMClient $TMClient)
     {
         $this->config = $config;
-        $this->applicationId = $this->config->get('seata.application_id');
-        $this->txServiceGroup = $this->config->get('seata.tx_service_group');
+        $this->applicationId = (string) $this->config->get('seata.application_id');
+        $this->txServiceGroup = (string) $this->config->get('seata.tx_service_group');
         // @TODO mode
         $this->mode = $this->config->get('seata.mode', self::DEFAULT_MODE);
         // @TODO disableGlobalTransaction

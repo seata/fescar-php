@@ -19,6 +19,7 @@
         "php": ">=8.0",
         "antlr/antlr4-php-runtime": "^0.5.1",
         "greenlion/php-sql-parser": "^4.4",
+        "hyperf/context": "v3.0.x-dev",
         "hyperf/engine-swow": "^2.0",
         "hyperf/utils": "*"
     },
