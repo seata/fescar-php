@@ -46,7 +46,7 @@ class InitListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         // Execute any sql to init the database connection
         Db::select('select 1');

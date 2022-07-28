@@ -26,12 +26,17 @@ use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
-use Hyperf\Utils\Engine;
+use Hyperf\Context\Context;
 use Swoole\Coroutine\Socket as SwooleSocket;
 use Swow\Socket as SwowSocket;
+use Hyperf\Engine\Constant as EngineConstant;
 
 class SocketManager
 {
+    const SWOW = 'Swow';
+
+    const SWOOLE = 'Swoole';
+
     protected RegistryFactory $registryFactory;
 
     protected LoggerInterface $logger;
@@ -41,8 +46,8 @@ class SocketManager
     protected array $processorTable = [];
 
     protected array $adapters = [
-        Engine::ENGINE_SWOOLE => SwooleSocketChannel::class,
-        Engine::ENGINE_SWOW => SwowSocketChannel::class,
+        self::SWOW => SwooleSocketChannel::class,
+        self::SWOOLE => SwowSocketChannel::class,
     ];
 
     public function __construct(RegistryFactory $registryFactory, LoggerFactory $loggerFactory)
@@ -92,9 +97,9 @@ class SocketManager
 
     protected function createSocket(Address $address): SwowSocket|SwooleSocket
     {
-        if (Engine::isRunningInSwoole()) {
+        if (EngineConstant::ENGINE == self::SWOOLE) {
             $socket = new SwooleSocket(AF_INET, SOCK_STREAM, 0);
-        } elseif (Engine::isRunningInSwow()) {
+        } elseif (EngineConstant::ENGINE == self::SWOW) {
             $socket = new SwowSocket(SwowSocket::TYPE_TCP);
         } else {
             throw new RuntimeException('Invalid runtime engine');
@@ -106,10 +111,10 @@ class SocketManager
 
     protected function createSocketChannel(SwooleSocket|SwowSocket $socket, Address $address): SocketChannelInterface
     {
-        if (Engine::isRunningInSwoole()) {
+        if (EngineConstant::ENGINE == self::SWOOLE) {
             return new SwooleSocketChannel($socket, $address);
         }
-        if (Engine::isRunningInSwow()) {
+        if (EngineConstant::ENGINE == self::SWOW) {
             return new SwowSocketChannel($socket, $address);
         }
         throw new RuntimeException('Invalid runtime engine');
