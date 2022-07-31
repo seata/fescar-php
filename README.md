@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/seata/seata-php.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-[简体中文 ZH](./README_ZH.md)
+[简体中文 ZH](./docs/zh_cn/README.md)
 
 ## What is seata-php?
 
