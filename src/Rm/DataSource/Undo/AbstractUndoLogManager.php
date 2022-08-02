@@ -1,7 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm\DataSource\Undo;
-
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Core\Compressor\CompressorType;
@@ -11,18 +27,26 @@ use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
 
 abstract class AbstractUndoLogManager implements UndoLogManager
 {
-
     public const STATE_NORMAL = 0;
+
     public const STATE_GLOBAL_FINISHED = 1;
 
     protected LoggerInterface $logger;
+
     protected string $undoLogTableName;
+
     protected ConfigInterface $config;
+
     protected string $selectUndoLogSql = '';
+
     protected string $deleteUndoLogSql = '';
+
     protected bool $rollbackInfoCompressEnable = true;
+
     protected int $rollbackInfoCompressType = 0;
+
     protected int $rollbackInfoCompressThreshold = 0;
+
     protected UndoLogParser $undoLogParser;
 
     public function __construct(LoggerFactory $loggerFactory, ConfigInterface $config, UndoLogParserFactory $undoLogParserFactory)
@@ -40,10 +64,10 @@ abstract class AbstractUndoLogManager implements UndoLogManager
 
     public function deleteUndoLog(string $xid, int $branchId, ConnectionProxyInterface $connection): void
     {
-        /** @var \Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy $connection */
+        /* @var \Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy $connection */
         $connection->delete(static::DELETE_UNDO_LOG_SQL, [
             $branchId,
-            $xid
+            $xid,
         ]);
     }
 
@@ -52,13 +76,8 @@ abstract class AbstractUndoLogManager implements UndoLogManager
         $branchIdsPlacehold = rtrim(str_repeat('?, ', count($branchIds)), ', ');
         $xidsPlacehold = rtrim(str_repeat('?, ', count($xids)), ', ');
         $sql = sprintf('DELETE FROM %s WHERE branch_id IN (%s) AND xid IN (%s)', $this->undoLogTableName, $branchIdsPlacehold, $xidsPlacehold);
-        /** @var \Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy $connection */
+        /* @var \Hyperf\Seata\Rm\DataSource\MysqlConnectionProxy $connection */
         $connection->delete($sql, array_values(array_merge_recursive($branchIds, $xids)));
-    }
-
-    protected function canUndo(int $state): bool
-    {
-        return $state === static::STATE_NORMAL;
     }
 
     public function flushUndoLogs(ConnectionProxyInterface $connection): void
@@ -78,6 +97,11 @@ abstract class AbstractUndoLogManager implements UndoLogManager
         }
     }
 
+    protected function canUndo(int $state): bool
+    {
+        return $state === static::STATE_NORMAL;
+    }
+
     abstract protected function insertUndoLogWithNormal(
         string $xid,
         int $branchId,
@@ -92,5 +116,4 @@ abstract class AbstractUndoLogManager implements UndoLogManager
         UndoLogParser $undoLogParser,
         ConnectionProxyInterface $connection
     ): void;
-
 }

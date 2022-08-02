@@ -1,13 +1,6 @@
 <?php
 
-$header = <<<'EOF'
-This file is part of Hyperf.
-
-@link     https://www.hyperf.io
-@document https://hyperf.wiki
-@contact  group@hyperf.io
-@license  https://github.com/hyperf/hyperf/blob/master/LICENSE
-EOF;
+$header = file_get_contents(__DIR__ . "/NOTICE");
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)

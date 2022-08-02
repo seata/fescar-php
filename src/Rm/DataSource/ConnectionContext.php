@@ -1,7 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm\DataSource;
-
 
 use Hyperf\Seata\Exception\ShouldNeverHappenException;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
@@ -9,13 +25,17 @@ use Hyperf\Utils\Context;
 
 class ConnectionContext
 {
-
     private ?string $xid = null;
+
     private ?int $branchId = null;
+
     private bool $globalLockRequire = false;
+
     private bool $autoCommitChanged = false;
+
     // Table and primary key should not be duplicated
     private array $lockKeysBuffer = [];
+
     private array $sqlUndoItemsBuffer = [];
 
     // todo savepoint
@@ -73,12 +93,12 @@ class ConnectionContext
 
     public function inGlobalTransaction(): bool
     {
-        return (bool)$this->getXid();
+        return (bool) $this->getXid();
     }
 
     public function isBranchRegistered(): bool
     {
-        return (bool)$this->getBranchId();
+        return (bool) $this->getBranchId();
     }
 
     public function bind(string $xid): void
@@ -114,7 +134,6 @@ class ConnectionContext
 
     public function reset(): void
     {
-
         $this->xid = null;
         $this->branchId = null;
         $this->globalLockRequire = false;
@@ -130,9 +149,8 @@ class ConnectionContext
     {
         if (empty($this->lockKeysBuffer)) {
             return null;
-        } else {
-            return implode(';', $this->lockKeysBuffer);
         }
+        return implode(';', $this->lockKeysBuffer);
     }
 
     public function getUndoItms(): array
@@ -140,5 +158,4 @@ class ConnectionContext
         return Context::get('seata:sqlUndoItemsBuffer');
 //        return $this->sqlUndoItemsBuffer;
     }
-
 }

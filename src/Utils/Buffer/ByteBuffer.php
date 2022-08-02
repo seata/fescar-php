@@ -2,16 +2,23 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 2019-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Utils\Buffer;
 
-use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use InvalidArgumentException;
 use Swoole\Coroutine\Socket;
 
@@ -178,6 +185,7 @@ abstract class ByteBuffer extends Buffer
 
     /**
      * Set the value at the given offset.
+     * @param mixed $value
      */
     public function offsetSet(int $offset, $value): void
     {
@@ -218,6 +226,7 @@ abstract class ByteBuffer extends Buffer
 
     /**
      * Pack data into a binary string.
+     * @param mixed $value
      */
     public function pack(string $format, $value, int $offset): static
     {
