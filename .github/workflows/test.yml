@@ -58,7 +58,9 @@ jobs:
           php --ri swow
       - name: Setup Packages
         run: composer update -o --no-scripts
-      - name: Run Test Cases
+      - name: Run Analyse Code
         run: |
           composer analyse
+      - name: Run Test Cases
+        run: |
           composer test
