@@ -13,8 +13,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php-version: ['7.3', '7.4']
-        engine: ['none', 'swoole', 'swow']
+        php-version: ['8.0']
+        engine: ['swoole', 'swow']
       max-parallel: 5
     steps:
       - name: Checkout
@@ -58,7 +58,9 @@ jobs:
           php --ri swow
       - name: Setup Packages
         run: composer update -o --no-scripts
-      - name: Run Test Cases
+      - name: Run Analyse Code
         run: |
           composer analyse
+      - name: Run Test Cases
+        run: |
           composer test

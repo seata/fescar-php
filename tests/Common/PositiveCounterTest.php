@@ -31,10 +31,12 @@ class PositiveCounterTest extends TestCase
     public function testGetAndIncrement()
     {
         $int = PositiveCounter::getAndIncrement();
-        $this->assertSame(0, $int);
+        $this->assertSame(1, $int);
     }
 
     public function testIncrementAndGet()
     {
+        $int = PositiveCounter::incrementAndGet();
+        $this->assertSame(3, $int);
     }
 }
