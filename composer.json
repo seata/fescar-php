@@ -57,8 +57,14 @@
         }
     },
     "scripts": {
-        "test": "phpunit -c phpunit.xml --colors=always",
-        "analyse": "phpstan analyse --memory-limit 5G -l 0 ./src/SqlParser/Antlr/MySql/Parser",
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpunit -c phpunit.xml --colors=always"
+        ],
+        "analyse": [
+            "Composer\\Config::disableProcessTimeout",
+            "phpstan analyse --memory-limit 5G -l 0 ./src"
+        ],
         "cs-fix": "php-cs-fixer fix $1"
     }
 }
