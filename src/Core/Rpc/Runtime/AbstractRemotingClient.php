@@ -97,7 +97,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
-    public function sendMsgWithResponse(AbstractMessage $message, string $target, int $timeout = 100)
+    public function sendMsgWithResponse(AbstractMessage $message, string $target, int $timeout = 1000)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
         $validAddress->setTarget($target);
@@ -112,7 +112,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
-    public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 100)
+    public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 1000)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
         $socketChannel = $this->acquireChannel($validAddress);
