@@ -28,6 +28,7 @@ use Hyperf\Seata\Core\Rpc\Runtime\SocketChannelInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;
+use Hyperf\Seata\Utils\Protocol\RpcMessageUtils;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 use Swow\Socket;
@@ -63,7 +64,7 @@ class SocketChannel implements SocketChannelInterface
     public function sendSyncWithResponse(RpcMessage $rpcMessage, int $timeoutMillis)
     {
         $channel = new Channel();
-        echo 'Ready to send the rpc message #' . $rpcMessage->getId() . PHP_EOL;
+        echo 'Ready to send the rpc message #' . RpcMessageUtils::toLogString($rpcMessage) . PHP_EOL;
         $this->responses[$rpcMessage->getId()] = $channel;
         $this->sendSyncWithoutResponse($rpcMessage, $timeoutMillis);
         return $channel->pop();
@@ -95,7 +96,7 @@ class SocketChannel implements SocketChannelInterface
                     $rpcMessage = $this->protocolDecoder->decode($byteBuffer);
                     $processorManger->dispatch($this, $rpcMessage);
 
-                    echo 'Recieved a rpc message #' . $rpcMessage->getId() . PHP_EOL;
+                    echo 'Recieved a rpc message #' . RpcMessageUtils::toLogString($rpcMessage) . PHP_EOL;
                     if (isset($this->responses[$rpcMessage->getId()])) {
                         $responseChannel = $this->responses[$rpcMessage->getId()];
                         $responseChannel->push($rpcMessage);
