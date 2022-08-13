@@ -105,7 +105,7 @@ abstract class AbstractRpcRemoting implements Disposable
     public function sendAsyncRequest(
         SocketChannelInterface $socketChannel,
         AbstractMessage $message,
-        int $timeout = 100,
+        int $timeout = 1000,
         bool $withResponse = false
     ) {
         $messageType = $message instanceof HeartbeatMessage ? ProtocolConstants::MSGTYPE_HEARTBEAT_REQUEST : ProtocolConstants::MSGTYPE_RESQUEST_ONEWAY;
@@ -165,7 +165,7 @@ abstract class AbstractRpcRemoting implements Disposable
         // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
     }
 
-    protected function sendAsync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis = 100)
+    protected function sendAsync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis = 1000)
     {
         $channel = $this->socketManager->acquireChannel($address);
         $channel->sendSyncWithoutResponse($rpcMessage, $timeoutMillis);
