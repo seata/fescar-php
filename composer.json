@@ -1,19 +1,18 @@
 {
-    "name": "hyperf/seata",
-    "description": "A seata library for Hyperf.",
-    "license": "MIT",
+    "name": "seata/seata",
+    "description": "Php Implementation For Seata.",
+    "license": "Apache-2.0",
     "keywords": [
         "php",
-        "swoole",
         "hyperf",
         "seata"
     ],
-    "homepage": "https://hyperf.io",
+    "homepage": "https://seata.io",
     "support": {
-        "docs": "https://hyperf.wiki",
-        "issues": "https://github.com/hyperf/hyperf/issues",
-        "pull-request": "https://github.com/hyperf/hyperf/pulls",
-        "source": "https://github.com/hyperf/hyperf"
+        "docs": "https://seata.io/en-us/docs/overview/what-is-seata.html",
+        "issues": "https://github.com/seata/seata-php/issues",
+        "pull-request": "https://github.com/v/pulls",
+        "source": "https://github.com/seata/seata-php"
     },
     "require": {
         "php": ">=8.0",
