@@ -42,11 +42,6 @@ class ConfigProvider
                 LoggerInterface::class => StdoutLogger::class,
                 //                DataSourceProxy::class => DataSourceProxyFactory::class,
             ],
-            'annotations' => [
-                'paths' => [
-                    __DIR__,
-                ],
-            ],
         ];
     }
 }
