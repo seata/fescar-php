@@ -4,9 +4,9 @@
 
 [简体中文 ZH](./docs/zh_cn/README.md)
 
-## What is seata-php?
+## What is Seata-PHP?
 
-Seata is a very mature distributed transaction framework, and is the de facto standard platform for distributed transaction technology in the Java field. Seata-php is the implementation version of PHP language in Seata multilingual ecosystem, which realizes the interoperability between Java and PHP, so that PHP developers can also use seata-php to realize distributed transactions. Please visit the [official website of Seata](https://seata.io/en-us) to view the quick start and documentation.
+Seata is a very mature distributed transaction framework, and is the de facto standard platform for distributed transaction technology in the Java field. Seata-PHP is the implementation version of PHP language in Seata multilingual ecosystem, which realizes the interoperability between Java and PHP, so that PHP developers can also use Seata-PHP to realize distributed transactions. Please visit the [official website of Seata](https://seata.io/en-us) to view the quick start and documentation.
 
 The principle of Seata-PHP is consistent with that of Seata-Java, which is composed of TM, RM and TC. The functions of TC reuse Java, and the functions of TM and RM will be aligned with Seata-Java later. The overall process is as follows:
 
@@ -35,9 +35,9 @@ The principle of Seata-PHP is consistent with that of Seata-Java, which is compo
 
 ## How to join us？
 
-Seata-php is currently in the construction stage. Welcome colleagues in the industry to join the group and work with us to promote the construction of seata-php! If you want to contribute code to seata-php, you can refer to the  [**code contribution Specification**](./docs/en/300.contributing/README.md)  document to understand the specifications of the community, or you can join our community DingTalk group: 44788115 and communicate together!
+Seata-PHP is currently in the construction stage. Welcome colleagues in the industry to join the group and work with us to promote the construction of Seata-PHP! If you want to contribute code to Seata-PHP, you can refer to the  [**code contribution Specification**](./docs/en/300.contributing/README.md)  document to understand the specifications of the community, or you can join our community DingTalk group: 44788115 and communicate together!
 
 
-## Licence
+## License
 
-Seata-php uses Apache license version 2.0. Please refer to the [license file](https://github.com/seata/seata-php/blob/master/LICENSE) for more information.
+Seata-PHP uses Apache license version 2.0. Please refer to the [license file](https://github.com/seata/seata-php/blob/master/LICENSE) for more information.
