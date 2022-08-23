@@ -1,7 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm\DataSource\Undo\Mysql;
-
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Seata\Core\Compressor\CompressorType;
@@ -10,7 +26,6 @@ use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
 use Hyperf\Seata\Rm\DataSource\DataSourceProxy;
 use Hyperf\Seata\Rm\DataSource\Undo\AbstractUndoLogManager;
-use Hyperf\Seata\Rm\DataSource\Undo\stirng;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogParser;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogParserFactory;
 use Throwable;
@@ -18,8 +33,8 @@ use Throwable;
 // todo
 class MySQLUndoLogManager extends AbstractUndoLogManager
 {
-
     protected string $insertUndoLogSql;
+
     protected string $deleteUndoLogByCreateSql;
 
     public function __construct(
@@ -28,8 +43,8 @@ class MySQLUndoLogManager extends AbstractUndoLogManager
         UndoLogParserFactory $undoLogParserFactory
     ) {
         parent::__construct($loggerFactory, $config, $undoLogParserFactory);
-        $this->insertUndoLogSql = sprintf("INSERT INTO %s (branch_id, xid, context, rollback_info, log_status, log_created, log_modified) VALUES (?, ?, ?, ?, ?, now(6), now(6))", $this->undoLogTableName);
-        $this->deleteUndoLogByCreateSql = sprintf("DELETE FROM %s WHERE log_created <= ? LIMIT ?", $this->undoLogTableName);
+        $this->insertUndoLogSql = sprintf('INSERT INTO %s (branch_id, xid, context, rollback_info, log_status, log_created, log_modified) VALUES (?, ?, ?, ?, ?, now(6), now(6))', $this->undoLogTableName);
+        $this->deleteUndoLogByCreateSql = sprintf('DELETE FROM %s WHERE log_created <= ? LIMIT ?', $this->undoLogTableName);
     }
 
     public function undo(DataSourceProxy $dataSourceProxy, string $xid, int $branchId): void
@@ -46,9 +61,7 @@ class MySQLUndoLogManager extends AbstractUndoLogManager
                 if ($originalAutoCommit = $conn->getAutoCommit()) {
                     $conn->setAutoCommit(false);
                 }
-
             } catch (Throwable $exception) {
-
             } finally {
                 try {
                     if ($rs != null) {
@@ -182,6 +195,13 @@ class MySQLUndoLogManager extends AbstractUndoLogManager
 //        }
     }
 
+    public function deleteUndoLogByLogCreated(
+        int $logCreated,
+        int $limitRows,
+        ConnectionProxyInterface $connectionProxy
+    ): int {
+    }
+
     protected function insertUndoLogWithNormal(
         string $xid,
         int $branchId,
@@ -201,13 +221,6 @@ class MySQLUndoLogManager extends AbstractUndoLogManager
         $this->insertUndoLog($xid, $branchId, $this->buildContent($undoLogParser->getName(), CompressorType::NONE), $undoLogParser->getDefaultContent(), static::STATE_GLOBAL_FINISHED, $connection);
     }
 
-    public function deleteUndoLogByLogCreated(
-        int $logCreated,
-        int $limitRows,
-        ConnectionProxyInterface $connectionProxy
-    ): int {
-    }
-
     private function insertUndoLog(
         string $xid,
         int $branchId,
@@ -216,6 +229,5 @@ class MySQLUndoLogManager extends AbstractUndoLogManager
         int $state,
         ConnectionProxyInterface $connection
     ) {
-
     }
 }

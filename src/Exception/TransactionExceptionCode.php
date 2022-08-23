@@ -1,108 +1,108 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Exception;
-
 
 class TransactionExceptionCode
 {
-
     /**
      * Unknown transaction exception code.
      */
-    //
-    const Unknown = 0;
+    public const Unknown = 0;
 
     /**
      * Lock key conflict transaction exception code.
      */
-    //
-    const LockKeyConflict = 1;
+    public const LockKeyConflict = 1;
 
     /**
      * Io transaction exception code.
      */
-    //
-    const IO = 2;
+    public const IO = 2;
 
     /**
      * Branch rollback failed retriable transaction exception code.
      */
-    //
-    const BranchRollbackFailed_Retriable = 3;
+    public const BranchRollbackFailed_Retriable = 3;
 
     /**
      * Branch rollback failed unretriable transaction exception code.
      */
-    //
-    const BranchRollbackFailed_Unretriable = 4;
+    public const BranchRollbackFailed_Unretriable = 4;
 
     /**
      * Branch register failed transaction exception code.
      */
-    //
-    const BranchRegisterFailed = 5;
+    public const BranchRegisterFailed = 5;
 
     /**
      * Branch report failed transaction exception code.
      */
-    //
-    const BranchReportFailed = 6;
+    public const BranchReportFailed = 6;
 
     /**
      * Lockable check failed transaction exception code.
      */
-    //
-    const LockableCheckFailed = 7;
+    public const LockableCheckFailed = 7;
 
     /**
      * Branch transaction not exist transaction exception code.
      */
-    //
-    const BranchTransactionNotExist = 8;
+    public const BranchTransactionNotExist = 8;
 
     /**
      * Global transaction not exist transaction exception code.
      */
-    //
-    const GlobalTransactionNotExist = 9;
+    public const GlobalTransactionNotExist = 9;
 
     /**
      * Global transaction not active transaction exception code.
      */
-    //
-    const GlobalTransactionNotActive = 10;
+    public const GlobalTransactionNotActive = 10;
 
     /**
      * Global transaction status invalid transaction exception code.
      */
-    //
-    const GlobalTransactionStatusInvalid = 11;
+    public const GlobalTransactionStatusInvalid = 11;
 
     /**
      * Failed to send branch commit request transaction exception code.
      */
-    //
-    const FailedToSendBranchCommitRequest = 12;
+    public const FailedToSendBranchCommitRequest = 12;
 
     /**
      * Failed to send branch rollback request transaction exception code.
      */
-    //
-    const FailedToSendBranchRollbackRequest = 13;
+    public const FailedToSendBranchRollbackRequest = 13;
 
     /**
      * Failed to add branch transaction exception code.
      */
-    //
-    const FailedToAddBranch = 14;
+    public const FailedToAddBranch = 14;
+
     /**
      *  Failed to lock global transaction exception code.
      */
-    const FailedLockGlobalTranscation = 15;
+    public const FailedLockGlobalTranscation = 15;
 
     /**
-     * FailedWriteSession
+     * FailedWriteSession.
      */
-    const FailedWriteSession = 16;
-
+    public const FailedWriteSession = 16;
 }

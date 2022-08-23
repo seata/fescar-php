@@ -2,34 +2,36 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 2019-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Exception;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Process\ProcessManager;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
-use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse;
 use Hyperf\Seata\Core\Rpc\AbstractRpcRemoting;
 use Hyperf\Seata\Core\Rpc\Address;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\RemotingClientInterface;
 use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
-use Hyperf\Seata\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Coroutine;
 
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
@@ -70,7 +72,6 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
     protected array $recvChannelMap = [];
 
-
     protected ProcessorManager $processorManager;
 
     public function __construct(int $transactionRole)
@@ -84,20 +85,19 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function init()
     {
         // @TODO 启动一个 reconnect 的 Timer
-        //\Hyperf\Engine\Coroutine::create(function () {
+        // \Hyperf\Engine\Coroutine::create(function () {
         //    $this->socketManager->reconnect($this->transactionServiceGroup);
-        //});
+        // });
 
         parent::init();
         // TODO merge send runnable
 //        (new MergedSendRunnable($this->isSending, $this->basketMap, $this))->run();
     }
 
-
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
-    public function sendMsgWithResponse(AbstractMessage $message, string $target, int $timeout = 100)
+    public function sendMsgWithResponse(AbstractMessage $message, string $target, int $timeout = 1000)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
         $validAddress->setTarget($target);
@@ -109,12 +109,10 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
         return $result;
     }
 
-    abstract protected function acquireChannel(Address $address): SocketChannelInterface;
-
     /**
      * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
      */
-    public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 100)
+    public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 1000)
     {
         $validAddress = $this->loadBalance($this->getTransactionServiceGroup());
         $socketChannel = $this->acquireChannel($validAddress);
@@ -130,6 +128,14 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     {
         return $this->transactionMessageHandler;
     }
+
+    public function sendAsyncResponse(Address $serverAddress, RpcMessage $rpcMessage, object $message)
+    {
+        $rpcMsg = $this->buildResponseMessage($rpcMessage, $message, ProtocolConstants::MSGTYPE_RESPONSE);
+        $this->sendAsync($serverAddress, $rpcMsg);
+    }
+
+    abstract protected function acquireChannel(Address $address): SocketChannelInterface;
 
     abstract protected function getTransactionServiceGroup(): string;
 
@@ -155,11 +161,5 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
             throw new SeataException(SeataErrorCode::NoAvailableService);
         }
         return $address;
-    }
-
-    public function sendAsyncResponse(Address $serverAddress, RpcMessage $rpcMessage, object $message)
-    {
-        $rpcMsg = $this->buildResponseMessage($rpcMessage, $message, ProtocolConstants::MSGTYPE_RESPONSE);
-        $this->sendAsync($serverAddress, $rpcMsg);
     }
 }

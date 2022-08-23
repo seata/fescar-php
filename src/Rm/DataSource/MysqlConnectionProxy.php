@@ -1,8 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm\DataSource;
-
-
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Connection;
@@ -21,8 +36,6 @@ use Hyperf\Seata\Exception\TransactionException;
 use Hyperf\Seata\Exception\TransactionExceptionCode;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
-use Hyperf\Seata\Rm\DataSource\ConnectionContext;
-use Hyperf\Seata\Rm\DataSource\ConnectionProxyInterface;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManager;
 use Hyperf\Seata\Rm\DataSource\Undo\UndoLogManagerFactory;
@@ -33,15 +46,22 @@ use JetBrains\PhpStorm\Pure;
 // todo
 class MysqlConnectionProxy extends Connection implements Resource, ConnectionProxyInterface
 {
+    private const DEFAULT_RESOURCE_GROUP_ID = 'DEFAULT';
+
+    public bool $reportSuccessEnable;
 
     protected string $resourceId = '';
+
     protected string $resourceGroupId = '';
-    private const DEFAULT_RESOURCE_GROUP_ID = 'DEFAULT';
+
     protected LoggerInterface $logger;
+
     protected ConnectionContext $context;
+
     protected DefaultResourceManager $defaultResourceManager;
+
     protected UndoLogManager $undoLogManager;
-    public bool $reportSuccessEnable;
+
     protected int $reportRetryCount;
 
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
@@ -79,17 +99,6 @@ class MysqlConnectionProxy extends Connection implements Resource, ConnectionPro
     {
         $this->resourceGroupId = $resourceGroupId;
         return $this;
-    }
-
-    protected function generateResourceId(array $config): string
-    {
-        $driver = 'pdo';
-        $engine = $config['driver'] ?? 'mysql';
-        $host = $config['host'] ?? null;
-        $port = (int)($config['port'] ?? 3306);
-        $database = $config['database'] ?? null;
-        $resourceId = sprintf('%s:%s://%s:%d/%s', $driver, $engine, $host, $port, $database);
-        return $resourceId;
     }
 
     public function getContext(): ConnectionContext
@@ -142,23 +151,6 @@ class MysqlConnectionProxy extends Connection implements Resource, ConnectionPro
         return $lockable;
     }
 
-    /**
-     * @throws LockConflictException|\RuntimeException
-     */
-    private function recognizeLockKeyConflictException(TransactionException $exception, string $lockKeys = null): void
-    {
-        if ($exception->getCode() === TransactionExceptionCode::LockKeyConflict) {
-            $message = sprintf('Get global lock fail, xid: ', $this->context->getXid());
-            if ($lockKeys) {
-                $message .= sprintf(', lockKeys: %s', $lockKeys);
-            }
-
-            throw new LockConflictException($message);
-        } else {
-            throw new \RuntimeException($exception);
-        }
-    }
-
     public function appendUndoLog(SQLUndoLog $sqlUndoLog)
     {
         $this->context->appendUndoItem($sqlUndoLog);
@@ -178,6 +170,50 @@ class MysqlConnectionProxy extends Connection implements Resource, ConnectionPro
         } else {
             parent::commit();
         }
+    }
+
+    public function rollBack($toLevel = null): void
+    {
+        parent::rollBack($toLevel);
+        if ($this->context->inGlobalTransaction() && $this->context->isBranchRegistered()) {
+            $this->report(false);
+        }
+        $this->context->reset();
+    }
+
+    /**
+     * Get a schema builder instance for the connection.
+     */
+    public function getSchemaBuilder(): MySqlBuilder
+    {
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
+
+        return new MySqlBuilder($this);
+    }
+
+    /**
+     * Bind values to their parameters in the given statement.
+     */
+    public function bindValues(\PDOStatement $statement, array $bindings): void
+    {
+        foreach ($bindings as $key => $value) {
+            $statement->bindValue(
+                is_string($key) ? $key : $key + 1,
+                $value
+            );
+        }
+    }
+
+    protected function generateResourceId(array $config): string
+    {
+        $driver = 'pdo';
+        $engine = $config['driver'] ?? 'mysql';
+        $host = $config['host'] ?? null;
+        $port = (int) ($config['port'] ?? 3306);
+        $database = $config['database'] ?? null;
+        return sprintf('%s:%s://%s:%d/%s', $driver, $engine, $host, $port, $database);
     }
 
     /**
@@ -221,59 +257,6 @@ class MysqlConnectionProxy extends Connection implements Resource, ConnectionPro
         }
     }
 
-    public function rollBack($toLevel = null): void
-    {
-        parent::rollBack($toLevel);
-        if ($this->context->inGlobalTransaction() && $this->context->isBranchRegistered()) {
-            $this->report(false);
-        }
-        $this->context->reset();
-    }
-
-    private function report(bool $commitDone): void
-    {
-        if ($this->context->isBranchRegistered()) {
-            $retry = $this->reportRetryCount;
-            while ($retry > 0) {
-                try {
-                    $this->defaultResourceManager->branchReport(BranchType::AT, $this->context->getXid(), $this->context->getBranchId(), $commitDone ? BranchStatus::PhaseOne_Done : BranchStatus::PhaseOne_Failed, '');
-                    return;
-                } catch (\Throwable $exception) {
-                    $this->logger->error(sprintf('Failed to report [%d/%s] commit donw [%s] Retry Countdwon: %d', $this->context->getBranchId(), $this->context->getXid(), $commitDone ? 'true' : 'false', $retry));
-                    --$retry;
-                    if ($retry === 0) {
-                        throw new RuntimeException(sprintf('Failed to report branch status %s', $commitDone ? 'true' : 'fasle'), 0, $exception);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Get a schema builder instance for the connection.
-     */
-    public function getSchemaBuilder(): MySqlBuilder
-    {
-        if (is_null($this->schemaGrammar)) {
-            $this->useDefaultSchemaGrammar();
-        }
-
-        return new MySqlBuilder($this);
-    }
-
-    /**
-     * Bind values to their parameters in the given statement.
-     */
-    public function bindValues(\PDOStatement $statement, array $bindings): void
-    {
-        foreach ($bindings as $key => $value) {
-            $statement->bindValue(
-                is_string($key) ? $key : $key + 1,
-                $value
-            );
-        }
-    }
-
     /**
      * Get the default query grammar instance.
      *
@@ -314,4 +297,39 @@ class MysqlConnectionProxy extends Connection implements Resource, ConnectionPro
         return new MySqlDriver();
     }
 
+    /**
+     * @throws LockConflictException|\RuntimeException
+     */
+    private function recognizeLockKeyConflictException(TransactionException $exception, string $lockKeys = null): void
+    {
+        if ($exception->getCode() === TransactionExceptionCode::LockKeyConflict) {
+            $message = sprintf('Get global lock fail, xid: ', $this->context->getXid());
+            if ($lockKeys) {
+                $message .= sprintf(', lockKeys: %s', $lockKeys);
+            }
+
+            throw new LockConflictException($message);
+        } else {
+            throw new \RuntimeException($exception);
+        }
+    }
+
+    private function report(bool $commitDone): void
+    {
+        if ($this->context->isBranchRegistered()) {
+            $retry = $this->reportRetryCount;
+            while ($retry > 0) {
+                try {
+                    $this->defaultResourceManager->branchReport(BranchType::AT, $this->context->getXid(), $this->context->getBranchId(), $commitDone ? BranchStatus::PhaseOne_Done : BranchStatus::PhaseOne_Failed, '');
+                    return;
+                } catch (\Throwable $exception) {
+                    $this->logger->error(sprintf('Failed to report [%d/%s] commit donw [%s] Retry Countdwon: %d', $this->context->getBranchId(), $this->context->getXid(), $commitDone ? 'true' : 'false', $retry));
+                    --$retry;
+                    if ($retry === 0) {
+                        throw new RuntimeException(sprintf('Failed to report branch status %s', $commitDone ? 'true' : 'fasle'), 0, $exception);
+                    }
+                }
+            }
+        }
+    }
 }

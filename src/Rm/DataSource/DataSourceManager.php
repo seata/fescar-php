@@ -1,9 +1,24 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * Copyright 2019-2022 Seata.io Group.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 namespace Hyperf\Seata\Rm\DataSource;
 
-
-use Hyperf\Database\Connection;
 use Hyperf\Seata\Common\AddressTarget;
 use Hyperf\Seata\Core\Context\RootContext;
 use Hyperf\Seata\Core\Model\BranchStatus;
@@ -27,8 +42,8 @@ use Hyperf\Utils\ApplicationContext;
 
 class DataSourceManager extends AbstractResourceManager implements Resource
 {
-
     protected LoggerInterface $logger;
+
     protected array $dataSourceCache = [];
 
     protected UndoLogManagerFactory $undoLogManagerFactory;
@@ -55,9 +70,8 @@ class DataSourceManager extends AbstractResourceManager implements Resource
             }
             if ($response->getResultCode() === ResultCode::Failed) {
                 throw new TransactionException(sprintf('Response[%s]', $response->getMessage()), $response->getTransactionExceptionCode());
-            } else {
-                return $response->isLockable();
             }
+            return $response->isLockable();
         } catch (TimeoutException $exception) {
             throw new TransactionException('RPC Timeout', TransactionExceptionCode::IO, $exception);
         } catch (\RuntimeException $exception) {
@@ -96,7 +110,6 @@ class DataSourceManager extends AbstractResourceManager implements Resource
         string $resourceId,
         string $applicationData
     ): int {
-
     }
 
     public function branchRollback(
@@ -106,7 +119,7 @@ class DataSourceManager extends AbstractResourceManager implements Resource
         string $resourceId,
         string $applicationData
     ): int {
-       $dataSourceProxy =  $this->get($resourceId);
+        $dataSourceProxy = $this->get($resourceId);
         if ($dataSourceProxy == null) {
             throw new ShouldNeverHappenException();
         }
@@ -126,9 +139,8 @@ class DataSourceManager extends AbstractResourceManager implements Resource
 
             if ($exception->getCode() == TransactionExceptionCode::BranchRollbackFailed_Unretriable) {
                 return BranchStatus::PhaseTwo_RollbackFailed_Unretryable;
-            } else {
-                return BranchStatus::PhaseTwo_RollbackFailed_Retryable;
             }
+            return BranchStatus::PhaseTwo_RollbackFailed_Retryable;
         }
         return BranchStatus::PhaseTwo_Rollbacked;
     }

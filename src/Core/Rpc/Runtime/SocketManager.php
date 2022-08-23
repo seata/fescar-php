@@ -2,30 +2,41 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * Copyright 2019-2022 Seata.io Group.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
 use Hyperf\Seata\Core\Rpc\Address;
-use Hyperf\Seata\Core\Rpc\Processor\RemotingProcessorInterface;
 use Hyperf\Seata\Core\Rpc\Runtime\Swoole\SocketChannel as SwooleSocketChannel;
 use Hyperf\Seata\Core\Rpc\Runtime\Swow\SocketChannel as SwowSocketChannel;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
-use Hyperf\Utils\Engine;
+use Hyperf\Context\Context;
 use Swoole\Coroutine\Socket as SwooleSocket;
-use Swow\Exception;
 use Swow\Socket as SwowSocket;
+use Hyperf\Engine\Constant as EngineConstant;
 
 class SocketManager
 {
+    const SWOW = 'Swow';
+
+    const SWOOLE = 'Swoole';
+
     protected RegistryFactory $registryFactory;
 
     protected LoggerInterface $logger;
@@ -35,8 +46,8 @@ class SocketManager
     protected array $processorTable = [];
 
     protected array $adapters = [
-        Engine::ENGINE_SWOOLE => SwooleSocketChannel::class,
-        Engine::ENGINE_SWOW => SwowSocketChannel::class,
+        self::SWOW => SwooleSocketChannel::class,
+        self::SWOOLE => SwowSocketChannel::class,
     ];
 
     public function __construct(RegistryFactory $registryFactory, LoggerFactory $loggerFactory)
@@ -86,9 +97,9 @@ class SocketManager
 
     protected function createSocket(Address $address): SwowSocket|SwooleSocket
     {
-        if (Engine::isRunningInSwoole()) {
+        if (EngineConstant::ENGINE == self::SWOOLE) {
             $socket = new SwooleSocket(AF_INET, SOCK_STREAM, 0);
-        } elseif (Engine::isRunningInSwow()) {
+        } elseif (EngineConstant::ENGINE == self::SWOW) {
             $socket = new SwowSocket(SwowSocket::TYPE_TCP);
         } else {
             throw new RuntimeException('Invalid runtime engine');
@@ -100,10 +111,10 @@ class SocketManager
 
     protected function createSocketChannel(SwooleSocket|SwowSocket $socket, Address $address): SocketChannelInterface
     {
-        if (Engine::isRunningInSwoole()) {
+        if (EngineConstant::ENGINE == self::SWOOLE) {
             return new SwooleSocketChannel($socket, $address);
         }
-        if (Engine::isRunningInSwow()) {
+        if (EngineConstant::ENGINE == self::SWOW) {
             return new SwowSocketChannel($socket, $address);
         }
         throw new RuntimeException('Invalid runtime engine');
