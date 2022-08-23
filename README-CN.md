@@ -15,11 +15,11 @@
 
 # 介绍
 
-[Seata](https://github.com/seata/seata) 是一个非常成熟的分布式事务框架，在Java领域是事实上的分布式事务技术标准平台。[Seata-php](https://github.com/seata/seata-php) 是 seata 多语言生态中的 PHP 语言实现版本，实现了 Java 和 PHP 之间的互通，让 PHPer 也能使用 Seata-php 来实现分布式事务。
+[Seata](https://github.com/seata/seata) 是一个非常成熟的分布式事务框架，在Java领域是事实上的分布式事务技术标准平台。[Seata-PHP](https://github.com/seata/seata-php) 是 seata 多语言生态中的 PHP 语言实现版本，实现了 Java 和 PHP 之间的互通，让 PHPer 也能使用 Seata-php 来实现分布式事务。
 
-> **在学习`Seata-php`前我们首先来了解一下什么是`Seata`**
+> **在学习 `Seata-PHP`前我们首先来了解一下什么是 `Seata`**
 
-## 什么是Seata?
+## 什么是 Seata?
 
 一个具有高性能和易用性的**微服务**架构**分布式事务**解决方案。
 
@@ -37,9 +37,9 @@
 
 ![Microservices Problem](https://img.alicdn.com/imgextra/i1/O1CN01DXkc3o1te9mnJcHOr_!!6000000005926-0-tps-1268-804.jpg)
 
-### Seata是怎么做的呢?
+### Seata 是怎么做的呢?
 
-Seata只是上述问题的一个解决方案。
+Seata 只是上述问题的一个解决方案。
 
 ![Seata solution](https://img.alicdn.com/imgextra/i1/O1CN01FheliH1k5VHIRob3p_!!6000000004632-0-tps-1534-908.jpg)
 
@@ -49,7 +49,7 @@ Seata只是上述问题的一个解决方案。
 
 ![全局 & 分支](https://cdn.nlark.com/lark/0/2018/png/18862/1545015454979-a18e16f6-ed41-44f1-9c7a-bd82c4d5ff99.png)
 
-在Seata框架中，有三个角色。
+在 Seata 框架中，有三个角色。
 
 - **事务协调者（TC）：** 维护全局和分支事务的状态，推动全局提交或回滚。
 
@@ -59,23 +59,23 @@ Seata只是上述问题的一个解决方案。
 
 ![模型](https://cdn.nlark.com/lark/0/2018/png/18862/1545013915286-4a90f0df-5fda-41e1-91e0-2aa3d331c035.png)
 
-Seata管理的分布式事务的一个典型生命周期：
+Seata 管理的分布式事务的一个典型生命周期：
 
-1. TM要求TC开始一个新的全局事务。TC生成一个代表全局事务的XID。
+1. TM 要求 TC 开始一个新的全局事务。TC 生成一个代表全局事务的 XID。
 
-2. XID是通过微服务的调用链传播的。
+2. XID 是通过微服务的调用链传播的。
 
-3. RM将本地事务登记为XID对应的全局事务分支，并提交给TC。
+3. RM 将本地事务登记为 XID 对应的全局事务分支，并提交给 TC。
 
-4. TM要求TC提交或回滚XID的相应全局事务。
+4. TM 要求 TC 提交或回滚 XID 的相应全局事务。
 
-5. TC驱动XID对应的全局事务下的所有分支事务，完成分支提交或回滚。
+5. TC 驱动 XID 对应的全局事务下的所有分支事务，完成分支提交或回滚。
 
 ![典型流程](https://cdn.nlark.com/lark/0/2018/png/18862/1545296917881-26fabeb9-71fa-4f3e-8a7a-fc317d3389f4.png)
 
 关于原理和设计的更多细节，请访问 [Seata wiki page](https://github.com/seata/seata/wiki)。
 
-## Seata-php TODO列表
+## Seata-PHP TODO 列表
 
 - [ ] TCC
 - [ ] XA

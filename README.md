@@ -15,9 +15,9 @@ English | [中文](./README-CN.md)
 
 # Introduce
 
-[Seata](https://github.com/seata/seata) is a very mature distributed transaction framework, and is the de facto standard platform for distributed transaction technology in the Java field. [Seata-php](https://github.com/seata/seata-php) is the implementation version of PHP language in Seata multilingual ecosystem, which realizes the interoperability between Java and PHP, so that PHP developers can also use Seata-PHP to realize distributed transactions.
+[Seata](https://github.com/seata/seata) is a very mature distributed transaction framework, and is the de facto standard platform for distributed transaction technology in the Java field. [Seata-PHP](https://github.com/seata/seata-php) is the implementation version of PHP language in Seata multilingual ecosystem, which realizes the interoperability between Java and PHP, so that PHP developers can also use Seata-PHP to realize distributed transactions.
 
-> **Before learning about the ` Seata-php `, let's first understand what's the ` Seata `**
+> **Before learning about the ` Seata-PHP `, let's first understand what's the ` Seata `**
 
 ## What is Seata?
 
@@ -74,7 +74,7 @@ A typical lifecycle of Seata managed distributed transaction:
 
 For more details about principle and design, please go to [Seata wiki page](https://github.com/seata/seata/wiki).
 
-## Seata-php TODO List
+## Seata-PHP TODO List
 
 - [ ] TCC
 - [ ] XA
