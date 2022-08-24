@@ -8,7 +8,7 @@ English | [中文](./README-CN.md)
   <a href="https://github.com/seata/seata-php/master/LICENSE"><img src="https://img.shields.io/github/license/seata/seata-php.svg" alt="dtm-client License"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/seata/seata-php/actions"><img src="https://github.com/dtm-php/dtm-client/actions/workflows/test.yml/badge.svg" alt="PHPUnit for dtm-client"></a>
+  <a href="https://github.com/seata/seata-php/actions"><img src="https://github.com/seata/seata-php/actions/workflows/test.yml/badge.svg" alt="PHPUnit for Seata-PHP"></a>
   <a href="https://packagist.org/packages/seata/seata"><img src="https://poser.pugx.org/seata/seata/downloads" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/seata/seata"><img src="https://poser.pugx.org/seata/seata/d/monthly" alt="Monthly Downloads"></a>
 </p>
@@ -72,7 +72,7 @@ A typical lifecycle of Seata managed distributed transaction:
 
 ![Typical Process](https://cdn.nlark.com/lark/0/2018/png/18862/1545296917881-26fabeb9-71fa-4f3e-8a7a-fc317d3389f4.png)
 
-For more details about principle and design, please go to [Seata wiki page](https://github.com/seata/seata/wiki).
+For more details about principle and design, please go to [Seata wiki page](https://seata.io/zh-cn/docs/overview/what-is-seata.html).
 
 ## Seata-PHP TODO List
 
