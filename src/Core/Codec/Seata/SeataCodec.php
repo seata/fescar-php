@@ -21,14 +21,12 @@ namespace Hyperf\Seata\Core\Codec\Seata;
 
 use Hyperf\Seata\Core\Codec\CodecInterface;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
+use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Seata\Utils\Buffer\ByteBuffer;
 
 class SeataCodec implements CodecInterface
 {
-    /**
-     * @var MessageCodecFactory
-     */
-    protected $messageCodecFactory;
+    protected MessageCodecFactory $messageCodecFactory;
 
     public function __construct(MessageCodecFactory $messageCodecFactory)
     {
@@ -45,15 +43,14 @@ class SeataCodec implements CodecInterface
         return $buffer;
     }
 
-    public function decode(string $content)
+    public function decode(string $content): ?AbstractMessage
     {
         $length = strlen($content);
-        if (! $length) {
-            throw new \InvalidArgumentException('Nothing to decode');
+
+        if (! $length || $length < 2) {
+            throw new SeataException('The data is not available for decode');
         }
-        if ($length < 2) {
-            throw new \InvalidArgumentException('The data is not available for decode');
-        }
+
         $buffer = ByteBuffer::wrapString($content);
         $typeCode = $buffer->readUShort();
         // New Message

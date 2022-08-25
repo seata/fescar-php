@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Copyright 2019-2022 Seata.io Group.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use rpcMessage file except in compliance with the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -23,16 +23,14 @@ use Hyperf\Seata\Core\Protocol\RpcMessage;
 
 class RpcMessageUtils
 {
-
     /**
      * 用于debug时，查看通信内容的工具
-     * format: "id | messageType | codec | compresser | headMap json | body"
+     * format: "id | messageType | codec | compresser | headMap json | body".
      *
-     * @Param $rpcMessage rpc通信抽象类
-     * @Return 日志内容
+     * @param RpcMessage $rpcMessage rpc通信抽象类
      */
-    public static function toLogString(RpcMessage $rpcMessage)
+    public static function toLogString(RpcMessage $rpcMessage): string
     {
-        return $rpcMessage->getId() . '|' . $rpcMessage->getMessageType() . '|' . $rpcMessage->getCodec() . '|' . $rpcMessage->getCompressor() . '|' . json_encode($rpcMessage->getHeadMap()) . '|' . json_encode($rpcMessage->getBody()) ;
+        return $rpcMessage->getId() . '|' . $rpcMessage->getMessageType() . '|' . $rpcMessage->getCodec() . '|' . $rpcMessage->getCompressor() . '|' . json_encode($rpcMessage->getHeadMap()) . '|' . json_encode($rpcMessage->getBody());
     }
 }

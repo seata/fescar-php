@@ -21,20 +21,11 @@ namespace Hyperf\Seata\Utils\Buffer;
 
 abstract class Buffer
 {
-    /**
-     * @var int
-     */
-    protected $position = 0;
+    protected int $position = 0;
 
-    /**
-     * @var int
-     */
-    protected $limit;
+    protected int $limit;
 
-    /**
-     * @var int
-     */
-    protected $capacity;
+    protected int $capacity;
 
     /**
      * @var int
@@ -71,7 +62,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function setPosition(int $position)
+    public function setPosition(int $position): static
     {
         if ($position > $this->limit || $position < 0) {
             throw new \InvalidArgumentException('Position cannot be negative and cannot less than limit');
@@ -101,7 +92,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function rewind(int $length)
+    public function rewind(int $length): static
     {
         $this->setPosition($this->getPosition() - $length);
         return $this;
@@ -110,7 +101,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function skip(int $length)
+    public function skip(int $length): static
     {
         $this->setPosition($this->getPosition() + $length);
         return $this;
@@ -119,7 +110,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): static
     {
         if ($limit > $this->capacity || $limit < 0) {
             throw new \InvalidArgumentException('Limit cannot be negative and cannot less than capacity');
@@ -137,7 +128,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function mark()
+    public function mark(): static
     {
         $this->mark = $this->getPosition();
         return $this;
@@ -146,7 +137,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function reset()
+    public function reset(): static
     {
         if ($this->mark < 0) {
             throw new \RuntimeException('Invalid mark value');
@@ -158,7 +149,7 @@ abstract class Buffer
     /**
      * @return $this
      */
-    public function clear()
+    public function clear(): static
     {
         $this->position = 0;
         $this->limit = $this->capacity;
@@ -197,7 +188,7 @@ abstract class Buffer
      */
     abstract public function slice(int $position, int $limit);
 
-    protected function checkBounds(int $offset, int $length, int $size)
+    protected function checkBounds(int $offset, int $length, int $size): void
     {
         if (($offset | $length | ($offset + $length) | ($size - ($offset + $length))) < 0) {
             throw new \RuntimeException('Index out of bound');

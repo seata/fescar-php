@@ -23,6 +23,7 @@ use Hyperf\Seata\Core\Codec\Seata\Protocol as CodecProtocol;
 use Hyperf\Seata\Core\Protocol;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\MessageType;
+use Hyperf\Seata\Exception\SeataException;
 
 class MessageCodecFactory
 {
@@ -131,6 +132,6 @@ class MessageCodecFactory
         if (isset($mapping[$typeCode])) {
             return new $mapping[$typeCode]();
         }
-        throw new \InvalidArgumentException('Not support typeCode: ' . $typeCode);
+        throw new SeataException('Not support typeCode: ' . $typeCode);
     }
 }
