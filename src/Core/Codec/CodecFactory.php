@@ -20,22 +20,18 @@ declare(strict_types=1);
 namespace Hyperf\Seata\Core\Codec;
 
 use Hyperf\Seata\Core\Codec\Seata\SeataCodec;
+use Hyperf\Seata\Exception\SeataException;
+use Psr\Container\ContainerInterface;
 
 class CodecFactory
 {
-    /**
-     * @var array
-     */
-    protected $codecs = [
+    protected array $codecs = [
         CodecType::SEATA => SeataCodec::class,
     ];
 
-    /**
-     * @var \Psr\Container\ContainerInterface
-     */
-    protected $container;
+    protected ContainerInterface $container;
 
-    public function __construct(\Psr\Container\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -43,7 +39,7 @@ class CodecFactory
     public function get($codec): CodecInterface
     {
         if (! isset($this->codecs[$codec])) {
-            throw new \InvalidArgumentException('Codec not found');
+            throw new SeataException('Codec not found');
         }
         $class = $this->codecs[$codec];
         return $this->container->get($class);

@@ -19,6 +19,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc\Runtime;
 
+use Hyperf\Engine\Constant as EngineConstant;
 use Hyperf\Seata\Core\Rpc\Address;
 use Hyperf\Seata\Core\Rpc\Runtime\Swoole\SocketChannel as SwooleSocketChannel;
 use Hyperf\Seata\Core\Rpc\Runtime\Swow\SocketChannel as SwowSocketChannel;
@@ -26,16 +27,14 @@ use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\RuntimeException;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
-use Hyperf\Context\Context;
 use Swoole\Coroutine\Socket as SwooleSocket;
 use Swow\Socket as SwowSocket;
-use Hyperf\Engine\Constant as EngineConstant;
 
 class SocketManager
 {
-    const SWOW = 'Swow';
+    public const SWOW = 'Swow';
 
-    const SWOOLE = 'Swoole';
+    public const SWOOLE = 'Swoole';
 
     protected RegistryFactory $registryFactory;
 
