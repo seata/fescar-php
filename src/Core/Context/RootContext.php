@@ -126,7 +126,7 @@ class RootContext extends Context
     }
 
     /**
-     * get the branch type
+     * Get the branch type
      */
     public static function getBranchType(): ?int
     {
@@ -138,7 +138,7 @@ class RootContext extends Context
     }
 
     /**
-     * bind branch type
+     * Bind branch type
      */
     public static function bindBranchType(int $branchType)
     {
@@ -151,7 +151,7 @@ class RootContext extends Context
     }
 
     /**
-     * unbind branch type
+     * Unbind branch type
      */
     public static function unbindBranchType(): null|int
     {
@@ -162,7 +162,7 @@ class RootContext extends Context
     }
 
     /**
-     * requires global lock check
+     * Requires global lock check
      */
     public static function requireGlobalLock(): bool
     {
@@ -180,7 +180,7 @@ class RootContext extends Context
     }
 
     /**
-     * entry map
+     * Entry map
      */
     public static function entries(): array
     {
