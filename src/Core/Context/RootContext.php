@@ -69,9 +69,11 @@ class RootContext extends Context
         if (! $xid) {
             static::log('debug', 'xid is blank, switch to unbind operation!');
             self::unbind();
+        } else {
+            static::log('debug', 'Bind xid: ' . $xid);
+            static::set(static::KEY_XID, $xid);
         }
-        static::log('debug', 'Bind xid: ' . $xid);
-        static::set(static::KEY_XID, $xid);
+
     }
 
     /**
