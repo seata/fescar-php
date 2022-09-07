@@ -19,13 +19,11 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc;
 
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Common\PositiveCounter;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
-use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
@@ -44,7 +42,7 @@ abstract class AbstractRpcRemoting implements Disposable
     /**
      * @var LoggerInterface
      */
-    protected mixed $logger;
+    protected LoggerInterface $logger;
 
     /**
      * The Is sending.
@@ -91,7 +89,7 @@ abstract class AbstractRpcRemoting implements Disposable
     public function __construct()
     {
         $this->container = ApplicationContext::getContainer();
-        $this->logger = $this->container->get(StdoutLoggerInterface::class);
+        $this->logger = $this->container->get(LoggerInterface::class);
         $this->protocolEncoder = $this->container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $this->container->get(ProtocolV1Decoder::class);
         $this->socketManager = $this->container->get(SocketManager::class);
@@ -153,17 +151,7 @@ abstract class AbstractRpcRemoting implements Disposable
             return null;
         }
 
-//        $messageFuture = new MessageFuture();
-//        $messageFuture->setRequestMessage($rpcMessage);
-//        $messageFuture->setTimeout($timeoutMillis);
-//        $this->futures[$rpcMessage->getId()] = $messageFuture;
-
-        // $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
-
         return $this->socketManager->acquireChannel($address)->sendSyncWithResponse($rpcMessage, $timeoutMillis);
-//        $messageFuture->get($timeoutMillis);
-
-        // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
     }
 
     protected function sendAsync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis = 1000)
