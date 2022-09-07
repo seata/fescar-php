@@ -36,39 +36,41 @@ use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
-    protected $logger;
+    protected mixed $logger;
 
     /**
      * The Is sending.
      * @var bool
      */
-    protected $isSending = false;
+    protected bool $isSending = false;
 
     /**
      * @var ProtocolV1Encoder
      */
-    protected $protocolEncoder;
+    protected ProtocolV1Encoder $protocolEncoder;
 
     /**
      * @var ProtocolV1Decoder
      */
-    protected $protocolDecoder;
+    protected ProtocolV1Decoder $protocolDecoder;
 
     /**
      * @var array ConcurrentHashMap<Integer, MessageFuture>
      */
-    protected $futures = [];
+    protected array $futures = [];
 
     /**
      * @var array Map<Integer, MergeMessage>
      */
-    protected $mergeMsgMap = [];
+    protected array $mergeMsgMap = [];
 
     /**
      * @var array ConcurrentHashMap<String serverAddress, BlockingQueue<RpcMessage>>
@@ -84,17 +86,16 @@ abstract class AbstractRpcRemoting implements Disposable
 
     protected ProcessorManager $processorManager;
 
-    /**
-     * @param \Psr\Log\LoggerInterface $logger
-     */
+    protected ContainerInterface $container;
+
     public function __construct()
     {
-        $container = ApplicationContext::getContainer();
-        $this->logger = $container->get(StdoutLoggerInterface::class);
-        $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
-        $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-        $this->socketManager = $container->get(SocketManager::class);
-        $this->processorManager = $container->get(ProcessorManager::class);
+        $this->container = ApplicationContext::getContainer();
+        $this->logger = $this->container->get(StdoutLoggerInterface::class);
+        $this->protocolEncoder = $this->container->get(ProtocolV1Encoder::class);
+        $this->protocolDecoder = $this->container->get(ProtocolV1Decoder::class);
+        $this->socketManager = $this->container->get(SocketManager::class);
+        $this->processorManager = $this->container->get(ProcessorManager::class);
     }
 
     public function init()
@@ -223,7 +224,7 @@ abstract class AbstractRpcRemoting implements Disposable
         return $rpcMsg;
     }
 
-    protected function getNextMessageId()
+    protected function getNextMessageId(): int
     {
         return PositiveCounter::incrementAndGet();
     }
