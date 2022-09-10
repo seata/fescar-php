@@ -72,7 +72,7 @@ A typical lifecycle of Seata managed distributed transaction:
 
 ![Typical Process](https://cdn.nlark.com/lark/0/2018/png/18862/1545296917881-26fabeb9-71fa-4f3e-8a7a-fc317d3389f4.png)
 
-For more details about principle and design, please go to [Seata wiki page](https://seata.io/zh-cn/docs/overview/what-is-seata.html).
+For more details about principle and design, please go to [Seata wiki page](https://seata.io/en-us/docs/overview/what-is-seata.html).
 
 ## Seata-PHP TODO List
 
