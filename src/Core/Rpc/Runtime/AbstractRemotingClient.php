@@ -31,6 +31,7 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
