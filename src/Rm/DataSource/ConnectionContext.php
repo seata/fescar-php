@@ -21,7 +21,7 @@ namespace Hyperf\Seata\Rm\DataSource;
 
 use Hyperf\Seata\Exception\ShouldNeverHappenException;
 use Hyperf\Seata\Rm\DataSource\Undo\SQLUndoLog;
-use Hyperf\Utils\Context;
+use Hyperf\Context\Context;
 
 class ConnectionContext
 {

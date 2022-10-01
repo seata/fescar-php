@@ -50,6 +50,18 @@ class PDOStatementProxy extends \PDOStatement
         return $this->__object->{$name}(...$arguments);
     }
 
+    public function fetchAll($mode = PDO::FETCH_BOTH, $fetch_argument = null, ...$args)
+    {
+        $args = func_get_args();
+        return $this->__object->fetchAll(...$args);
+    }
+
+    public function setFetchMode($mode, $className = null, ...$params)
+    {
+        $args = func_get_args();
+        return $this->__object->setFetchMode(...$args);
+    }
+
     public function bindParam(int|string $param, mixed &$var, int $type = PDO::PARAM_INT, int $maxLength = null, mixed $driverOptions = null)
     {
         $this->bindParamContext[$param] = [$var, $type, $maxLength, $driverOptions];
@@ -70,6 +82,7 @@ class PDOStatementProxy extends \PDOStatement
 
     public function execute(?array $params = null)
     {
+
         if ($this->sqlParser->isDelete()) {
             $deleteExecutor = new DeleteExecutor($this->sqlParser, $this->PDOProxy, $this->bindParamContext, $this->bindColumnContext, $this->bindValueContext);
             $deleteExecutor->execute($params);
@@ -80,6 +93,6 @@ class PDOStatementProxy extends \PDOStatement
 
         if ($this->sqlParser->isInsert()) {
         }
-        return parent::execute($params);
+        return $this->__object->execute($params);
     }
 }

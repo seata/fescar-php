@@ -27,19 +27,21 @@ use Hyperf\Seata\Core\Model\GlobalStatus;
 use Hyperf\Seata\Exception\ExecutionException;
 use Hyperf\Seata\Exception\ShouldNeverHappenException;
 use Hyperf\Seata\Exception\TransactionException;
+use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Tm\Api\Transaction\Propagation;
 use Hyperf\Seata\Tm\Api\Transaction\TransactionHook;
 use Hyperf\Seata\Tm\Api\Transaction\TransactionHookManager;
 use Hyperf\Seata\Tm\Api\Transaction\TransactionInfo;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class TransactionalTemplate
 {
-    private StdoutLoggerInterface $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(StdoutLoggerInterface $logger)
+    public function __construct(LoggerFactory $loggerFactory)
     {
-        $this->logger = $logger;
+        $this->logger = $loggerFactory->create(static::class);
     }
 
     public function execute(TransactionalExecutor $business)
@@ -113,13 +115,14 @@ class TransactionalTemplate
                 // 2. If the tx role is 'GlobalTransactionRole.Launcher', send the request of beginTransaction to TC,
                 //    else do nothing. Of course, the hooks will still be triggered.
                 $this->beginTransaction($txInfo, $tx);
-
                 $rs = null;
                 try {
                     // Do Your Business
                     $rs = $business->execute();
                 } catch (Throwable $throwable) {
                     // 3. The needed business exception to rollback.
+                    var_dump($throwable->getMessage());
+                    var_dump($throwable->getTraceAsString());
                     $this->completeTransactionAfterThrowing($txInfo, $tx, $throwable);
                     throw $throwable;
                 }

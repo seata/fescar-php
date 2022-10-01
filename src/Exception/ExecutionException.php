@@ -66,17 +66,9 @@ class ExecutionException extends Exception
     }
 
     /**
-     * @return int
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
      * @param int $code
      */
-    public function setCode($code): void
+    public function setCode(int $code): void
     {
         $this->code = $code;
     }
