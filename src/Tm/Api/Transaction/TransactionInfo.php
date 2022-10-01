@@ -23,35 +23,21 @@ use Throwable;
 
 class TransactionInfo
 {
-    /**
-     * @var int
-     */
-    private $timeOut;
+    private int $timeOut;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
     /**
      * @var RollbackRule[]
      */
-    private $rollbackRules;
+    private array $rollbackRules = [];
 
-    /**
-     * @var Propagation
-     */
-    private $propagation;
+    private ?Propagation $propagation = null;
 
-    /**
-     * @var int
-     */
-    private $lockRetryInterval;
+    private int $lockRetryInterval;
 
-    /**
-     * @var int
-     */
-    private $lockRetryTimes;
+    private int $lockRetryTimes;
+
 
     public function getTimeOut(): int
     {

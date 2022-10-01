@@ -24,7 +24,7 @@ use Hyperf\Seata\Exception\IllegalArgumentException;
 use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Seata\Logger\LoggerInterface;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Context;
+use Hyperf\Context\Context;
 use RuntimeException;
 
 class RootContext extends Context
