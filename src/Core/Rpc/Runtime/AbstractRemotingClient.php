@@ -32,6 +32,7 @@ use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
 use Hyperf\Utils\ApplicationContext;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
@@ -55,15 +56,9 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
     protected null|TransactionMessageHandler $transactionMessageHandler = null;
 
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var RegistryFactory
-     */
-    protected $registryFactory;
+    protected RegistryFactory $registryFactory;
 
     /**
      * @see \Hyperf\Seata\Core\Rpc\TransactionRole
@@ -77,9 +72,8 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     public function __construct(int $transactionRole)
     {
         parent::__construct();
-        $container = ApplicationContext::getContainer();
         $this->transactionRole = $transactionRole;
-        $this->registryFactory = $container->get(RegistryFactory::class);
+        $this->registryFactory = $this->container->get(RegistryFactory::class);
     }
 
     public function init()
@@ -95,7 +89,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     }
 
     /**
-     * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
+     * @return GlobalBeginResponse
      */
     public function sendMsgWithResponse(AbstractMessage $message, string $target, int $timeout = 1000)
     {
@@ -110,7 +104,7 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
     }
 
     /**
-     * @return \Hyperf\Seata\Core\Protocol\Transaction\GlobalBeginResponse
+     * @return GlobalBeginResponse
      */
     public function sendMsgWithNoResponse(AbstractMessage $message, int $timeout = 1000)
     {

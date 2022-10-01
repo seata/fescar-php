@@ -19,13 +19,11 @@ declare(strict_types=1);
  */
 namespace Hyperf\Seata\Core\Rpc;
 
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Seata\Common\PositiveCounter;
 use Hyperf\Seata\Core\Protocol\AbstractMessage;
 use Hyperf\Seata\Core\Protocol\AbstractResultMessage;
 use Hyperf\Seata\Core\Protocol\HeartbeatMessage;
 use Hyperf\Seata\Core\Protocol\MergeMessage;
-use Hyperf\Seata\Core\Protocol\MessageFuture;
 use Hyperf\Seata\Core\Protocol\ProtocolConstants;
 use Hyperf\Seata\Core\Protocol\RpcMessage;
 use Hyperf\Seata\Core\Rpc\Hook\RpcHookInterface;
@@ -35,40 +33,43 @@ use Hyperf\Seata\Core\Rpc\Runtime\SocketManager;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractRpcRemoting implements Disposable
 {
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * The Is sending.
      * @var bool
      */
-    protected $isSending = false;
+    protected bool $isSending = false;
 
     /**
      * @var ProtocolV1Encoder
      */
-    protected $protocolEncoder;
+    protected ProtocolV1Encoder $protocolEncoder;
 
     /**
      * @var ProtocolV1Decoder
      */
-    protected $protocolDecoder;
+    protected ProtocolV1Decoder $protocolDecoder;
 
     /**
      * @var array ConcurrentHashMap<Integer, MessageFuture>
      */
-    protected $futures = [];
+    protected array $futures = [];
 
     /**
      * @var array Map<Integer, MergeMessage>
      */
-    protected $mergeMsgMap = [];
+    protected array $mergeMsgMap = [];
 
     /**
      * @var array ConcurrentHashMap<String serverAddress, BlockingQueue<RpcMessage>>
@@ -84,17 +85,16 @@ abstract class AbstractRpcRemoting implements Disposable
 
     protected ProcessorManager $processorManager;
 
-    /**
-     * @param \Psr\Log\LoggerInterface $logger
-     */
+    protected ContainerInterface $container;
+
     public function __construct()
     {
-        $container = ApplicationContext::getContainer();
-        $this->logger = $container->get(StdoutLoggerInterface::class);
-        $this->protocolEncoder = $container->get(ProtocolV1Encoder::class);
-        $this->protocolDecoder = $container->get(ProtocolV1Decoder::class);
-        $this->socketManager = $container->get(SocketManager::class);
-        $this->processorManager = $container->get(ProcessorManager::class);
+        $this->container = ApplicationContext::getContainer();
+        $this->logger = $this->container->get(LoggerFactory::class)->create(static::class);
+        $this->protocolEncoder = $this->container->get(ProtocolV1Encoder::class);
+        $this->protocolDecoder = $this->container->get(ProtocolV1Decoder::class);
+        $this->socketManager = $this->container->get(SocketManager::class);
+        $this->processorManager = $this->container->get(ProcessorManager::class);
     }
 
     public function init()
@@ -152,17 +152,7 @@ abstract class AbstractRpcRemoting implements Disposable
             return null;
         }
 
-//        $messageFuture = new MessageFuture();
-//        $messageFuture->setRequestMessage($rpcMessage);
-//        $messageFuture->setTimeout($timeoutMillis);
-//        $this->futures[$rpcMessage->getId()] = $messageFuture;
-
-        // $this->doBeforeRpcHooks((string)$channel, $rpcMessage);
-
         return $this->socketManager->acquireChannel($address)->sendSyncWithResponse($rpcMessage, $timeoutMillis);
-//        $messageFuture->get($timeoutMillis);
-
-        // $this->doAfterRpcHooks((string) $channel, $rpcMessage, $result);
     }
 
     protected function sendAsync(Address $address, RpcMessage $rpcMessage, int $timeoutMillis = 1000)
@@ -223,7 +213,7 @@ abstract class AbstractRpcRemoting implements Disposable
         return $rpcMsg;
     }
 
-    protected function getNextMessageId()
+    protected function getNextMessageId(): int
     {
         return PositiveCounter::incrementAndGet();
     }

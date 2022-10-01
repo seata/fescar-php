@@ -30,7 +30,6 @@ use Hyperf\Seata\Core\Rpc\Processor\Client\ClientHeartbeatProcessor;
 use Hyperf\Seata\Core\Rpc\Processor\Client\ClientOnResponseProcessor;
 use Hyperf\Seata\Core\Rpc\response;
 use Hyperf\Seata\Core\Rpc\TransactionRole;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 
 class TmRemotingClient extends AbstractRemotingClient
@@ -167,9 +166,8 @@ class TmRemotingClient extends AbstractRemotingClient
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_ROLLBACK_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_GLOBAL_STATUS_RESULT, $onResponseProcessor);
         $this->processorManager->registerProcessor(MessageType::TYPE_REG_CLT_RESULT, $onResponseProcessor);
-        $container = ApplicationContext::getContainer();
         // 2.registry heartbeat message processor
-        $clientHeartbeatProcessor = $container->get(ClientHeartbeatProcessor::class);
+        $clientHeartbeatProcessor = $this->container->get(ClientHeartbeatProcessor::class);
         $this->processorManager->registerProcessor(ProtocolConstants::MSGTYPE_HEARTBEAT_RESPONSE, $clientHeartbeatProcessor);
     }
 }
