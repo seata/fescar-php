@@ -33,6 +33,7 @@ use Hyperf\Seata\Core\Rpc\Runtime\SocketManager;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Decoder;
 use Hyperf\Seata\Core\Rpc\Runtime\V1\ProtocolV1Encoder;
 use Hyperf\Seata\Exception\SeataException;
+use Hyperf\Seata\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -89,7 +90,7 @@ abstract class AbstractRpcRemoting implements Disposable
     public function __construct()
     {
         $this->container = ApplicationContext::getContainer();
-        $this->logger = $this->container->get(LoggerInterface::class);
+        $this->logger = $this->container->get(LoggerFactory::class)->create(static::class);
         $this->protocolEncoder = $this->container->get(ProtocolV1Encoder::class);
         $this->protocolDecoder = $this->container->get(ProtocolV1Decoder::class);
         $this->socketManager = $this->container->get(SocketManager::class);
