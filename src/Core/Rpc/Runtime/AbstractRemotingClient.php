@@ -31,6 +31,7 @@ use Hyperf\Seata\Core\Rpc\TransactionMessageHandler;
 use Hyperf\Seata\Discovery\Registry\RegistryFactory;
 use Hyperf\Seata\Exception\SeataErrorCode;
 use Hyperf\Seata\Exception\SeataException;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractRemotingClient extends AbstractRpcRemoting implements RemotingClientInterface
 {
@@ -54,14 +55,8 @@ abstract class AbstractRemotingClient extends AbstractRpcRemoting implements Rem
 
     protected null|TransactionMessageHandler $transactionMessageHandler = null;
 
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected mixed $logger;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var RegistryFactory
-     */
     protected RegistryFactory $registryFactory;
 
     /**
