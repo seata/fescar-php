@@ -121,8 +121,6 @@ class TransactionalTemplate
                     $rs = $business->execute();
                 } catch (Throwable $throwable) {
                     // 3. The needed business exception to rollback.
-                    var_dump($throwable->getMessage());
-                    var_dump($throwable->getTraceAsString());
                     $this->completeTransactionAfterThrowing($txInfo, $tx, $throwable);
                     throw $throwable;
                 }
