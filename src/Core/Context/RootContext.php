@@ -68,11 +68,17 @@ class RootContext extends Context
     {
         if (! $xid) {
             static::log('debug', 'xid is blank, switch to unbind operation!');
+            self::unbind();
+        } else {
+            static::log('debug', 'Bind xid: ' . $xid);
+            static::set(static::KEY_XID, $xid);
         }
-        static::log('debug', 'Bind xid: ' . $xid);
-        static::set(static::KEY_XID, $xid);
+
     }
 
+    /**
+     * Unbind xid.
+     */
     public static function unbind(): ?string
     {
         $xid = static::getXID();
@@ -94,21 +100,34 @@ class RootContext extends Context
         static::set(static::KEY_GLOBAL_LOCK_FLAG, null);
     }
 
+    /**
+     * In global transaction boolean.
+     */
     public static function inGlobalTransaction(): bool
     {
         return static::getXID() !== null;
     }
 
+    /**
+     * In tcc branch boolean.
+     */
     public static function inTccBranch(): bool
     {
         return static::getBranchType() === BranchType::TCC;
     }
 
+
+    /**
+     * In saga branch boolean.
+     */
     public static function inSagaBranch(): bool
     {
         return static::getBranchType() === BranchType::SAGA;
     }
 
+    /**
+     * Get the branch type
+     */
     public static function getBranchType(): ?int
     {
         $branchType = null;
@@ -118,12 +137,22 @@ class RootContext extends Context
         return $branchType;
     }
 
+    /**
+     * Bind branch type
+     */
     public static function bindBranchType(int $branchType)
     {
+        if (empty($branchType)) {
+            throw new IllegalArgumentException('branchType must be not null');
+        }
+
         static::log('debug', 'Bind branch type %d', $branchType);
         static::set(static::KEY_BRANCH_TYPE, $branchType);
     }
 
+    /**
+     * Unbind branch type
+     */
     public static function unbindBranchType(): null|int
     {
         $prevBranchType = static::get(static::KEY_BRANCH_TYPE, null);
@@ -132,6 +161,9 @@ class RootContext extends Context
         return $prevBranchType;
     }
 
+    /**
+     * Requires global lock check
+     */
     public static function requireGlobalLock(): bool
     {
         return static::get(static::KEY_GLOBAL_LOCK_FLAG) !== null;
@@ -145,6 +177,14 @@ class RootContext extends Context
         if (static::inGlobalTransaction()) {
             throw new RuntimeException('This action should never happen');
         }
+    }
+
+    /**
+     * Entry map
+     */
+    public static function entries(): array
+    {
+       return Context::getContainer();
     }
 
     private static function log($level = 'debug', ...$content)
